@@ -1,0 +1,14 @@
+######Este archivo indica que cosas no seran tomadas en cuenta por git######
+
+#Ignoro todo, exeptuando algunas cosillas
+/*
+
+!AlumnoEjemplos
+AlumnoEjemplos/*
+
+!/AlumnoEjemplos/MiGrupo
+!/AlumnoEjemplos/AlumnoMedia
+
+
+#Otras cosas que no quiero ignorar
+!.gitignore
