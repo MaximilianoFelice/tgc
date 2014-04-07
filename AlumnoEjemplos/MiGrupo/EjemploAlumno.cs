@@ -23,7 +23,7 @@ namespace AlumnoEjemplos.TheGroup
 
     public class EjemploAlumno : TgcExample
     {
-        Ship ship;
+        MainShip ship;
 
         #region STRUCTURAL_INFO
         /// <summary>
@@ -63,8 +63,9 @@ namespace AlumnoEjemplos.TheGroup
             Sea.Load();
 
             /* Creamos un nuevo barco y lo cargamos */
-            ship = new Ship();
+            ship = new MainShip();
             ship.Load();
+            EnemyFleet.AddEnemy();
 
             #region (Otras Camaras)
             /*
@@ -104,6 +105,7 @@ namespace AlumnoEjemplos.TheGroup
         public override void render(float elapsedTime){
 
             ship.CalculateMovement(elapsedTime);
+            EnemyFleet.CalculateEveryMovement(elapsedTime);
 
             //Hacer que la camara siga a la nave en su nueva posicion
             GuiController.Instance.RotCamera.CameraCenter = ship.Position(); //TODO: Make camara follow rotation
@@ -111,6 +113,7 @@ namespace AlumnoEjemplos.TheGroup
             SkyDome.Render();
             Sea.Render();
             ship.Render();
+            EnemyFleet.RenderAll();
         }
 
         /// <summary>
