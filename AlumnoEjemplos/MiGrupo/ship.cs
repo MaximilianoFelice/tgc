@@ -18,8 +18,7 @@ namespace AlumnoEjemplos.TheGroup{
 
     abstract public class Ship{
 
-        public TgcMesh ship;
-        //public TgcScene shipScene2;     // Escena utilizada como prueba para testear ships.
+        public TgcScene ship;
 
         public void Load()
         {
@@ -27,34 +26,29 @@ namespace AlumnoEjemplos.TheGroup{
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
             TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene shipScene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Others\\BoatFishing-TgcScene.xml");
-            ship = shipScene.Meshes[0];
+            ship = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Ship 09\\Boat11-TgcScene.xml");
+
             // Acomoda al ship dependiendo una posicion específica de spawn
-            ship.Position = this.Spawn();
-
-            //shipScene2 = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "\\Scenes\\Ships\\Ship 03\\Ship03Scene.xml");
-
+            ship.Position(this.Spawn());
         }
 
         public Vector3 Position()
         {
-            return (ship.Position);
+            return (ship.Meshes[0].Position);
         }
 
-        
 
         public void Render()
         {
             /*
             *          ZONA DE RENDERIZADO
             */
-            ship.render();
-            //shipScene2.renderAll();
+            ship.renderAll();
         }
 
         public void Close()
         {
-            ship.dispose();
+            ship.disposeAll();
         }
 
         abstract public Vector3 Spawn();
@@ -115,7 +109,7 @@ namespace AlumnoEjemplos.TheGroup{
             {
                 //Rotar la nave y la camara, hay que multiplicarlo por el tiempo transcurrido para no atarse a la velocidad el hardware
                 float rotAngle = Geometry.DegreeToRadian(rotate * elapsedTime);
-                ship.rotateY((-1) * rotAngle);
+                ship.RotateY((-1) * rotAngle);
                 //GuiController.Instance.RotCamera.rotateY(rotAngle);
             }
 
@@ -125,12 +119,12 @@ namespace AlumnoEjemplos.TheGroup{
             {
                 //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
                 movementVector = new Vector3(
-                    FastMath.Cos(ship.Rotation.Y) * moveForward,
+                    FastMath.Cos(ship.RotationY()) * moveForward,
                     jump,
-                    -FastMath.Sin(ship.Rotation.Y) * moveForward
+                    -FastMath.Sin(ship.RotationY()) * moveForward
                     );
             }
-            ship.move(movementVector);
+            ship.Move(movementVector);
 
             #endregion
         }
@@ -181,14 +175,14 @@ namespace AlumnoEjemplos.TheGroup{
             #region ENEMYSHIP_MOVEMENT
             //Aplicar movimiento, se desplaza sobre el eje x.
             Vector3 movementVector;
-            movementVector = new Vector3(10,0,0);
-            ship.move(movementVector);
+            movementVector = new Vector3(1,0,0);
+            ship.Move(movementVector);
             #endregion
         }
 
         public override Vector3 Spawn()
         {
-            return (new Vector3(1000, 0, 1000));
+            return (new Vector3(100, 0, 100));
         }
     }
 

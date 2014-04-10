@@ -124,6 +124,7 @@ namespace AlumnoEjemplos.TheGroup
             SkyDome.Close();
             Sea.Close();
             ship.Close();
+            EnemyFleet.CloseAll();
 
         }
 

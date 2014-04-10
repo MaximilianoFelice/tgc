@@ -4,6 +4,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using TgcViewer;
 using TgcViewer.Utils.Shaders;
+using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.TheGroup
 {
@@ -47,5 +48,46 @@ namespace AlumnoEjemplos.TheGroup
         /// </summary>
         public static readonly Vector2 Vector21 = new Vector2(1f, 1f);
         #endregion
+
     }
+
+
+    /* Redefinition zone */
+
+    /* Agrego metodos a TgcScene */
+    public static class MovableTgcScene
+    {
+        /* Funciones que manejan la scene como conjunto */
+        #region TGC_SCENE HANDLER
+        /* Mueve todos los meshes de una scene */
+        public static void Move(this TgcScene Scene, Vector3 MovementVector)
+        {
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.move(MovementVector);
+        }
+
+        /* Reposiciona todos los meshes de una scene */
+        public static void Position(this TgcScene Scene, Vector3 NewPosition)
+        {
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Position = NewPosition;
+        }
+
+        /* Rota a todos los meshes de una scene */
+        public static void RotateY(this TgcScene Scene, float Angle)
+        {
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.rotateY(Angle);
+        }
+
+        /* Retorna los valores de rotacion del scene */
+        public static float RotationY(this TgcScene Scene)
+        {
+            return (Scene.Meshes[0].Rotation.Y);
+        }
+
+        public static float RotationX(this TgcScene Scene)
+        {
+            return (Scene.Meshes[0].Rotation.X);
+        }
+        #endregion
+    }
+
 }
