@@ -13,7 +13,7 @@ using TgcViewer.Utils.Input;
 using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
 
-namespace AlumnoEjemplos.TheGroup
+namespace AlumnoEjemplos.SeaSharp
 {
     public static class Sea
     {

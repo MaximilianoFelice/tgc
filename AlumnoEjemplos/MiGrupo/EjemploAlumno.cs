@@ -13,7 +13,7 @@ using TgcViewer.Utils.Input;
 using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
 
-namespace AlumnoEjemplos.TheGroup
+namespace AlumnoEjemplos.SeaSharp
 {
     /// <summary>
     /// Ejemplo del alumno
@@ -38,7 +38,7 @@ namespace AlumnoEjemplos.TheGroup
         /// Completar nombre del grupo en formato Grupo NN
         /// </summary>
         public override string getName(){
-            return "TheGroup";
+            return "SeaSharp";
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
 
 /* Clase abstracta que contiene comportamiento en comun de los barcos */
-namespace AlumnoEjemplos.TheGroup{
+namespace AlumnoEjemplos.SeaSharp{
 
     abstract public class Ship{
 

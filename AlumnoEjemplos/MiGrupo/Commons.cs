@@ -6,7 +6,7 @@ using TgcViewer;
 using TgcViewer.Utils.Shaders;
 using TgcViewer.Utils.TgcSceneLoader;
 
-namespace AlumnoEjemplos.TheGroup
+namespace AlumnoEjemplos.SeaSharp
 {
     public static class Commons
     {
