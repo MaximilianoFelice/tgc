@@ -12,3 +12,7 @@ AlumnoEjemplos/*
 
 #Otras cosas que no quiero ignorar
 !.gitignore
+
+#No ignoro el .csproj que contiene la info de proyecto y el .suo que contiene la info de la solucion
+!/AlumnoEjemplos/AlumnoEjemplos.csproj
+!TgcViewer.suo
