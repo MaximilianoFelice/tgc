@@ -43,19 +43,17 @@ namespace AlumnoEjemplos.SeaSharp
             bola.dispose();
         }
 
-        public bool CalculatePath(float elapsedTime)
+
+        public void CalculatePosition(MainShip ship)
         {
-            //TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
-            float moveForward = 0f;
-            bool moving = true;
-            float jump = 0;
+            bola.Position = ship.Position();
+            //bola.rotateY(angle);
+        }
 
-            
-            bola.move(3, 3 - 5*i*elapsedTime, 3);
 
-            
-            
-            
+        public bool CalculatePath(float elapsedTime, float angle)
+        {         
+            bola.move(3*FastMath.Cos(angle), 3 - 5*i*elapsedTime,-FastMath.Sin(angle)*3);     
             if(bola.Position == new Vector3 (100,100,10) || i > 500)
             {
                 bola.dispose();

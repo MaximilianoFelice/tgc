@@ -27,6 +27,7 @@ namespace AlumnoEjemplos.SeaSharp
         Bola bola = new Bola();
         TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
         bool press = false;
+        float angle, ballAngle;
 
 
         #region STRUCTURAL_INFO
@@ -110,7 +111,7 @@ namespace AlumnoEjemplos.SeaSharp
         /// <param name="elapsedTime">Tiempo en segundos transcurridos desde el último frame</param>
         public override void render(float elapsedTime){
 
-            ship.CalculateMovement(elapsedTime);
+            angle = ship.CalculateMovement(elapsedTime);
             EnemyFleet.CalculateEveryMovement(elapsedTime);
             ///////////////////////////////////
 
@@ -120,6 +121,8 @@ namespace AlumnoEjemplos.SeaSharp
                 //bola = new Bola();
                 bola.Load();
                 press = true;
+                bola.CalculatePosition(ship);
+                ballAngle = angle;
 
             }
             
@@ -136,7 +139,8 @@ namespace AlumnoEjemplos.SeaSharp
             //Si se apreto espacio una vez se ejecuta hasta que se le termine el tiempo a la bola
             if (press == true)
             {
-                press = bola.CalculatePath(elapsedTime);
+                
+                press = bola.CalculatePath(elapsedTime, ballAngle);
                 bola.Render();
             }
            

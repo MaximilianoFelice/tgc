@@ -60,7 +60,7 @@ namespace AlumnoEjemplos.SeaSharp{
     public class MainShip : Ship
     {
         /* Define el movimiento del barco controlado por el usuario */
-        public void CalculateMovement(float elapsedTime)
+        public float CalculateMovement(float elapsedTime)
         {
             #region MAINSHIP_MOVEMENT
             /*
@@ -75,6 +75,7 @@ namespace AlumnoEjemplos.SeaSharp{
             bool moving = false;
             bool rotating = false;
             float jump = 0;
+
 
             //Adelante
             if (d3dInput.keyDown(Key.W))
@@ -125,6 +126,7 @@ namespace AlumnoEjemplos.SeaSharp{
                     );
             }
             ship.Move(movementVector);
+            return ship.RotationY();
 
             #endregion
         }
