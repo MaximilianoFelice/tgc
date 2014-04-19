@@ -21,6 +21,13 @@ namespace AlumnoEjemplos.SeaSharp
         float i;
         const float ROTATESPEED = 10;
 
+        public Vector3 Position
+        {
+            get { return bola.Position; }
+            set { bola.Position = value; }
+
+        }
+
         public void Load()
         {
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
@@ -40,12 +47,6 @@ namespace AlumnoEjemplos.SeaSharp
         public void Close()
         {
             bola.dispose();
-        }
-
-
-        public void CalculatePosition(MainShip ship)
-        {
-            bola.Position = ship.Position();
         }
 
 

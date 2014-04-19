@@ -121,7 +121,7 @@ namespace AlumnoEjemplos.SeaSharp
                 //bola = new Bola();
                 bola.Load();
                 press = true;
-                bola.CalculatePosition(ship);
+                bola.Position = ship.Position();
                 ballAngle = angle;
 
             }
