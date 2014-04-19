@@ -19,6 +19,7 @@ namespace AlumnoEjemplos.SeaSharp
     {
         TgcMesh bola;
         float i;
+        const float ROTATESPEED = 10;
         //bool press = false;
 
         public void Load()
@@ -66,6 +67,7 @@ namespace AlumnoEjemplos.SeaSharp
             else
             {
                 i++;
+                bola.rotateX(ROTATESPEED * elapsedTime);
                 return true;
             }
             
