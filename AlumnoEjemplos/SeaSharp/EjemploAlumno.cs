@@ -24,6 +24,10 @@ namespace AlumnoEjemplos.SeaSharp
     public class EjemploAlumno : TgcExample
     {
         MainShip ship;
+        Bola bola = new Bola();
+        TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
+        bool press = false;
+
 
         #region STRUCTURAL_INFO
         /// <summary>
@@ -67,6 +71,8 @@ namespace AlumnoEjemplos.SeaSharp
             ship.Load();
             EnemyFleet.AddEnemy();
 
+
+
             #region (Otras Camaras)
             /*
             //Configurar camara en Tercer Persona
@@ -106,7 +112,19 @@ namespace AlumnoEjemplos.SeaSharp
 
             ship.CalculateMovement(elapsedTime);
             EnemyFleet.CalculateEveryMovement(elapsedTime);
+            ///////////////////////////////////
 
+            //Chequeo si aprete espacio
+            if (d3dInput.keyPressed(Key.Space) && press == false)
+            {
+                //bola = new Bola();
+                bola.Load();
+                press = true;
+
+            }
+            
+
+            //////////////////////////////////
             //Hacer que la camara siga a la nave en su nueva posicion
             GuiController.Instance.RotCamera.CameraCenter = ship.Position(); //TODO: Make camara follow rotation
 
@@ -114,6 +132,14 @@ namespace AlumnoEjemplos.SeaSharp
             Sea.Render();
             ship.Render();
             EnemyFleet.RenderAll();
+
+            //Si se apreto espacio una vez se ejecuta hasta que se le termine el tiempo a la bola
+            if (press == true)
+            {
+                press = bola.CalculatePath(elapsedTime);
+                bola.Render();
+            }
+           
         }
 
         /// <summary>
@@ -125,6 +151,7 @@ namespace AlumnoEjemplos.SeaSharp
             Sea.Close();
             ship.Close();
             EnemyFleet.CloseAll();
+            bola.Close();
 
         }
 
