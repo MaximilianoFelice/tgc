@@ -77,6 +77,16 @@ namespace AlumnoEjemplos.SeaSharp
             foreach (TgcMesh Mesh in Scene.Meshes) Mesh.rotateY(Angle);
         }
 
+        public static void copyShipRotationY(this TgcScene Scene, Ship targetShip)
+        {
+            //foreach (TgcMesh Mesh in Scene.Meshes)
+                for (int i = 0; i < Scene.Meshes.Count; i++)
+                {
+                    Scene.Meshes[i].Rotation = new Vector3(-targetShip.ship.Meshes[i].Rotation.X, -targetShip.ship.Meshes[i].Rotation.Y + Geometry.DegreeToRadian(90), targetShip.ship.Meshes[i].Rotation.Z);
+                }
+                
+        }
+
         /* Retorna los valores de rotacion del scene */
         public static float RotationY(this TgcScene Scene)
         {

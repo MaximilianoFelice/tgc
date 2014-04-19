@@ -68,12 +68,12 @@ namespace AlumnoEjemplos.SeaSharp
             EnemyFleet.AddEnemy();
 
             #region (Otras Camaras)
-            /*
+            
             //Configurar camara en Tercer Persona
             GuiController.Instance.ThirdPersonCamera.Enable = true;
-            GuiController.Instance.ThirdPersonCamera.setCamera(ship.Meshes[0].Position, 200, -1200);
+            GuiController.Instance.ThirdPersonCamera.setCamera(ship.Position(), 10, -150);
             GuiController.Instance.ThirdPersonCamera.TargetDisplacement = new Vector3(0, 45, 0);
-             */
+            GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(180));
   
             /*
             ///////////////CONFIGURAR CAMARA PRIMERA PERSONA//////////////////
@@ -85,13 +85,15 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.FpsCamera.setCamera(new Vector3(0, 0, -20), new Vector3(0, 0, 0));
             */
             #endregion
-
+            /*
             ///////////////CONFIGURAR CAMARA ROTACIONAL//////////////////
             //Es la camara que viene por default, asi que no hace falta hacerlo siempre
             GuiController.Instance.RotCamera.Enable = true;
             //Configurar centro al que se mira y distancia desde la que se mira
-            GuiController.Instance.RotCamera.setCamera(ship.Position(), 1700);
+            GuiController.Instance.RotCamera.setCamera(ship.Position(), 100);
             GuiController.Instance.RotCamera.RotationSpeed = 30;
+            */
+            
 
         }
 
@@ -103,17 +105,25 @@ namespace AlumnoEjemplos.SeaSharp
         /// </summary>
         /// <param name="elapsedTime">Tiempo en segundos transcurridos desde el último frame</param>
         public override void render(float elapsedTime){
+            //Hacer que la camara siga a la nave en su nueva posicion
+            //GuiController.Instance.RotCamera.CameraCenter = ship.Position(); //TODO: Make camara follow rotation
+            //GuiController.Instance.ThirdPersonCamera.Position = ship.Position();
+            GuiController.Instance.ThirdPersonCamera.Target = ship.Position();
+            
+            //GuiController.Instance.ThirdPersonCamera.updateCamera();
 
             ship.CalculateMovement(elapsedTime);
-            EnemyFleet.CalculateEveryMovement(elapsedTime);
+            EnemyFleet.CalculateEveryMovement(elapsedTime, ship);
 
-            //Hacer que la camara siga a la nave en su nueva posicion
-            GuiController.Instance.RotCamera.CameraCenter = ship.Position(); //TODO: Make camara follow rotation
+           
 
             SkyDome.Render();
             Sea.Render();
             ship.Render();
             EnemyFleet.RenderAll();
+
+            
+           
         }
 
         /// <summary>
