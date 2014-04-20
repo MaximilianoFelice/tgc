@@ -43,6 +43,7 @@ namespace AlumnoEjemplos.SeaSharp{
             /*
             *          ZONA DE RENDERIZADO
             */
+
             ship.renderAll();
         }
 
@@ -53,6 +54,15 @@ namespace AlumnoEjemplos.SeaSharp{
 
         abstract public Vector3 Spawn();
 
+        public void Fire()
+        {
+            Bola NewFireBall = new Bola();
+            NewFireBall.Fire();
+            NewFireBall.Position = this.Position();
+            NewFireBall.Angle = ship.RotationY();
+
+        }
+
     }
 
 
@@ -60,12 +70,9 @@ namespace AlumnoEjemplos.SeaSharp{
     public class MainShip : Ship
     {
         /* Define el movimiento del barco controlado por el usuario */
-        public float CalculateMovement(float elapsedTime)
+        public void CalculateMovement(float elapsedTime)
         {
             #region MAINSHIP_MOVEMENT
-            /*
-             *          ZONA DE CALCULO
-             */
 
             // TODO: HACER UN NUEVO ALGORITMO PARA ESTO, QUE SEA MUCHO MAS DINAMICO
             //Calcular proxima posicion de la nave segun Input
@@ -105,6 +112,14 @@ namespace AlumnoEjemplos.SeaSharp{
                 rotating = true;
             }
 
+
+            //Chequeo si aprete espacio
+            if (d3dInput.keyPressed(Key.Space))
+            {
+                this.Fire();
+
+            }
+
             //Si hubo rotacion
             if (rotating)
             {
@@ -126,7 +141,6 @@ namespace AlumnoEjemplos.SeaSharp{
                     );
             }
             ship.Move(movementVector);
-            return ship.RotationY();
 
             #endregion
         }

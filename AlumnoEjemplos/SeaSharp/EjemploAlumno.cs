@@ -24,10 +24,7 @@ namespace AlumnoEjemplos.SeaSharp
     public class EjemploAlumno : TgcExample
     {
         MainShip ship;
-        Bola bola = new Bola();
         TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
-        bool press = false;
-        float angle, ballAngle;
 
 
         #region STRUCTURAL_INFO
@@ -73,7 +70,6 @@ namespace AlumnoEjemplos.SeaSharp
             EnemyFleet.AddEnemy();
 
 
-
             #region (Otras Camaras)
             /*
             //Configurar camara en Tercer Persona
@@ -111,38 +107,27 @@ namespace AlumnoEjemplos.SeaSharp
         /// <param name="elapsedTime">Tiempo en segundos transcurridos desde el último frame</param>
         public override void render(float elapsedTime){
 
-            angle = ship.CalculateMovement(elapsedTime);
+            /*
+            *          ZONA DE CALCULO
+            */ 
+    
+            ship.CalculateMovement(elapsedTime);
             EnemyFleet.CalculateEveryMovement(elapsedTime);
-            ///////////////////////////////////
 
-            //Chequeo si aprete espacio
-            if (d3dInput.keyPressed(Key.Space) && press == false)
-            {
-                //bola = new Bola();
-                bola.Load();
-                press = true;
-                bola.Position = ship.Position();
-                ballAngle = angle;
+            Bola.CalculateEveryMovement(elapsedTime);
 
-            }
-            
-
-            //////////////////////////////////
             //Hacer que la camara siga a la nave en su nueva posicion
             GuiController.Instance.RotCamera.CameraCenter = ship.Position(); //TODO: Make camara follow rotation
 
+            /*
+            *          ZONA DE RENDERIZADO
+            */
             SkyDome.Render();
             Sea.Render();
             ship.Render();
             EnemyFleet.RenderAll();
+            Bola.RenderAll();
 
-            //Si se apreto espacio una vez se ejecuta hasta que se le termine el tiempo a la bola
-            if (press == true)
-            {
-                
-                press = bola.CalculatePath(elapsedTime, ballAngle);
-                bola.Render();
-            }
            
         }
 
@@ -155,7 +140,7 @@ namespace AlumnoEjemplos.SeaSharp
             Sea.Close();
             ship.Close();
             EnemyFleet.CloseAll();
-            bola.Close();
+            Bola.CloseAll();
 
         }
 
