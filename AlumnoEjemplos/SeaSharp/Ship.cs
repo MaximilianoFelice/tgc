@@ -32,9 +32,10 @@ namespace AlumnoEjemplos.SeaSharp{
             ship.Position(this.Spawn());
         }
 
-        public Vector3 Position()
+        public Vector3 Position
         {
-            return (ship.Meshes[0].Position);
+            get { return (ship.Meshes[0].Position); }
+            set { ship.Position(value); }
         }
 
 
