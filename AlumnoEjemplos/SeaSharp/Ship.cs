@@ -59,7 +59,7 @@ namespace AlumnoEjemplos.SeaSharp{
         {
             Bola NewFireBall = new Bola();
             NewFireBall.Fire();
-            NewFireBall.Position = this.Position();
+            NewFireBall.Position = this.Position;
             NewFireBall.Angle = ship.RotationY();
 
         }
