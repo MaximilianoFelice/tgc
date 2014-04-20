@@ -93,7 +93,7 @@ namespace AlumnoEjemplos.SeaSharp
             //Es la camara que viene por default, asi que no hace falta hacerlo siempre
             GuiController.Instance.RotCamera.Enable = true;
             //Configurar centro al que se mira y distancia desde la que se mira
-            GuiController.Instance.RotCamera.setCamera(ship.Position(), 1700);
+            GuiController.Instance.RotCamera.setCamera(ship.Position, 1700);
             GuiController.Instance.RotCamera.RotationSpeed = 30;
 
         }
@@ -117,7 +117,7 @@ namespace AlumnoEjemplos.SeaSharp
             Bola.CalculateEveryMovement(elapsedTime);
 
             //Hacer que la camara siga a la nave en su nueva posicion
-            GuiController.Instance.RotCamera.CameraCenter = ship.Position(); //TODO: Make camara follow rotation
+            GuiController.Instance.RotCamera.CameraCenter = ship.Position; //TODO: Make camara follow rotation
 
             /*
             *          ZONA DE RENDERIZADO
