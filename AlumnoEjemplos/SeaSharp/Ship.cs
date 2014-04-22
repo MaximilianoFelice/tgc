@@ -35,14 +35,10 @@ namespace AlumnoEjemplos.SeaSharp{
             ship.Position(this.Spawn());
         }
 
-        public Vector3 Position()
+        public Vector3 Position
         {
-            return (ship.Meshes[0].Position);            
-        }
-
-        public TgcBoundingBox BoundingBox()
-        {
-            return ship.BoundingBox;
+            get { return (ship.Meshes[0].Position); }
+            set { ship.Position(value); }
         }
 
 
@@ -51,6 +47,7 @@ namespace AlumnoEjemplos.SeaSharp{
             /*
             *          ZONA DE RENDERIZADO
             */
+
             ship.renderAll();
         }
 
@@ -60,6 +57,15 @@ namespace AlumnoEjemplos.SeaSharp{
         }
 
         abstract public Vector3 Spawn();
+
+        public void Fire()
+        {
+            Bola NewFireBall = new Bola();
+            NewFireBall.Fire();
+            NewFireBall.Position = this.Position;
+            NewFireBall.Angle = ship.RotationY();
+
+        }
 
     }
 
@@ -73,9 +79,6 @@ namespace AlumnoEjemplos.SeaSharp{
         public void CalculateMovement(float elapsedTime)
         {
             #region MAINSHIP_MOVEMENT
-            /*
-             *          ZONA DE CALCULO
-             */
 
             // TODO: HACER UN NUEVO ALGORITMO PARA ESTO, QUE SEA MUCHO MAS DINAMICO
             //Calcular proxima posicion de la nave segun Input
@@ -92,6 +95,7 @@ namespace AlumnoEjemplos.SeaSharp{
             float jump = 0;
             float speedForward = 60f;
             float speedRotate = 0.5f;
+
 
             //Adelante
             if (d3dInput.keyDown(Key.W))
@@ -131,8 +135,15 @@ namespace AlumnoEjemplos.SeaSharp{
                 rotating = true;
             }
 
-            //Si no hubo rotacion, voy desacelerando la ultima rotacion
-            if (!rotating)
+            //Chequeo si aprete espacio
+            if (d3dInput.keyPressed(Key.Space))
+            {
+                this.Fire();
+
+            }
+
+            //Si hubo rotacion
+            if (rotating)
             {
                 lastRotate = lastRotate * DESROTATION;
                 rotate = lastRotate;

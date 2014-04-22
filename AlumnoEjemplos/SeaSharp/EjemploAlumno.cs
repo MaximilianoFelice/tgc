@@ -24,6 +24,8 @@ namespace AlumnoEjemplos.SeaSharp
     public class EjemploAlumno : TgcExample
     {
         MainShip ship;
+        TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
+
 
         #region STRUCTURAL_INFO
         /// <summary>
@@ -67,11 +69,12 @@ namespace AlumnoEjemplos.SeaSharp
             ship.Load();
             EnemyFleet.AddEnemy();
 
+
             #region (Otras Camaras)
             
             //Configurar camara en Tercer Persona
             GuiController.Instance.ThirdPersonCamera.Enable = true;
-            GuiController.Instance.ThirdPersonCamera.setCamera(ship.Position(), 10, -150);
+            GuiController.Instance.ThirdPersonCamera.setCamera(ship.Position, 10, -150);
             GuiController.Instance.ThirdPersonCamera.TargetDisplacement = new Vector3(0, 45, 0);
             GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(180));
   
@@ -90,7 +93,7 @@ namespace AlumnoEjemplos.SeaSharp
             //Es la camara que viene por default, asi que no hace falta hacerlo siempre
             GuiController.Instance.RotCamera.Enable = true;
             //Configurar centro al que se mira y distancia desde la que se mira
-            GuiController.Instance.RotCamera.setCamera(ship.Position(), 100);
+            GuiController.Instance.RotCamera.setCamera(ship.Position, 1700);
             GuiController.Instance.RotCamera.RotationSpeed = 30;
             */
             
@@ -108,21 +111,32 @@ namespace AlumnoEjemplos.SeaSharp
             //Hacer que la camara siga a la nave en su nueva posicion
             //GuiController.Instance.RotCamera.CameraCenter = ship.Position(); //TODO: Make camara follow rotation
             //GuiController.Instance.ThirdPersonCamera.Position = ship.Position();
-            GuiController.Instance.ThirdPersonCamera.Target = ship.Position();
+            GuiController.Instance.ThirdPersonCamera.Target = ship.Position;
             
             //GuiController.Instance.ThirdPersonCamera.updateCamera();
 
+            /*
+            *          ZONA DE CALCULO
+            */ 
+    
             ship.CalculateMovement(elapsedTime);
             EnemyFleet.CalculateEveryMovement(elapsedTime, ship);
 
-           
+            Bola.CalculateEveryMovement(elapsedTime);
 
+            //Hacer que la camara siga a la nave en su nueva posicion
+            GuiController.Instance.RotCamera.CameraCenter = ship.Position; //TODO: Make camara follow rotation
+
+            /*
+            *          ZONA DE RENDERIZADO
+            */
             SkyDome.Render();
             Sea.Render();
             ship.Render();
             EnemyFleet.RenderAll();
 
-            
+            Bola.RenderAll();
+
            
         }
 
@@ -135,6 +149,7 @@ namespace AlumnoEjemplos.SeaSharp
             Sea.Close();
             ship.Close();
             EnemyFleet.CloseAll();
+            Bola.CloseAll();
 
         }
 
