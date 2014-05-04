@@ -69,6 +69,9 @@ namespace AlumnoEjemplos.SeaSharp
             ship.Load();
             EnemyFleet.AddEnemy();
 
+            /* Cargamos la isla */
+            Island.Load();
+
 
             #region (Otras Camaras)
             /*
@@ -127,7 +130,8 @@ namespace AlumnoEjemplos.SeaSharp
             ship.Render();
             EnemyFleet.RenderAll();
             Bola.RenderAll();
-
+            Island.Render();
+            
            
         }
 
@@ -141,6 +145,7 @@ namespace AlumnoEjemplos.SeaSharp
             ship.Close();
             EnemyFleet.CloseAll();
             Bola.CloseAll();
+            Island.Close();
 
         }
 
