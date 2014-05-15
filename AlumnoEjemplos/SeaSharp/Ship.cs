@@ -26,10 +26,7 @@ namespace AlumnoEjemplos.SeaSharp{
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
             TgcSceneLoader loader = new TgcSceneLoader();
-            ship = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Ship 09\\Boat11-TgcScene.xml");
-            // Boat11 - Le sacamos el mesh de agua
-            //ship.Meshes[1].move(0, 0, 1000);
-            ship.Meshes[0].rotateY(Geometry.DegreeToRadian(90));
+            ship = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Ship 01\\ShipF-TgcScene.xml");
             
             // Acomoda al ship dependiendo una posicion específica de spawn
             ship.Position(this.Spawn());
