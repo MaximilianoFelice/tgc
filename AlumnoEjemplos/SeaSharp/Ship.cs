@@ -80,11 +80,6 @@ namespace AlumnoEjemplos.SeaSharp{
 
             // TODO: HACER UN NUEVO ALGORITMO PARA ESTO, QUE SEA MUCHO MAS DINAMICO
             //Calcular proxima posicion de la nave segun Input
-            const float FORWARD = 3;
-            const float ROTATE = 50;
-            const float NITRO = 2.5f;
-            const float DESROTATION = 0.97f;
-            const float DESFORWARD = 0.99f;
             float moveForward = 0f;
             float rotate = 0;
             TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
@@ -98,38 +93,38 @@ namespace AlumnoEjemplos.SeaSharp{
             //Adelante
             if (d3dInput.keyDown(Key.W))
             {
-                lastMoveForward = FORWARD;
-                moveForward = FORWARD;                
+                lastMoveForward = ConfigParam.Ship.FORWARD;
+                moveForward = ConfigParam.Ship.FORWARD;                
                 moving = true;
             }
             else      
             //Atras
             if (d3dInput.keyDown(Key.S))
             {
-                lastMoveForward = -FORWARD;
-                moveForward = -FORWARD;
+                lastMoveForward = -ConfigParam.Ship.FORWARD;
+                moveForward = -ConfigParam.Ship.FORWARD;
                 moving = true;
             } 
            
             // Nitro
             if (d3dInput.keyDown(Key.LeftShift))
             {
-                speedForward *= NITRO;
+                speedForward *= ConfigParam.Ship.NITRO;
             }
 
             //Derecha
             if (d3dInput.keyDown(Key.D))
             {
-                lastRotate = -ROTATE;
-                rotate = -ROTATE;
+                lastRotate = -ConfigParam.Ship.ROTATE;
+                rotate = -ConfigParam.Ship.ROTATE;
                 rotating = true;
             }
 
             //Izquierda
             if (d3dInput.keyDown(Key.A))
             {
-                lastRotate = ROTATE;
-                rotate = ROTATE;
+                lastRotate = ConfigParam.Ship.ROTATE;
+                rotate = ConfigParam.Ship.ROTATE;
                 rotating = true;
             }
 
@@ -143,7 +138,7 @@ namespace AlumnoEjemplos.SeaSharp{
             //Si hubo rotacion
             if (rotating)
             {
-                lastRotate = lastRotate * DESROTATION;
+                lastRotate = lastRotate * ConfigParam.Ship.DESROTATION;
                 rotate = lastRotate;
             }
 
@@ -155,13 +150,13 @@ namespace AlumnoEjemplos.SeaSharp{
 
             // Manejamos la camara con las flechitas
             if(d3dInput.keyDown(Key.Left))
-                GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(ROTATE * elapsedTime));
+                GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(ConfigParam.Ship.ROTATE * elapsedTime));
             else if (d3dInput.keyDown(Key.Right))
-                GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(-ROTATE * elapsedTime));
+                GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(-ConfigParam.Ship.ROTATE * elapsedTime));
             if (d3dInput.keyDown(Key.Up))
-                GuiController.Instance.ThirdPersonCamera.OffsetHeight += FORWARD * elapsedTime * 10;
+                GuiController.Instance.ThirdPersonCamera.OffsetHeight += ConfigParam.Ship.FORWARD * elapsedTime * 10;
             else if (d3dInput.keyDown(Key.Down))
-                GuiController.Instance.ThirdPersonCamera.OffsetHeight -= FORWARD * elapsedTime * 10;
+                GuiController.Instance.ThirdPersonCamera.OffsetHeight -= ConfigParam.Ship.FORWARD * elapsedTime * 10;
            
             //Vector de movimiento del barco
             Vector3 movementVector = Vector3.Empty;
@@ -169,7 +164,7 @@ namespace AlumnoEjemplos.SeaSharp{
             // Si no se movio el barco, lo voy desacelerando desde el ultimo movimiento
             if (!moving)
             {
-                lastMoveForward = lastMoveForward * DESFORWARD;
+                lastMoveForward = lastMoveForward * ConfigParam.Ship.DESFORWARD;
                 moveForward = lastMoveForward;
             }
 
