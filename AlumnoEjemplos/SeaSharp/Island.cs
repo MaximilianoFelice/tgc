@@ -9,7 +9,6 @@ using Microsoft.DirectX;
 using TgcViewer.Utils.Modifiers;
 using TgcViewer.Utils.Terrain;
 using TgcViewer.Utils.TgcSceneLoader;
-using AlumnoEjemplos.SeaSharp;
 
 namespace AlumnoEjemplos.SeaSharp
 {
