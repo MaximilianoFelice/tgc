@@ -29,12 +29,13 @@ namespace AlumnoEjemplos.SeaSharp
             //Cargar terreno: cargar heightmap y textura de color
             island = new TgcSimpleTerrain();
             Vector3 Island_Pos = new Vector3(position.X, position.Y - 150, position.Z);
-            island.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\island1.jpg", ConfigParam.ISLAND_SCALE, 1, Island_Pos);
+            island.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\island1.jpg", 20, 1, Island_Pos);
             island.loadTexture(GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
 
             TgcSceneLoader loader = new TgcSceneLoader();
             palmeras = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Palmeras\\palmeras2-TgcScene.xml");
-            Vector3 Palmeras_Pos = new Vector3(position.X * ConfigParam.ISLAND_SCALE, island.Position.Y + 255, position.Z * ConfigParam.ISLAND_SCALE);
+            palmeras.Scale (new Vector3(5, 5, 5));
+            Vector3 Palmeras_Pos = new Vector3(position.X * 20, island.Position.Y + 255, position.Z * 20);
             palmeras.Position(Palmeras_Pos);
 
         }
