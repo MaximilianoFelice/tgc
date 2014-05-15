@@ -97,6 +97,11 @@ namespace AlumnoEjemplos.SeaSharp
         {
             return (Scene.Meshes[0].Rotation.X);
         }
+
+        public static void Scale(this TgcScene Scene, Vector3 ScaleVector)
+        {
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Scale = (ScaleVector);
+        }
         #endregion
     }
 

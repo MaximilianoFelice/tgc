@@ -13,6 +13,7 @@ using TgcViewer.Utils.TgcSceneLoader;
 namespace AlumnoEjemplos.SeaSharp
 {
     public class Island
+    // TODO Deshacer estática y agregar metodos de movimiento
     {
         public TgcSimpleTerrain island;
         public TgcScene palmeras; 
@@ -25,7 +26,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             //Cargar terreno: cargar heightmap y textura de color
             island = new TgcSimpleTerrain();
-            island.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\island1.jpg", 20, 1, new Vector3(0, -150, 0));
+            island.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\island1.jpg", 20, 1, new Vector3(1000, -150, 1000));
             island.loadTexture(GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
 
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -34,7 +35,7 @@ namespace AlumnoEjemplos.SeaSharp
 
      
         }
-
+        
         public void Render()
         {
             island.render();
