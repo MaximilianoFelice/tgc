@@ -17,9 +17,13 @@ namespace AlumnoEjemplos.SeaSharp
     // TODO Deshacer estática y agregar metodos de movimiento
     {
         public TgcSimpleTerrain island;
-        public TgcScene palmeras; 
+        public TgcScene palmeras;
 
 
+        public Island(Vector3 position)
+        {
+            this.Load(position);
+        }
 
         public void Load(Vector3 position)
         {

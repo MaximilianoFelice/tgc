@@ -24,7 +24,6 @@ namespace AlumnoEjemplos.SeaSharp
     public class EjemploAlumno : TgcExample
     {
         MainShip ship;
-        Island island;
         TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
 
 
@@ -70,9 +69,8 @@ namespace AlumnoEjemplos.SeaSharp
             ship.Load();
             EnemyFleet.AddEnemy();
 
-            /* Cargamos la isla */
-            island = new Island();
-            island.Load(new Vector3(100,0,100));
+            /* Cargamos el environment */
+            Environment.Load();
 
 
             #region (Otras Camaras)
@@ -135,9 +133,9 @@ namespace AlumnoEjemplos.SeaSharp
             Sea.Render();
             ship.Render();
             EnemyFleet.RenderAll();
-
+            Environment.Render();
             Bola.RenderAll();
-            island.Render();
+
             
            
         }
@@ -152,7 +150,7 @@ namespace AlumnoEjemplos.SeaSharp
             ship.Close();
             EnemyFleet.CloseAll();
             Bola.CloseAll();
-            island.Close();
+            Environment.Close();
 
         }
 
