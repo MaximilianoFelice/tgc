@@ -73,10 +73,10 @@ namespace AlumnoEjemplos.SeaSharp
             #region (Otras Camaras)
             
             //Configurar camara en Tercer Persona
-            GuiController.Instance.ThirdPersonCamera.Enable = true;
-            GuiController.Instance.ThirdPersonCamera.setCamera(ship.Position, 10, -150);
-            GuiController.Instance.ThirdPersonCamera.TargetDisplacement = new Vector3(0, 45, 0);
-            GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(180));
+            //GuiController.Instance.ThirdPersonCamera.Enable = true;
+            //GuiController.Instance.ThirdPersonCamera.setCamera(ship.Position, 10, -150);
+            //GuiController.Instance.ThirdPersonCamera.TargetDisplacement = new Vector3(0, 45, 0);
+            //GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(180));
   
             /*
             ///////////////CONFIGURAR CAMARA PRIMERA PERSONA//////////////////
@@ -88,14 +88,14 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.FpsCamera.setCamera(new Vector3(0, 0, -20), new Vector3(0, 0, 0));
             */
             #endregion
-            /*
+
             ///////////////CONFIGURAR CAMARA ROTACIONAL//////////////////
             //Es la camara que viene por default, asi que no hace falta hacerlo siempre
             GuiController.Instance.RotCamera.Enable = true;
             //Configurar centro al que se mira y distancia desde la que se mira
             GuiController.Instance.RotCamera.setCamera(ship.Position, 1700);
             GuiController.Instance.RotCamera.RotationSpeed = 30;
-            */
+            
             
 
         }
