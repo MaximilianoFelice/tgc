@@ -77,7 +77,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             bola.Scale = new Vector3(1, 1, 1);
 
-            _Velocity = new Vector3(-3 * FastMath.Sin(_Angle), 3, -3 * FastMath.Cos(_Angle));
+            _Velocity = new Vector3(-10 * FastMath.Sin(_Angle), 2, -10 * FastMath.Cos(_Angle));
 
             FiredBalls.Add(this);
         }
