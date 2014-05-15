@@ -8,7 +8,7 @@
 			<diffuse>[150.0,150.0,150.0,255.0]</diffuse>
 			<specular>[229.5,229.5,229.5,255.0]</specular>
 			<opacity>100.0</opacity>
-			<bitmap uvTiling='[1.0,1.0]' uvOffset='[0.0,0.0]'>2103190880-equirectangular-teamgeist.jpg</bitmap>
+			<bitmap uvTiling='[1.0,1.0]' uvOffset='[0.0,0.0]'>bolaTextura.jpg</bitmap>
 		</m>
 	</materials>
 	<meshes count='1' >
