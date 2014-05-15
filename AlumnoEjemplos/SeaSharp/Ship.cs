@@ -27,6 +27,7 @@ namespace AlumnoEjemplos.SeaSharp{
 
             TgcSceneLoader loader = new TgcSceneLoader();
             ship = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Ship 01\\ShipF-TgcScene.xml");
+            ship.Scale (new Vector3(5, 5, 5));
             
             // Acomoda al ship dependiendo una posicion específica de spawn
             ship.Position(this.Spawn());
@@ -290,7 +291,7 @@ namespace AlumnoEjemplos.SeaSharp{
 
         public override Vector3 Spawn()
         {
-            return (new Vector3(100, 0, 100));
+            return (new Vector3(500, 0, 500));
         }
     }
 
