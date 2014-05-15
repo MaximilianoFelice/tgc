@@ -100,6 +100,7 @@ namespace AlumnoEjemplos.SeaSharp
             //Configurar centro al que se mira y distancia desde la que se mira
             GuiController.Instance.RotCamera.setCamera(ship.Position, 1700);
             GuiController.Instance.RotCamera.RotationSpeed = 30;
+            GuiController.Instance.RotCamera.CameraDistance = 100;
             
             
 
@@ -113,12 +114,6 @@ namespace AlumnoEjemplos.SeaSharp
         /// </summary>
         /// <param name="elapsedTime">Tiempo en segundos transcurridos desde el último frame</param>
         public override void render(float elapsedTime){
-            //Hacer que la camara siga a la nave en su nueva posicion
-            //GuiController.Instance.RotCamera.CameraCenter = ship.Position(); //TODO: Make camara follow rotation
-            //GuiController.Instance.ThirdPersonCamera.Position = ship.Position();
-            GuiController.Instance.ThirdPersonCamera.Target = ship.Position;
-            
-            //GuiController.Instance.ThirdPersonCamera.updateCamera();
 
             /*
             *          ZONA DE CALCULO
@@ -131,6 +126,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             //Hacer que la camara siga a la nave en su nueva posicion
             GuiController.Instance.RotCamera.CameraCenter = ship.Position; //TODO: Make camara follow rotation
+            //GuiController.Instance.Frustum.FarPlane 
 
             /*
             *          ZONA DE RENDERIZADO

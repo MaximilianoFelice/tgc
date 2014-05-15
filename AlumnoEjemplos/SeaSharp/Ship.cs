@@ -27,7 +27,7 @@ namespace AlumnoEjemplos.SeaSharp{
 
             TgcSceneLoader loader = new TgcSceneLoader();
             ship = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Ship 01\\ShipF-TgcScene.xml");
-            ship.Scale (new Vector3(5, 5, 5));
+            ship.Scale (new Vector3(2, 2, 2));
             
             // Acomoda al ship dependiendo una posicion específica de spawn
             ship.Position(this.Spawn());
