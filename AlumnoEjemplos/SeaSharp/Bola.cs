@@ -38,6 +38,15 @@ namespace AlumnoEjemplos.SeaSharp
             set { _Angle = value; }
         }
 
+        private Vector3 _Velocity;
+        public Vector3 Velocity 
+        {
+            get { return _Velocity; }
+            set { _Velocity = value; }
+        }
+
+        private float _Gravity = -5f;
+
         #endregion 
 
         #region BALL_HANDLER
@@ -67,6 +76,9 @@ namespace AlumnoEjemplos.SeaSharp
             bola = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Pelota\\Sphere-TgcScene.xml").Meshes[0];
 
             bola.Scale = new Vector3(1, 1, 1);
+
+            _Velocity = new Vector3(-3 * FastMath.Sin(_Angle), 3, -3 * FastMath.Cos(_Angle));
+
             FiredBalls.Add(this);
         }
 
@@ -83,8 +95,12 @@ namespace AlumnoEjemplos.SeaSharp
         }
 
         public void CalculatePath(float elapsedTime)
-        {         
-            bola.move(3*FastMath.Cos(_Angle), 3 - 5*i*elapsedTime,-FastMath.Sin(_Angle)*3);   // TODO: Aclarar que es cada valor en esta linea. En lo posible pasarlos a constantes mas expresivas.   
+        {
+            Vector3 _acceleration = new Vector3(0, _Gravity * elapsedTime, 0);
+            _Velocity = Microsoft.DirectX.Vector3.Add(_Velocity, _acceleration);
+            
+            bola.move(_Velocity);   // TODO: Aclarar que es cada valor en esta linea. En lo posible pasarlos a constantes mas expresivas.   
+
             if((bola.Position.Y) < 0f)
             {
                 this.Dispose();

@@ -100,7 +100,7 @@ namespace AlumnoEjemplos.SeaSharp
             //Configurar centro al que se mira y distancia desde la que se mira
             GuiController.Instance.RotCamera.setCamera(ship.Position, 1700);
             GuiController.Instance.RotCamera.RotationSpeed = 30;
-            GuiController.Instance.RotCamera.CameraDistance = 100;
+            GuiController.Instance.RotCamera.CameraDistance = 1000;
             
             
 
