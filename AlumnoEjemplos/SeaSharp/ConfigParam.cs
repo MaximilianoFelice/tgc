@@ -7,5 +7,6 @@ namespace AlumnoEjemplos.SeaSharp
 {
     class ConfigParam
     {
+        public const int ISLAND_SCALE = 20;
     }
 }
