@@ -12,13 +12,13 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.SeaSharp
 {
-    public static class Island
+    public class Island
     {
-        public static TgcSimpleTerrain island;
-        public static TgcScene palmeras; 
+        public TgcSimpleTerrain island;
+        public TgcScene palmeras; 
 
 
-        public static void Load()
+        public void Load()
         {
 
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
@@ -28,17 +28,23 @@ namespace AlumnoEjemplos.SeaSharp
             island.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\island1.jpg", 20, 1, new Vector3(0, -150, 0));
             island.loadTexture(GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
 
+            TgcSceneLoader loader = new TgcSceneLoader();
+            palmeras = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Palmeras\\palmeras2-TgcScene.xml");
+            palmeras.Position(new Vector3(0, 250, 0));
+
      
         }
 
-        public static void Render()
+        public void Render()
         {
             island.render();
+            palmeras.renderAll();
         }
 
-        public static void Close()
+        public void Close()
         {
             island.dispose();
+            palmeras.disposeAll();
         }
     }
 }
