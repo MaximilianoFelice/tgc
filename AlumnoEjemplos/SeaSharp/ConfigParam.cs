@@ -12,9 +12,9 @@ namespace AlumnoEjemplos.SeaSharp
         //Calcular proxima posicion de la nave segun Input
         public class Ship
         {
-            public const float FORWARD = 3;
-            public const float ROTATE = 50;
-            public const float NITRO = 2.5f;
+            public const float FORWARD = 8;
+            public const float ROTATE = 200;
+            public const float NITRO = 4.5f;
             public const float DESROTATION = 0.97f;
             public const float DESFORWARD = 0.99f;
         }
