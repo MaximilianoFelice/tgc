@@ -72,7 +72,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             /* Cargamos la isla */
             island = new Island();
-            island.Load();
+            island.Load(new Vector3(100,0,100));
 
 
             #region (Otras Camaras)

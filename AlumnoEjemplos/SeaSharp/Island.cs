@@ -9,6 +9,7 @@ using Microsoft.DirectX;
 using TgcViewer.Utils.Modifiers;
 using TgcViewer.Utils.Terrain;
 using TgcViewer.Utils.TgcSceneLoader;
+using AlumnoEjemplos.SeaSharp;
 
 namespace AlumnoEjemplos.SeaSharp
 {
@@ -19,21 +20,23 @@ namespace AlumnoEjemplos.SeaSharp
         public TgcScene palmeras; 
 
 
-        public void Load()
+
+        public void Load(Vector3 position)
         {
 
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
             //Cargar terreno: cargar heightmap y textura de color
             island = new TgcSimpleTerrain();
-            island.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\island1.jpg", 20, 1, new Vector3(1000, -150, 1000));
+            Vector3 Island_Pos = new Vector3(position.X, position.Y - 150, position.Z);
+            island.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\island1.jpg", ConfigParam.ISLAND_SCALE, 1, Island_Pos);
             island.loadTexture(GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
 
             TgcSceneLoader loader = new TgcSceneLoader();
             palmeras = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Palmeras\\palmeras2-TgcScene.xml");
-            palmeras.Position(new Vector3(0, 250, 0));
+            Vector3 Palmeras_Pos = new Vector3(position.X * ConfigParam.ISLAND_SCALE, island.Position.Y + 255, position.Z * ConfigParam.ISLAND_SCALE);
+            palmeras.Position(Palmeras_Pos);
 
-     
         }
         
         public void Render()
