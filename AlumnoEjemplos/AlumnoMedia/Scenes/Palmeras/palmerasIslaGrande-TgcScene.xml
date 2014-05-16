@@ -32,7 +32,7 @@
     <mesh name="ArbolBananas0" layer="" type="Instance" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
       <boundingBox min="[274.8263,135.5157,-648.5551]" max="[356.6647,219.3362,-568.4406]" />
       <originalMesh>0</originalMesh>
-      <transform pos="[198.4312,135,-608.6003]" rotQuat="[0,0,0,0]" scale="[1,1,1]" />
+      <transform pos="[0,100,0]" rotQuat="[0,0,0,0]" scale="[1,1,1]" />
     </mesh>
     <mesh name="ArbolBananas1" layer="" type="Instance" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
       <boundingBox min="[156.9972,132.5014,-649.8264]" max="[238.8356,216.3218,-569.7119]" />

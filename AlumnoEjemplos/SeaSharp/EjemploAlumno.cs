@@ -13,6 +13,7 @@ using TgcViewer.Utils.Input;
 using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
 
+
 namespace AlumnoEjemplos.SeaSharp
 {
     /// <summary>
@@ -25,6 +26,11 @@ namespace AlumnoEjemplos.SeaSharp
     {
         MainShip ship;
         TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
+
+        public static float fieldOfViewY = FastMath.ToRad(45.0f);
+        public static float aspectRatio = 1f;
+        public static float zNearPlaneDistance = 1f;
+        public static float zFarPlaneDistance = 100000f;
 
 
         #region STRUCTURAL_INFO
@@ -101,6 +107,7 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.RotCamera.CameraDistance = 1000;
             
             
+            
 
         }
 
@@ -113,6 +120,13 @@ namespace AlumnoEjemplos.SeaSharp
         /// <param name="elapsedTime">Tiempo en segundos transcurridos desde el último frame</param>
         public override void render(float elapsedTime){
 
+            //GuiController.Instance.D3dDevice.Transform.Projection =
+            //   Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
+            //   aspectRatio, zNearPlaneDistance, zFarPlaneDistance);
+            GuiController.Instance.D3dDevice.Transform.Projection =
+               Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
+               aspectRatio, zNearPlaneDistance, zFarPlaneDistance);
+
             /*
             *          ZONA DE CALCULO
             */ 
@@ -124,6 +138,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             //Hacer que la camara siga a la nave en su nueva posicion
             GuiController.Instance.RotCamera.CameraCenter = ship.Position; //TODO: Make camara follow rotation
+            SkyDome.CalculateMovement();
             //GuiController.Instance.Frustum.FarPlane 
 
             /*

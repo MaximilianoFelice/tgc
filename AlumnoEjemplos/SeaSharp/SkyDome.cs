@@ -27,7 +27,7 @@ namespace AlumnoEjemplos.SeaSharp
             skyBox = new TgcSkyBox();
 
             skyBox.Center = new Vector3(0, 0, 0);
-            skyBox.Size = new Vector3(10000, 10000, 10000);
+            skyBox.Size = new Vector3(20000, 20000, 20000);
             string texturesPath = GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\SkyBox LostAtSeaDay\\";
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "lostatseaday_up.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "lostatseaday_dn.jpg");
@@ -35,6 +35,13 @@ namespace AlumnoEjemplos.SeaSharp
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "lostatseaday_bk.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "lostatseaday_rt.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "lostatseaday_lf.jpg");
+            skyBox.updateValues();
+        }
+
+
+        public static void CalculateMovement()
+        {
+            skyBox.Center = GuiController.Instance.RotCamera.getPosition();
             skyBox.updateValues();
         }
 
