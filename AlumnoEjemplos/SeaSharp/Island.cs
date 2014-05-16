@@ -13,7 +13,6 @@ using TgcViewer.Utils.TgcSceneLoader;
 namespace AlumnoEjemplos.SeaSharp
 {
     public class Island
-    // TODO Deshacer estática y agregar metodos de movimiento
     {
         public TgcSimpleTerrain island;
         public TgcScene palmeras;
