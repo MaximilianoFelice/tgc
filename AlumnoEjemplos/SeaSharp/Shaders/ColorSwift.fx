@@ -80,11 +80,8 @@ VS_OUTPUT vs_main2(VS_INPUT Input)
 	*/
 
 	// Animar posicion
-	float Y = Input.Position.y;
-	float Z = Input.Position.z;
-	Input.Position.y = Y * cos(time) - Z * sin(time);
-	Input.Position.z = Z * cos(time) + Y * sin(time);
-
+	float X = Input.Position.x;
+	Input.Position.y = -30 + 150 * cos(time) - 100 * sin(time);
 
 	//Proyectar posicion
 	Output.Position = mul(Input.Position, matWorldViewProj);
@@ -120,7 +117,7 @@ technique RenderScene
 {
 	pass Pass_0
 	{
-		VertexShader = compile vs_2_0 vs_main();
+		VertexShader = compile vs_2_0 vs_main2();
 		PixelShader = compile ps_2_0 ps_main();
 	}
 

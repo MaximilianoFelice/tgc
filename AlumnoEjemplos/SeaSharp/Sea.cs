@@ -24,6 +24,7 @@ namespace AlumnoEjemplos.SeaSharp
 
         public static void Load()
         {
+            
             Vector3 center = new Vector3(0,-30,0);
             Vector3 size = new Vector3(10000, 10, 10000);
             TgcTexture texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\Water01.jpg");
