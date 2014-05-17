@@ -139,7 +139,14 @@ namespace AlumnoEjemplos.SeaSharp
             //Hacer que la camara siga a la nave en su nueva posicion
             GuiController.Instance.RotCamera.CameraCenter = ship.Position; //TODO: Make camara follow rotation
             SkyDome.CalculateMovement();
+            Sea.CalculateMovement(elapsedTime);
             //GuiController.Instance.Frustum.FarPlane 
+
+
+
+            /* Preparamos el device para aplicar shaders */
+
+            GuiController.Instance.D3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
 
             /*
             *          ZONA DE RENDERIZADO
