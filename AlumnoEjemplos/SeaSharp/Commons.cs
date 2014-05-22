@@ -5,6 +5,7 @@ using Microsoft.DirectX.Direct3D;
 using TgcViewer;
 using TgcViewer.Utils.Shaders;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer.Utils.TgcGeometry;
 
 namespace AlumnoEjemplos.SeaSharp
 {
@@ -55,6 +56,7 @@ namespace AlumnoEjemplos.SeaSharp
     /* Redefinition zone */
 
     /* Agrego metodos a TgcScene */
+    #region TGC_SCENE_NEW_METHODS
     public static class MovableTgcScene
     {
         /* Funciones que manejan la scene como conjunto */
@@ -103,6 +105,52 @@ namespace AlumnoEjemplos.SeaSharp
             foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Scale = (ScaleVector);
         }
         #endregion
+    #endregion
+
+
+    }
+
+    /* Added methods to TgcQuad */
+    public static class DivisibleTgcQuad
+    {
+        public static List<TgcQuad> SubDivide(this TgcQuad ParentQuad)
+        {
+
+            List<TgcQuad> dividedQuads = new List<TgcQuad>();
+
+            /* Useful Values for calculations */
+            float newSize = ParentQuad.Size.X / 2;
+            float newCenterDisplacement = newSize / 2;      // Displacement from the previous centers to the new ones.
+
+            /* Calculating size for each new quad would have the same result */
+            Vector2 newQuadSize = new Vector2(newSize, newSize);
+
+            
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 2; j++){
+
+                    TgcQuad newQuad = new TgcQuad();
+
+                    /* New Quad Properties calculations */
+                    float xCenterPosition = ParentQuad.Center.X + ((float) Math.Pow(-1,i) * newCenterDisplacement);
+                    float zCenterPosition = ParentQuad.Center.Z + ((float) Math.Pow(-1,j) * newCenterDisplacement);
+                    Vector3 newQuadCenter = new Vector3(xCenterPosition, ParentQuad.Center.Y, zCenterPosition);
+
+                    /* New Quad Properties assignments */
+                    newQuad.Center = newQuadCenter;
+                    newQuad.Size = newQuadSize;
+                    newQuad.Color = ParentQuad.Color;
+                    newQuad.updateValues();
+
+                    /* Adding New Quad to the list */
+                    dividedQuads.Add(newQuad);
+
+                }
+            }
+
+            return dividedQuads;
+        }
     }
 
 }
