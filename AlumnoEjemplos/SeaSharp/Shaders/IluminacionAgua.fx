@@ -121,11 +121,11 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 	le += ks*k_ls;
 
 	//Obtener el texel de textura
-	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
-		//float4 fvBaseColor      = float4(1,0.5,0.5,1);
+	//float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+		float4 fvBaseColor      = float4(0,0.1,0.2,0);
 
 		// suma luz diffusa, ambiente y especular
-		float4 RGBColor = 0;
+		float4 RGBColor = float4(0,0,0,0.7);
 		RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
 
 	// saturate deja los valores entre [0,1]. Una tecnica muy usada en motores modernos

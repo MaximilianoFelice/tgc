@@ -31,7 +31,7 @@ namespace AlumnoEjemplos.SeaSharp
             Vector3 center = new Vector3(0,-30,0);
             Vector3 size = new Vector3(10000, 10, 10000);
             TgcTexture texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\Water01.jpg");
-            water = TgcBox.fromSize(center, size, texture);
+            water = TgcBox.fromSize(center, size, Color.Blue);
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\IluminacionAgua.fx");
             water.Technique = "DefaultTechnique";
 
@@ -41,7 +41,7 @@ namespace AlumnoEjemplos.SeaSharp
             ambient = 0.7f;
             diffuse = 0.4f;
             specular = 1.0f;
-            specularPower = 16.84f; 
+            specularPower = 50.0f; 
 
 
         }
@@ -65,9 +65,20 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("k_ld", diffuse);
             water.Effect.SetValue("k_ls", specular);
             water.Effect.SetValue("fSpecularPower", specularPower);
-            
+            device.RenderState.AlphaBlendEnable = true;
 
             water.render();
+
+            Blend ant_src = device.RenderState.SourceBlend;
+            Blend ant_dest = device.RenderState.DestinationBlend;
+            bool ant_alpha = device.RenderState.AlphaBlendEnable;
+            device.RenderState.AlphaBlendEnable = true;
+            device.RenderState.SourceBlend = Blend.SourceColor;
+            device.RenderState.DestinationBlend = Blend.InvSourceColor;
+            ((TgcBox)water).render();
+            device.RenderState.SourceBlend = ant_src;
+            device.RenderState.DestinationBlend = ant_dest;
+            device.RenderState.AlphaBlendEnable = ant_alpha;
             //lightBox.render();
 
         }
