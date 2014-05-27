@@ -80,8 +80,26 @@ VS_OUTPUT vs_main2(VS_INPUT Input)
 	*/
 
 	// Animar posicion
-	float X = Input.Position.x;
-	Input.Position.y = -30 + 150 * cos(time) - 100 * sin(time);
+	//float X = Input.Position.x;
+	//Input.Position.y = -30 + 150 * cos(time) - 100 * sin(time);
+
+	// calculo de la onda (movimiento grande)
+	//float u = Input.Position.x;
+	//float v = Input.Position.y;
+	//float ola = sin(v * 2 * 3.14159 * 0.0001 * time) * cos(u * 2 * 3.14159 * 0.0001 * time);
+	//Input.Position.y = ola * 100; //se lo aplicamos al eje y
+	//float atenuacion = length(float2(x,z)-isla_pos.xz);
+	//atenuacion = lerp(1,1-(1/atenuacion+1)+0.1,(1/atenuacion+1)*0.1);
+
+	float x = Input.Position.x;
+	float z = Input.Position.z;
+	// calculo coordenadas de textura
+	float u = (x / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
+	float v = (z / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
+
+	// calculo de la onda (movimiento grande)
+	float ola = sin(u * 2 * 3.14159 * 2 + time) * cos(v * 2 * 3.14159 * 2 + time);
+	Input.Position.y = 1 * ola * 160; //se lo aplicamos al eje y
 
 	//Proyectar posicion
 	Output.Position = mul(Input.Position, matWorldViewProj);
@@ -90,11 +108,13 @@ VS_OUTPUT vs_main2(VS_INPUT Input)
 	Output.Texcoord = Input.Texcoord;
 
 	// Animar color
-	Input.Color.r = abs(sin(time));
-	Input.Color.g = abs(cos(time));
+	//Input.Color.r = abs(sin(time));
+	//Input.Color.g = abs(cos(time));
 
 	//Propago el color x vertice
-	Output.Color = Input.Color;
+	float4 ColorOut = Input.Color;
+		ColorOut.a = 0.1;
+	Output.Color = ColorOut;
 
 	return(Output);
 
@@ -108,7 +128,10 @@ float4 ps_main(float2 Texcoord: TEXCOORD0, float4 Color : COLOR0) : COLOR0
 	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
 	// combino color y textura
 	// en este ejemplo combino un 80% el color de la textura y un 20%el del vertice
-	return 0.8*fvBaseColor + 0.2*Color;
+	//float4 Out = Color;
+	//Out.a = 255;
+
+	return Color;
 }
 
 

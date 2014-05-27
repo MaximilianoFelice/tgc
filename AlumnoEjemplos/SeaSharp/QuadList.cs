@@ -18,7 +18,7 @@ namespace AlumnoEjemplos.SeaSharp
 {
     public class QuadList
     {
-        private List<TgcQuad> quadList;
+        public List<TgcQuad> quadList;      //TODO CHANGE SCOPE
         private int _module;
         private int _currentModule;
         private int _density;    // TODO: Implement triangle density constructor
@@ -83,6 +83,24 @@ namespace AlumnoEjemplos.SeaSharp
             get { return _density; }
             set { _density = value; }
         }
+
+        public Microsoft.DirectX.Direct3D.Effect Effect
+        {
+            set
+            {
+                foreach (TgcQuad quad in quadList) quad.Effect = value;
+            }
+        }
+
+        public String Technique
+        {
+            set
+            {
+                foreach (TgcQuad quad in quadList) quad.Technique = value;
+            }
+        }
+
+
 
         #endregion
     }
