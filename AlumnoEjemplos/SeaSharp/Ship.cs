@@ -12,6 +12,8 @@ using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.Input;
 using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
+using TgcViewer.Utils._2D;
+using TgcViewer.Utils.Shaders;
 
 /* Clase abstracta que contiene comportamiento en comun de los barcos */
 namespace AlumnoEjemplos.SeaSharp{
@@ -19,6 +21,22 @@ namespace AlumnoEjemplos.SeaSharp{
     abstract public class Ship{
 
         public TgcScene ship;
+        //public TgcSprite lifeBar;
+        public TgcBox lifeBarBg;
+        public TgcBox lifeBar;
+        public Vector3 lifeBarBgOffset = new Vector3(-100, 250, 0);
+        public Vector3 lifeBarOffset = new Vector3(-1, -1, -1);
+        public float life = 100;
+        public int lifeWidth; // Ancho de la barra de vida estando al 100%
+
+        public float nitro = 100;
+
+        public TgcSprite targetMap;
+
+        public float diffX = 0f;
+        public float diffY = 0f;
+
+        public bool isFiring = false;
 
         public void Load()
         {
@@ -29,6 +47,33 @@ namespace AlumnoEjemplos.SeaSharp{
             ship = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Ship 01\\ShipF-TgcScene.xml");
             ship.Scale (new Vector3(2, 2, 2));
             
+            // Fondo de la barra de vida
+
+            Vector3 center = new Vector3(0, 0, 0);
+            TgcTexture texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarBack.png");                        
+            Vector3 size = new Vector3(0, texture.Size.Height/2, texture.Size.Width/2);
+            lifeBarBg = TgcBox.fromSize(center, size, texture);
+
+            // Vida variable
+            
+            TgcTexture texture2 = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarGreen.png");
+            Vector3 size2 = new Vector3(3, (texture.Size.Height / 2) - 10, (texture.Size.Width / 2) - 10);
+            Vector3 center2 = new Vector3(0, 0, 0);
+            lifeWidth = (texture.Size.Width / 2) - 10;
+            lifeBar = TgcBox.fromSize(center2, size2, texture2);
+
+            // Target Map - Icono que indica en que posicion del mapa esta el barco
+            targetMap = new TgcSprite();
+            targetMap.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\TargetRed.png");
+
+            targetMap.Position = new Vector2(15, 14);
+            targetMap.Scaling = new Vector2(0.1f, 0.1f);
+            targetMap.Rotation = Geometry.DegreeToRadian(90);
+            targetMap.RotationCenter = new Vector2(targetMap.Texture.Width * targetMap.Scaling.X / 2, targetMap.Texture.Height * targetMap.Scaling.Y / 2);
+                     
+
+
+
             // Acomoda al ship dependiendo una posicion específica de spawn
             ship.Position(this.Spawn());
         }
@@ -46,8 +91,17 @@ namespace AlumnoEjemplos.SeaSharp{
             *          ZONA DE RENDERIZADO
             */
 
+            if (life >= 50)
+                lifeBar.setTexture(TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarGreen.png"));
+            else if (life < 50 && life > 25)
+                lifeBar.setTexture(TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarYellow.png"));
+            else if (life <= 25)
+                lifeBar.setTexture(TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarRed.png"));
+
+
             ship.renderAll();
         }
+
 
         public void Close()
         {
@@ -62,7 +116,44 @@ namespace AlumnoEjemplos.SeaSharp{
             NewFireBall.Angle = ship.RotationY();
             NewFireBall.Fire();
             NewFireBall.Position = this.Position;
+        }
 
+
+        public void rotarBarraVidaSegunCamara(float elapsedTime, TgcD3dInput d3dInput)
+        {
+
+            // Rotar vida segun rotacion de la camara
+
+            //Obtener variacion XY del mouse
+            float mouseX = 0f;
+            float mouseY = 0f;
+            if (d3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT))
+            {
+                mouseX = d3dInput.XposRelative;
+                mouseY = d3dInput.YposRelative;
+
+                diffX += mouseX * elapsedTime * GuiController.Instance.RotCamera.RotationSpeed;
+                diffY += mouseY * elapsedTime * GuiController.Instance.RotCamera.RotationSpeed;
+            }
+            else
+            {
+                diffX += mouseX;
+                diffY += mouseY;
+            }
+
+            //Calcular rotacion a aplicar
+            float rotX = (-diffY / FastMath.PI);
+            float rotY = (diffX / FastMath.PI);
+
+            //Truncar valores de rotacion fuera de rango
+            if (rotX > FastMath.PI * 2 || rotX < -FastMath.PI * 2)
+            {
+                diffY = 0;
+                rotX = 0;
+            }
+                        
+            lifeBarBg.Rotation = new Vector3(0, rotY + Geometry.DegreeToRadian(90), 0);
+            lifeBar.Rotation = new Vector3(0, rotY + Geometry.DegreeToRadian(90), 0);            
         }
 
     }
@@ -73,6 +164,11 @@ namespace AlumnoEjemplos.SeaSharp{
     {
         static float lastMoveForward = 0;
         static float lastRotate = 0;
+
+        public void CambiarTargetMap()
+        {
+            targetMap.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\TargetBlack.png");
+        }
         /* Define el movimiento del barco controlado por el usuario */
         public void CalculateMovement(float elapsedTime)
         {
@@ -88,6 +184,13 @@ namespace AlumnoEjemplos.SeaSharp{
             float jump = 0;
             float speedForward = 60f;
             float speedRotate = 0.5f;
+
+            // Actualizar Posicion, Rotacion y Color de la Barra de Vida
+            lifeBarBg.Position = new Vector3(ship.Meshes[0].Position.X + lifeBarBgOffset.X, ship.Meshes[0].Position.Y + lifeBarBgOffset.Y, ship.Meshes[0].Position.Z + lifeBarBgOffset.Z);
+            lifeBar.Position = new Vector3(lifeBarBg.Position.X + lifeBarOffset.X, lifeBarBg.Position.Y + lifeBarOffset.Y, lifeBarBg.Position.Z + lifeBarOffset.Z);
+            targetMap.Position = new Vector2(-ship.Meshes[0].Position.X / 50 + Environment.MapShipsOffsetX, ship.Meshes[0].Position.Z / 50 + Environment.MapShipsOffsetY);
+            rotarBarraVidaSegunCamara(elapsedTime, d3dInput);
+            actualizarColorBarraVida();
 
 
             //Adelante
@@ -109,7 +212,21 @@ namespace AlumnoEjemplos.SeaSharp{
             // Nitro
             if (d3dInput.keyDown(Key.LeftShift))
             {
-                speedForward *= ConfigParam.Ship.NITRO;
+                if (nitro >= 0)
+                {                    
+                    if (moving)
+                    {
+                        speedForward *= ConfigParam.Ship.NITRO;
+                        nitro -= 0.5f;
+                    }
+                    else if (nitro < 100)
+                        nitro += 0.05f;
+                }
+            }
+            else
+            {
+                if (nitro < 100)
+                    nitro += 0.05f;
             }
 
             //Derecha
@@ -132,8 +249,14 @@ namespace AlumnoEjemplos.SeaSharp{
             if (d3dInput.keyPressed(Key.Space))
             {
                 this.Fire();
-
+                isFiring = true;
             }
+
+            if (d3dInput.keyUp(Key.Space))
+            {
+                isFiring = false;
+            }
+
 
             //Si hubo rotacion
             if (rotating)
@@ -145,6 +268,17 @@ namespace AlumnoEjemplos.SeaSharp{
             //Rotar la nave y la camara, hay que multiplicarlo por el tiempo transcurrido para no atarse a la velocidad el hardware
             float rotAngle = Geometry.DegreeToRadian(rotate * elapsedTime * speedRotate);
             ship.RotateY((-1) * rotAngle);
+            
+
+            // Actualizamos el icono que representa al barco en el Mapa
+            //Iniciar dibujado de todos los Sprites de la escena (en este caso es solo uno)
+            GuiController.Instance.Drawer2D.beginDrawSprite();
+            targetMap.Rotation += (-1) * rotAngle;
+            targetMap.render();
+            //Finalizar el dibujado de Sprites
+            GuiController.Instance.Drawer2D.endDrawSprite();
+
+
             GuiController.Instance.ThirdPersonCamera.rotateY(-rotAngle);
             //GuiController.Instance.RotCamera.rotateY(rotAngle);
 
@@ -166,6 +300,11 @@ namespace AlumnoEjemplos.SeaSharp{
             {
                 lastMoveForward = lastMoveForward * ConfigParam.Ship.DESFORWARD;
                 moveForward = lastMoveForward;
+                // Cuando la desaceleracion llega a un valor muy bajo, le asignamos 0 para que no tienda a 0 infinitamente
+                if(moveForward < 1){
+                    lastMoveForward = 0;
+                    moveForward = 0;
+                }
             }
 
             //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
@@ -179,6 +318,25 @@ namespace AlumnoEjemplos.SeaSharp{
 
             #endregion
         }
+
+        private void actualizarColorBarraVida()
+        {
+            // Cambio de color de las barras segun la cantidad que tengan
+            if (life >= 50)
+                Environment.lifeBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarGreen.png");
+            else if (life < 50 && life > 25)
+                Environment.lifeBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarYellow.png");
+            else if (life <= 25)
+                Environment.lifeBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarRed.png");
+
+            if (nitro >= 50)
+                Environment.nitroBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarBlue.png");
+            else if (nitro < 50 && nitro > 25)
+                Environment.nitroBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarViolet.png");
+            else if (nitro <= 25)
+                Environment.nitroBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarRed.png");
+        }
+
 
         /* Define la posicion en la que spawneara la nave. Como es la controlada por el usuario, arranca en (0,0,0) */
         public override Vector3 Spawn(){
@@ -208,6 +366,16 @@ namespace AlumnoEjemplos.SeaSharp{
             EnemyFleet NewEnemy = new EnemyFleet();
             NewEnemy.Load();
             Enemies.Add(NewEnemy);
+            
+            // Le asignamos una Posicion y Rotacion inicial aleatoria
+            Random r = new Random();
+            NewEnemy.Position = new Vector3(r.Next(1000), 0, r.Next(1000));
+            NewEnemy.RotateShip(r.Next(360));
+        }
+
+        public void RotateShip(float degree)
+        {
+            this.ship.RotateY(degree);
         }
 
         public static void CalculateEveryMovement(float elapsedTime, Ship targetShip)
@@ -241,21 +409,45 @@ namespace AlumnoEjemplos.SeaSharp{
             float speedForward = 60f;
             float jump = 0;
 
+            // Actualiza la Posicion y Rotacion de la Barra de Vida
+            lifeBarBg.Position = new Vector3(ship.Meshes[0].Position.X + lifeBarBgOffset.X, ship.Meshes[0].Position.Y + lifeBarBgOffset.Y, ship.Meshes[0].Position.Z + lifeBarBgOffset.Z);
+            lifeBar.Position = new Vector3(lifeBarBg.Position.X + lifeBarOffset.X, lifeBarBg.Position.Y + lifeBarOffset.Y, lifeBarBg.Position.Z + lifeBarOffset.Z);
+            targetMap.Position = new Vector2(-ship.Meshes[0].Position.X / 50 + Environment.MapShipsOffsetX, ship.Meshes[0].Position.Z / 50 + Environment.MapShipsOffsetY);
+            rotarBarraVidaSegunCamara(elapsedTime, GuiController.Instance.D3dInput);
+
+            
 
             // Si el enemigo esta cerca de nuestro barco, se detiene y nos ataca
             if (Math.Abs(ship.Meshes[0].Position.X - targetShip.ship.Meshes[0].Position.X) < XDISTANCETOMAINSHIP
                 && Math.Abs(ship.Meshes[0].Position.Z - targetShip.ship.Meshes[0].Position.Z) < ZDISTANCETOMAINSHIP)
             {                
                 movementVector = new Vector3(0,0,0);
-                
+                if (targetShip.life >= 0)
+                {
+                    targetShip.life -= 0.2f;                    
+                }
+                if (life >= 0 && targetShip.isFiring)
+                {
+                    life -= 0.2f;
+                }
+
+                // Disparamos 2 bolas por segundo
+                int ms = DateTime.Now.Millisecond;
+                if (!isFiring && ((ms >= 250 && ms <= 333) || (ms >= 666 && ms <= 750)))
+                {
+                    Fire();
+                    isFiring = true;
+                }
+                else if (ms < 250 || (ms > 333 && ms < 666) || ms > 750)
+                {
+                    isFiring = false;
+                }
                 // Rotacion automatica mientras esta frenado
                 //ship.RotateY(Geometry.DegreeToRadian(targetShip.ship.Meshes[0].Rotation.Y * elapsedTime));
                 //ship.Meshes[0].Rotation = targetShip.ship.Meshes[0].Rotation;
                 
                 // Copia nuestra rotacion, para simular que nos apunta
                 //ship.copyShipRotationY(targetShip);
-
-                // Atacar
             }
             else { 
             // Rota 180 y luego empieza a rotar en direccion opuesta
@@ -264,6 +456,14 @@ namespace AlumnoEjemplos.SeaSharp{
             else if (ship.Meshes[0].Rotation.Y < Geometry.DegreeToRadian(-MAXROTATION))
                 rotationY = 1;
             ship.RotateY(Geometry.DegreeToRadian(SPEEDROTATION * elapsedTime * rotationY));
+    
+            // Actualiza el icono que representa al barco en el Mapa
+            //Iniciar dibujado de todos los Sprites de la escena (en este caso es solo uno)
+            GuiController.Instance.Drawer2D.beginDrawSprite();
+            targetMap.Rotation += Geometry.DegreeToRadian(SPEEDROTATION * elapsedTime * rotationY);
+            targetMap.render();
+            //Finalizar el dibujado de Sprites
+            GuiController.Instance.Drawer2D.endDrawSprite();
 
             // Avanza cierta distancia y luego vuelve en direccion opuesta
             if (ship.Meshes[0].Position.X > DISTANCE)

@@ -18,6 +18,7 @@ namespace AlumnoEjemplos.SeaSharp
     public static class SkyDome
     {
         public static TgcSkyBox skyBox;
+        public static string texturesPath;
 
         public static void Load()
         {
@@ -28,13 +29,18 @@ namespace AlumnoEjemplos.SeaSharp
 
             skyBox.Center = new Vector3(0, 0, 0);
             skyBox.Size = new Vector3(20000, 20000, 20000);
-            string texturesPath = GuiController.Instance.ExamplesMediaDir + "Texturas\\Quake\\SkyBox LostAtSeaDay\\";
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "lostatseaday_up.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "lostatseaday_dn.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "lostatseaday_ft.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "lostatseaday_bk.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "lostatseaday_rt.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "lostatseaday_lf.jpg");
+            texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Sky\\";
+            SetFaceTextures();
+        }
+
+        public static void SetFaceTextures()
+        {
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "arriba.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "abajo.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "centro.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "der2.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "izq.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "der.jpg");
             skyBox.updateValues();
         }
 
