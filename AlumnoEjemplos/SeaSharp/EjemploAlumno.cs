@@ -259,6 +259,7 @@ namespace AlumnoEjemplos.SeaSharp
                 *          ZONA DE RENDERIZADO
                 */
                 SkyDome.Render();
+                SkyDome.Close();
                 Sea.Render();
                                 
                 // Actualizamos las posicion de la vida del MainShip                

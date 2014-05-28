@@ -192,130 +192,154 @@ namespace AlumnoEjemplos.SeaSharp{
             rotarBarraVidaSegunCamara(elapsedTime, d3dInput);
             actualizarColorBarraVida();
 
-
-            //Adelante
-            if (d3dInput.keyDown(Key.W))
+            // Hundimiento
+            if (life < 1)
             {
-                lastMoveForward = ConfigParam.Ship.FORWARD;
-                moveForward = ConfigParam.Ship.FORWARD;                
-                moving = true;
-            }
-            else      
-            //Atras
-            if (d3dInput.keyDown(Key.S))
-            {
-                lastMoveForward = -ConfigParam.Ship.FORWARD;
-                moveForward = -ConfigParam.Ship.FORWARD;
-                moving = true;
-            } 
-           
-            // Nitro
-            if (d3dInput.keyDown(Key.LeftShift))
-            {
-                if (nitro >= 0)
+                GuiController.Instance.ThirdPersonCamera.OffsetHeight = 0;
+                float j = 0.2f, y = -0.25f, k = 1, i=0;
+                
+                foreach (var Mesh in ship.Meshes)
                 {                    
-                    if (moving)
-                    {
-                        speedForward *= ConfigParam.Ship.NITRO;
-                        nitro -= 0.5f;
-                    }
-                    else if (nitro < 100)
-                        nitro += 0.05f;
+                    j -= 0.01f;
+                    if (i % 2 == 0)
+                        k = 1;
+                    else
+                        k = -1;
+
+                    Mesh.Position = new Vector3(Mesh.Position.X, Mesh.Position.Y + y, Mesh.Position.Z);
+
+                    Mesh.rotateX(Geometry.DegreeToRadian(j * 0.25f * k));
+                    Mesh.rotateY(Geometry.DegreeToRadian(0.1f));
+                    Mesh.rotateZ(Geometry.DegreeToRadian(-j * 0.02f * k));  
+                 i++;
                 }
             }
             else
             {
-                if (nitro < 100)
-                    nitro += 0.05f;
-            }
-
-            //Derecha
-            if (d3dInput.keyDown(Key.D))
-            {
-                lastRotate = -ConfigParam.Ship.ROTATE;
-                rotate = -ConfigParam.Ship.ROTATE;
-                rotating = true;
-            }
-
-            //Izquierda
-            if (d3dInput.keyDown(Key.A))
-            {
-                lastRotate = ConfigParam.Ship.ROTATE;
-                rotate = ConfigParam.Ship.ROTATE;
-                rotating = true;
-            }
-
-            //Chequeo si aprete espacio
-            if (d3dInput.keyPressed(Key.Space))
-            {
-                this.Fire();
-                isFiring = true;
-            }
-
-            if (d3dInput.keyUp(Key.Space))
-            {
-                isFiring = false;
-            }
-
-
-            //Si hubo rotacion
-            if (rotating)
-            {
-                lastRotate = lastRotate * ConfigParam.Ship.DESROTATION;
-                rotate = lastRotate;
-            }
-
-            //Rotar la nave y la camara, hay que multiplicarlo por el tiempo transcurrido para no atarse a la velocidad el hardware
-            float rotAngle = Geometry.DegreeToRadian(rotate * elapsedTime * speedRotate);
-            ship.RotateY((-1) * rotAngle);
-            
-
-            // Actualizamos el icono que representa al barco en el Mapa
-            //Iniciar dibujado de todos los Sprites de la escena (en este caso es solo uno)
-            GuiController.Instance.Drawer2D.beginDrawSprite();
-            targetMap.Rotation += (-1) * rotAngle;
-            targetMap.render();
-            //Finalizar el dibujado de Sprites
-            GuiController.Instance.Drawer2D.endDrawSprite();
-
-
-            GuiController.Instance.ThirdPersonCamera.rotateY(-rotAngle);
-            //GuiController.Instance.RotCamera.rotateY(rotAngle);
-
-            // Manejamos la camara con las flechitas
-            if(d3dInput.keyDown(Key.Left))
-                GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(ConfigParam.Ship.ROTATE * elapsedTime));
-            else if (d3dInput.keyDown(Key.Right))
-                GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(-ConfigParam.Ship.ROTATE * elapsedTime));
-            if (d3dInput.keyDown(Key.Up))
-                GuiController.Instance.ThirdPersonCamera.OffsetHeight += ConfigParam.Ship.FORWARD * elapsedTime * 10;
-            else if (d3dInput.keyDown(Key.Down))
-                GuiController.Instance.ThirdPersonCamera.OffsetHeight -= ConfigParam.Ship.FORWARD * elapsedTime * 10;
-           
-            //Vector de movimiento del barco
-            Vector3 movementVector = Vector3.Empty;
-
-            // Si no se movio el barco, lo voy desacelerando desde el ultimo movimiento
-            if (!moving)
-            {
-                lastMoveForward = lastMoveForward * ConfigParam.Ship.DESFORWARD;
-                moveForward = lastMoveForward;
-                // Cuando la desaceleracion llega a un valor muy bajo, le asignamos 0 para que no tienda a 0 infinitamente
-                if(moveForward < 1){
-                    lastMoveForward = 0;
-                    moveForward = 0;
+                //Adelante
+                if (d3dInput.keyDown(Key.W))
+                {
+                    lastMoveForward = ConfigParam.Ship.FORWARD;
+                    moveForward = ConfigParam.Ship.FORWARD;
+                    moving = true;
                 }
+                else
+                    //Atras
+                    if (d3dInput.keyDown(Key.S))
+                    {
+                        lastMoveForward = -ConfigParam.Ship.FORWARD;
+                        moveForward = -ConfigParam.Ship.FORWARD;
+                        moving = true;
+                    }
+
+                // Nitro
+                if (d3dInput.keyDown(Key.LeftShift))
+                {
+                    if (nitro >= 0)
+                    {
+                        if (moving)
+                        {
+                            speedForward *= ConfigParam.Ship.NITRO;
+                            nitro -= 0.5f;
+                        }
+                        else if (nitro < 100)
+                            nitro += 0.05f;
+                    }
+                }
+                else
+                {
+                    if (nitro < 100)
+                        nitro += 0.05f;
+                }
+
+                //Derecha
+                if (d3dInput.keyDown(Key.D))
+                {
+                    lastRotate = -ConfigParam.Ship.ROTATE;
+                    rotate = -ConfigParam.Ship.ROTATE;
+                    rotating = true;
+                }
+
+                //Izquierda
+                if (d3dInput.keyDown(Key.A))
+                {
+                    lastRotate = ConfigParam.Ship.ROTATE;
+                    rotate = ConfigParam.Ship.ROTATE;
+                    rotating = true;
+                }
+
+                //Chequeo si aprete espacio
+                if (d3dInput.keyPressed(Key.Space))
+                {
+                    this.Fire();
+                    isFiring = true;
+                }
+
+                if (d3dInput.keyUp(Key.Space))
+                {
+                    isFiring = false;
+                }
+
+
+                //Si hubo rotacion
+                if (rotating)
+                {
+                    lastRotate = lastRotate * ConfigParam.Ship.DESROTATION;
+                    rotate = lastRotate;
+                }
+
+                //Rotar la nave y la camara, hay que multiplicarlo por el tiempo transcurrido para no atarse a la velocidad el hardware
+                float rotAngle = Geometry.DegreeToRadian(rotate * elapsedTime * speedRotate);
+                ship.RotateY((-1) * rotAngle);
+
+
+                // Actualizamos el icono que representa al barco en el Mapa
+                //Iniciar dibujado de todos los Sprites de la escena (en este caso es solo uno)
+                GuiController.Instance.Drawer2D.beginDrawSprite();
+                targetMap.Rotation += (-1) * rotAngle;
+                targetMap.render();
+                //Finalizar el dibujado de Sprites
+                GuiController.Instance.Drawer2D.endDrawSprite();
+
+
+                GuiController.Instance.ThirdPersonCamera.rotateY(-rotAngle);
+                //GuiController.Instance.RotCamera.rotateY(rotAngle);
+
+                // Manejamos la camara con las flechitas
+                if (d3dInput.keyDown(Key.Left))
+                    GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(ConfigParam.Ship.ROTATE * elapsedTime));
+                else if (d3dInput.keyDown(Key.Right))
+                    GuiController.Instance.ThirdPersonCamera.rotateY(Geometry.DegreeToRadian(-ConfigParam.Ship.ROTATE * elapsedTime));
+                if (d3dInput.keyDown(Key.Up))
+                    GuiController.Instance.ThirdPersonCamera.OffsetHeight += ConfigParam.Ship.FORWARD * elapsedTime * 10;
+                else if (d3dInput.keyDown(Key.Down))
+                    GuiController.Instance.ThirdPersonCamera.OffsetHeight -= ConfigParam.Ship.FORWARD * elapsedTime * 10;
+
+                //Vector de movimiento del barco
+                Vector3 movementVector = Vector3.Empty;
+
+                // Si no se movio el barco, lo voy desacelerando desde el ultimo movimiento
+                if (!moving)
+                {
+                    lastMoveForward = lastMoveForward * ConfigParam.Ship.DESFORWARD;
+                    moveForward = lastMoveForward;
+                    // Cuando la desaceleracion llega a un valor muy bajo, le asignamos 0 para que no tienda a 0 infinitamente
+                    if (moveForward < 1)
+                    {
+                        lastMoveForward = 0;
+                        moveForward = 0;
+                    }
+                }
+
+                //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
+                movementVector = new Vector3(
+                    FastMath.Cos(ship.RotationY()) * moveForward * elapsedTime * speedForward,
+                    jump,
+                    -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward
+                    );
+                ship.Move(movementVector);
+
             }
-
-            //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
-            movementVector = new Vector3(
-                FastMath.Cos(ship.RotationY()) * moveForward * elapsedTime * speedForward,
-                jump,                    
-                -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward
-                );
-            ship.Move(movementVector);
-            
-
             #endregion
         }
 
