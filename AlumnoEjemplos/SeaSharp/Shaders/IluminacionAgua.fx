@@ -115,7 +115,7 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 		ld += saturate(dot(N, LD))*k_ld;
 
 	// 2- calcula la reflexion specular
-	float3 D = normalize(float3(Pos.x, Pos.y, Pos.z) - fvEyePosition);
+	float3 D = normalize(fvEyePosition - float3(Pos.x, Pos.y, Pos.z));
 		float ks = saturate(dot(reflect(LD, N), D));
 	ks = pow(ks, fSpecularPower);
 	le += ks*k_ls;

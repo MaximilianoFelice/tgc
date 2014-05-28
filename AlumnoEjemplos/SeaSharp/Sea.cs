@@ -35,11 +35,11 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\IluminacionAgua.fx");
             water.Technique = "DefaultTechnique";
 
-            lightPos = new Vector3(0, -1000, 7000);
+            lightPos = new Vector3(0, 1000, 7000);
             //GuiController.Instance.Modifiers.addVertex3f("LightPosition", new Vector3(-100, -1000, -100), new Vector3(10000, 1000, 10000), new Vector3(0, 40, 0));
             //lightBox = TgcBox.fromSize(lightPos, new Vector3(5, 5, 5), Color.Yellow);
-            ambient = 0.7f;
-            diffuse = 0.4f;
+            ambient = 0.3f;
+            diffuse = 0.1f;
             specular = 1.0f;
             specularPower = 50.0f; 
 
