@@ -19,6 +19,7 @@ namespace AlumnoEjemplos.SeaSharp{
     abstract public class Ship{
 
         public TgcScene ship;
+        public static float time = 0f;
 
         public void Load()
         {
@@ -65,6 +66,23 @@ namespace AlumnoEjemplos.SeaSharp{
 
         }
 
+        public void reCalculateHeight(float elapsedTime)
+        {
+            time += elapsedTime;
+
+            // CALCULE Y RESETTEE LA POS
+            float x = this.Position.X;
+            float z = this.Position.Z;
+            // calculo coordenadas de textura
+            float u = (x / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
+            float v = (z / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
+
+            // calculo de la onda (movimiento grande)
+            float ola = FastMath.Sin(u * 2.0f * 3.14159f * 2.0f + time/2) * FastMath.Cos(v * 2.0f * 3.14159f * 2.0f + time/2);
+
+            ship.Position(new Vector3(this.Position.X, 1 * ola * 160, this.Position.Z));
+        }
+
     }
 
 
@@ -77,6 +95,7 @@ namespace AlumnoEjemplos.SeaSharp{
         public void CalculateMovement(float elapsedTime)
         {
             #region MAINSHIP_MOVEMENT
+
 
             // TODO: HACER UN NUEVO ALGORITMO PARA ESTO, QUE SEA MUCHO MAS DINAMICO
             //Calcular proxima posicion de la nave segun Input
@@ -175,7 +194,7 @@ namespace AlumnoEjemplos.SeaSharp{
                 -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward
                 );
             ship.Move(movementVector);
-            
+            this.reCalculateHeight(elapsedTime);
 
             #endregion
         }
@@ -279,6 +298,7 @@ namespace AlumnoEjemplos.SeaSharp{
           }
            
           ship.Move(movementVector);
+          this.reCalculateHeight(elapsedTime);
 
             
             #endregion

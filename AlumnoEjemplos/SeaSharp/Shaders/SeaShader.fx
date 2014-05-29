@@ -46,40 +46,24 @@ struct VS_INPUT
 {
 	float4 Position : POSITION0;
 	float4 Color : COLOR0;
-	float2 Texcoord : TEXCOORD0;
+	float3 Normal : NORMAL0;
 };
 
 //Output del Vertex Shader
 struct VS_OUTPUT
 {
 	float4 Position :        POSITION0;
-	float2 Texcoord :        TEXCOORD0;
 	float4 Color :			COLOR0;
+	float3 Normal : TEXCOORD1;
+	float3 PosProp : TEXCOORD2;
+
 };
 
 
 
-//Vertex Shader
-VS_OUTPUT vs_main(VS_INPUT Input)
-{
-	VS_OUTPUT Output;
-	//Proyectar posicion
-	Output.Position = mul(Input.Position, matWorldViewProj);
-
-	//Propago las coordenadas de textura
-	Output.Texcoord = Input.Texcoord;
-
-	//Propago el color x vertice
-	Output.Color = Input.Color;
-
-	return(Output);
-
-}
-
-
 // Ejemplo de un vertex shader que anima la posicion de los vertices 
 // ------------------------------------------------------------------
-VS_OUTPUT vs_main2(VS_INPUT Input)
+VS_OUTPUT vs_main(VS_INPUT Input)
 {
 	VS_OUTPUT Output;
 
@@ -91,18 +75,24 @@ VS_OUTPUT vs_main2(VS_INPUT Input)
 
 	// calculo de la onda (movimiento grande)
 	float ola = sin(u * 2 * 3.14159 * 2 + time) * cos(v * 2 * 3.14159 * 2 + time);
-	Input.Position.y = 1 * ola * 160; //se lo aplicamos al eje y
+
+	// Actualizo el output
+	Output.Position = Input.Position;
+	Output.Position.y = 1 * ola * 160; //se lo aplicamos al eje y
 
 	//Proyectar posicion
-	Output.Position = mul(Input.Position, matWorldViewProj);
+	float4 PosAux = Output.Position;
+	Output.Position = mul(Output.Position, matWorldViewProj);
+	PosAux = mul(PosAux, matWorld);
 
-	//Propago las coordenadas de textura
-	Output.Texcoord = Input.Texcoord;
+	Output.PosProp = float3(PosAux.x, PosAux.y, PosAux.z);
 
 	//Propago el color x vertice
 	float4 ColorOut = Input.Color;
-		ColorOut.a = 0.1;
 	Output.Color = ColorOut;
+
+	// Propago la normal
+	Output.Normal = normalize(mul(Input.Normal, matWorld));
 
 	return(Output);
 
@@ -144,10 +134,10 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 
 	//Obtener el texel de textura
 	//float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
-	float4 fvBaseColor = float4(0, 0.1, 0.2, 0);
+	float4 fvBaseColor = float4(0, 0, 1, 0);
 
 		// suma luz diffusa, ambiente y especular
-		float4 RGBColor = float4(0, 0, 0, 0.7);
+		float4 RGBColor = float4(0, 1, 1, 0.7);
 		RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
 
 	// saturate deja los valores entre [0,1]. Una tecnica muy usada en motores modernos
@@ -169,7 +159,7 @@ technique RenderScene
 {
 	pass Pass_0
 	{
-		VertexShader = compile vs_2_0 vs_main2();
+		VertexShader = compile vs_2_0 vs_main();
 		PixelShader = compile ps_2_0 ps_main();
 	}
 

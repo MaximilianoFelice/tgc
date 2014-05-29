@@ -35,9 +35,9 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             water.Technique = "RenderScene";
 
-            lightPos = new Vector3(0, -10000, -100000);
-            ambient = 0.1f;
-            diffuse = 0.9f;
+            lightPos = new Vector3(0, -1000, -1000);
+            ambient = 0.9f;
+            diffuse = 0.6f;
             specular = 1.0f;
             specularPower = 50.0f; 
 
