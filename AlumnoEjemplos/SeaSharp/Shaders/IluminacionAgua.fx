@@ -115,14 +115,15 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 		ld += saturate(dot(N, LD))*k_ld;
 
 	// 2- calcula la reflexion specular
-	float3 D = normalize(fvEyePosition - float3(Pos.x, Pos.y, Pos.z));
+	float3 D = normalize(float3(Pos.x, Pos.y, Pos.z) - fvEyePosition);
+		//float ks = saturate(dot(reflect(LD, N), D));
 		float ks = saturate(dot(reflect(LD, N), D));
 	ks = pow(ks, fSpecularPower);
 	le += ks*k_ls;
 
 	//Obtener el texel de textura
 	//float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
-		float4 fvBaseColor      = float4(0,0.1,0.2,0);
+	float4 fvBaseColor = float4(0, 0.1, 0.2, 0);
 
 		// suma luz diffusa, ambiente y especular
 		float4 RGBColor = float4(0,0,0,0.7);
@@ -139,6 +140,44 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 
 	return RGBColor;
 }
+
+/*
+float4 ps_main2(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
+float3 Pos : TEXCOORD2) : COLOR0
+{
+	float ld = 0;		// luz difusa
+	float le = 0;		// luz specular
+	float3 ka = (1, 0, 0);
+		float3 kd = (1, 0, 0);
+		float3 ks = (1, 0, 0);
+
+	N = normalize(N);
+
+
+	float3 L = normalize(fvLightPosition - float3(Pos.x, Pos.y, Pos.z));
+		ld += saturate(dot(N, L))*k_ld;
+
+	// 2- calcula la reflexion specular
+	//float3 D = normalize(float3(Pos.x, Pos.y, Pos.z) - fvEyePosition);
+	float3 V = normalize(fvEyePosition - float3(Pos.x, Pos.y, Pos.z));
+	float3 H = normalize(L + V);
+		//float ks = saturate(dot(reflect(LD, N), D));
+		float ks = saturate(dot(N, H));
+	ks = pow(ks, fSpecularPower);
+	//le += ks*k_ls;
+
+	//Obtener el texel de textura
+	//float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+	float4 fvBaseColor = float4(0, 0.1, 0.2, 0);
+
+		// suma luz diffusa, ambiente y especular
+		float4 RGBColor = float4(0, 0, 0, 0.7);
+		RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
+
+	return RGBColor;
+}
+*/
+
 
 technique DefaultTechnique
 {
