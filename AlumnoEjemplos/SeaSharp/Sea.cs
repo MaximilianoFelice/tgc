@@ -14,21 +14,33 @@ using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Shaders;
 
+
 namespace AlumnoEjemplos.SeaSharp
 {
     public static class Sea
     {
+
         public static QuadList water;   // The soon-to-be-a-custom-vertex... thing.
 
         public static float time = 0f;
+        public static float ambient, diffuse, specular, specularPower;
+        public static Vector3 lightPos;
 
         public static void Load()
         {
+
             Vector3 center = new Vector3(0, -30, 0);
 
             water = new QuadList(center, 4000, Color.Blue, 100);
-            water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\ColorSwift.fx");
+            water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             water.Technique = "RenderScene";
+
+            lightPos = new Vector3(0, -10000, -100000);
+            ambient = 0.1f;
+            diffuse = 0.9f;
+            specular = 1.0f;
+            specularPower = 50.0f; 
+
         }
 
         internal static void CalculateMovement(float elapsedTime)
@@ -38,11 +50,23 @@ namespace AlumnoEjemplos.SeaSharp
 
         public static void Render()
         {
-            foreach (TgcQuad quad in water.quadList) quad.Effect.SetValue("time", time);
-            //water.Effect.SetValue("time", time);
-            water.Render();
-        }
+            water.Effect.SetValue("time", time);
+       
+            Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
 
+            //Cargar variables de shader
+            water.Effect.SetValue("time", time);
+            water.Effect.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPos));
+            water.Effect.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.RotCamera.getPosition()));
+            water.Effect.SetValue("k_la", ambient);
+            water.Effect.SetValue("k_ld", diffuse);
+            water.Effect.SetValue("k_ls", specular);
+            water.Effect.SetValue("fSpecularPower", specularPower);
+            device.RenderState.AlphaBlendEnable = true;
+
+            water.Render();
+
+        }
         public static void Close()
         {
             water.Dispose();

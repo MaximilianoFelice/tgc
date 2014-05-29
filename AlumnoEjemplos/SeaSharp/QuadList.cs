@@ -84,12 +84,17 @@ namespace AlumnoEjemplos.SeaSharp
             set { _density = value; }
         }
 
+        public Microsoft.DirectX.Direct3D.Effect _effect;
+
         public Microsoft.DirectX.Direct3D.Effect Effect
         {
             set
             {
+                _effect = value;
                 foreach (TgcQuad quad in quadList) quad.Effect = value;
             }
+
+            get { return _effect; }
         }
 
         public String Technique
@@ -99,7 +104,6 @@ namespace AlumnoEjemplos.SeaSharp
                 foreach (TgcQuad quad in quadList) quad.Technique = value;
             }
         }
-
 
 
         #endregion

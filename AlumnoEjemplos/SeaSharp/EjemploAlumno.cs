@@ -152,11 +152,12 @@ namespace AlumnoEjemplos.SeaSharp
             *          ZONA DE RENDERIZADO
             */
             SkyDome.Render();
-            Sea.Render();
+            SkyDome.Close();
             ship.Render();
             EnemyFleet.RenderAll();
             Environment.Render();
             Bola.RenderAll();
+            Sea.Render();
 
             
            
