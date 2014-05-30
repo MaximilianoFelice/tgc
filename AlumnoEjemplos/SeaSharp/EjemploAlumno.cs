@@ -27,6 +27,8 @@ namespace AlumnoEjemplos.SeaSharp
         MainShip ship;
         TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
 
+        public static float time = 0f;
+
         public static float fieldOfViewY = FastMath.ToRad(45.0f);
         public static float aspectRatio = 1f;
         public static float zNearPlaneDistance = 1f;
@@ -153,11 +155,11 @@ namespace AlumnoEjemplos.SeaSharp
             */
             SkyDome.Render();
             SkyDome.Close();
-            Sea.Render();
             ship.Render();
             EnemyFleet.RenderAll();
             Environment.Render();
             Bola.RenderAll();
+            Sea.Render();
 
             
            

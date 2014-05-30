@@ -14,22 +14,32 @@ using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Shaders;
 
+
 namespace AlumnoEjemplos.SeaSharp
 {
     public static class Sea
     {
-        public static TgcBox water;   // The soon-to-be-a-scene box.
+
+        public static QuadList water;   // The soon-to-be-a-custom-vertex... thing.
 
         public static float time = 0f;
+        public static float ambient, diffuse, specular, specularPower;
+        public static Vector3 lightPos;
 
         public static void Load()
         {
-            Vector3 center = new Vector3(0,-30,0);
-            Vector3 size = new Vector3(10000, 10, 10000);
-            TgcTexture texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\Water01.jpg");
-            water = TgcBox.fromSize(center, size, texture);
-            water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\ColorSwift.fx");
+
+            Vector3 center = new Vector3(0, -30, 0);
+
+            water = new QuadList(center, 4000, Color.Blue, 100);
+            water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             water.Technique = "RenderScene";
+
+            lightPos = new Vector3(0, 1000, 0);
+            ambient = 0.9f;
+            diffuse = 0.6f;
+            specular = 1.0f;
+            specularPower = 50.0f; 
 
         }
 
@@ -41,12 +51,25 @@ namespace AlumnoEjemplos.SeaSharp
         public static void Render()
         {
             water.Effect.SetValue("time", time);
-            water.render();
-        }
+       
+            Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
 
+            //Cargar variables de shader
+            water.Effect.SetValue("time", time);
+            water.Effect.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPos));
+            water.Effect.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.RotCamera.getPosition()));
+            water.Effect.SetValue("k_la", ambient);
+            water.Effect.SetValue("k_ld", diffuse);
+            water.Effect.SetValue("k_ls", specular);
+            water.Effect.SetValue("fSpecularPower", specularPower);
+            device.RenderState.AlphaBlendEnable = true;
+
+            water.Render();
+
+        }
         public static void Close()
         {
-            water.dispose();
+            water.Dispose();
         }
 
 
