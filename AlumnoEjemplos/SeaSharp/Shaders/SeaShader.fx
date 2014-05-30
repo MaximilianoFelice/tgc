@@ -46,7 +46,7 @@ struct VS_INPUT
 {
 	float4 Position : POSITION0;
 	float4 Color : COLOR0;
-	float3 Normal : NORMAL0;
+	//float3 Normal : TEXCOORD1;
 };
 
 //Output del Vertex Shader
@@ -60,6 +60,37 @@ struct VS_OUTPUT
 };
 
 
+float calculate_Position(float x, float z, float time)
+{
+
+	float u = (x / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
+	float v = (z / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
+
+	// calculo de la onda (movimiento grande)
+	float ola = sin(5 * u * 2 * 3.14159 * 2 + time)*16 + cos(1 * v * 2 * 3.14159 * 2 + time)*300;
+
+	return 1 * ola;
+	//return 100;
+}
+
+float3 calculate_Normal(float3 posInit, float time){
+
+	// Calculate first vector
+	float u = posInit.x + 0.1f;
+	float y1 = calculate_Position(u, posInit.z, time);
+
+	float3 newVec1 = (u, y1, posInit.z) - posInit;
+
+	// Calculate second vector
+	float i = posInit.z + 0.1f;
+	float y2 = calculate_Position(posInit.x, i, time);
+
+	float3 newVec2 = (posInit.x, y2, i) - posInit;
+
+		return cross(newVec1, newVec2);
+
+}
+
 
 // Ejemplo de un vertex shader que anima la posicion de los vertices 
 // ------------------------------------------------------------------
@@ -67,23 +98,23 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 {
 	VS_OUTPUT Output;
 
-	float x = Input.Position.x;
-	float z = Input.Position.z;
-	// calculo coordenadas de textura
-	float u = (x / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
-	float v = (z / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
-
-	// calculo de la onda (movimiento grande)
-	float ola = sin(u * 2 * 3.14159 * 2 + time) * cos(v * 2 * 3.14159 * 2 + time);
+	float3 normal;
 
 	// Actualizo el output
 	Output.Position = Input.Position;
-	Output.Position.y = 1 * ola * 160; //se lo aplicamos al eje y
+	Output.Position.y = calculate_Position(Input.Position.x, Input.Position.z, time); //se lo aplicamos al eje y
+
+	float dr = 10;
 
 	//Proyectar posicion
 	float4 PosAux = Output.Position;
+		float heightx = calculate_Position(Input.Position.x + dr, Input.Position.z, time);
+	float heightz = calculate_Position(Input.Position.x, Input.Position.z + dr, time);
+	float3 dx = normalize(float3(dr, heightx - Output.Position.y, 0));
+		float3 dz = normalize(float3(0, heightz - Output.Position.y, dr));
+
 	Output.Position = mul(Output.Position, matWorldViewProj);
-	PosAux = mul(PosAux, matWorld);
+	//PosAux = mul(PosAux, matWorld);
 
 	Output.PosProp = float3(PosAux.x, PosAux.y, PosAux.z);
 
@@ -92,11 +123,16 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 	Output.Color = ColorOut;
 
 	// Propago la normal
-	Output.Normal = normalize(mul(Input.Normal, matWorld));
+	//normal = calculate_Normal(Input.Position.xyz, time);
 
+	//Output.Normal = normalize(mul(normal, matWorld));
+
+	Output.Normal = normalize(cross(dz, dx));
 	return(Output);
 
 }
+
+
 
 // (*) Usar las coordenadas de texturas 2, 3 y demas es un "hack" habitual,
 // que permite pasarle al pixel shader distintas variables que se calculan por vertice
@@ -114,6 +150,7 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 
 	N = normalize(N);
 
+
 	// si hubiera varias luces, se podria iterar por c/u. 
 	// Pero hay que tener en cuenta que este algoritmo es bastante pesado
 	// ya que todas estas formulas se calculan x cada pixel. 
@@ -123,7 +160,7 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 	// for(int =0;i<cant_ligths;++i)
 	// 1- calculo la luz diffusa
 	float3 LD = normalize(fvLightPosition - float3(Pos.x, Pos.y, Pos.z));
-		ld += saturate(dot(N, LD))*k_ld;
+		ld += saturate(abs(dot(N, LD)))*k_ld;
 
 	// 2- calcula la reflexion specular
 	float3 D = normalize(float3(Pos.x, Pos.y, Pos.z) - fvEyePosition);
@@ -150,6 +187,7 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 	// adaptarse a la nueva cantidad de luz ambiente. 
 
 	return RGBColor;
+	//return float4 (N, 1);
 }
 
 

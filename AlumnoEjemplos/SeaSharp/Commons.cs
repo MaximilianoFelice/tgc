@@ -125,6 +125,7 @@ namespace AlumnoEjemplos.SeaSharp
             /* Calculating size for each new quad would have the same result */
             Vector2 newQuadSize = new Vector2(newSize, newSize);
 
+            Vector3 Normal = new Vector3(0, 1, 0);
             
             for (int i = 0; i < 2; i++)
             {
@@ -141,6 +142,7 @@ namespace AlumnoEjemplos.SeaSharp
                     newQuad.Center = newQuadCenter;
                     newQuad.Size = newQuadSize;
                     newQuad.Color = ParentQuad.Color;
+                    newQuad.Normal = Normal;
                     newQuad.updateValues();
 
                     /* Adding New Quad to the list */
