@@ -75,7 +75,7 @@ namespace AlumnoEjemplos.SeaSharp
             TgcSceneLoader loader = new TgcSceneLoader();
             bola = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Pelota\\Sphere-TgcScene.xml").Meshes[0];
 
-            bola.Scale = new Vector3(1, 1, 1);
+            bola.Scale = new Vector3(0.3f, 0.3f, 0.3f);
 
             _Velocity = new Vector3(-10 * FastMath.Sin(_Angle), 2, -10 * FastMath.Cos(_Angle));
 
@@ -97,11 +97,11 @@ namespace AlumnoEjemplos.SeaSharp
         public void CalculatePath(float elapsedTime)
         {
             Vector3 _acceleration = new Vector3(0, _Gravity * elapsedTime, 0);
-            _Velocity = Microsoft.DirectX.Vector3.Add(_Velocity, _acceleration);
+            _Velocity = Microsoft.DirectX.Vector3.Add(_Velocity * 0.98f, _acceleration);
             
             bola.move(_Velocity);   // TODO: Aclarar que es cada valor en esta linea. En lo posible pasarlos a constantes mas expresivas.   
 
-            if((bola.Position.Y) < 0f)
+            if((bola.Position.Y) < -100f)
             {
                 this.Dispose();
             }

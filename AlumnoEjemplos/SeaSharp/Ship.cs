@@ -112,10 +112,27 @@ namespace AlumnoEjemplos.SeaSharp{
 
         public void Fire()
         {
+            /*
             Bola NewFireBall = new Bola();
             NewFireBall.Angle = ship.RotationY();
             NewFireBall.Fire();
             NewFireBall.Position = this.Position;
+            */
+            
+            int cantidad = 8;
+            float inversion = 0;
+            for (int i = 0; i < cantidad; i++)
+            {
+                Bola NewFireBall = new Bola();
+
+                // La mitad de las bolas disparan para el lado contrario
+                inversion = i % 2 == 0 ? Geometry.DegreeToRadian(180) : 0f;
+
+                NewFireBall.Angle = ship.RotationY() - (((cantidad/ 2f) - i) / 10f) - inversion;
+                NewFireBall.Fire();
+                NewFireBall.Position = this.Position;
+            }
+             
         }
 
 
@@ -455,7 +472,21 @@ namespace AlumnoEjemplos.SeaSharp{
                     life -= 0.2f;
                 }
 
-                // Disparamos 2 bolas por segundo
+                // Disparamos 1 vez por segundo
+                int ms = DateTime.Now.Millisecond;
+                if (!isFiring && (ms >= 500))
+                {
+                    Fire();
+                    isFiring = true;
+                }
+                else if (ms < 500)
+                {
+                    isFiring = false;
+                }
+
+
+                // Disparamos 2 veces por segundo
+                /*
                 int ms = DateTime.Now.Millisecond;
                 if (!isFiring && ((ms >= 250 && ms <= 333) || (ms >= 666 && ms <= 750)))
                 {
@@ -466,6 +497,9 @@ namespace AlumnoEjemplos.SeaSharp{
                 {
                     isFiring = false;
                 }
+                */
+
+
                 // Rotacion automatica mientras esta frenado
                 //ship.RotateY(Geometry.DegreeToRadian(targetShip.ship.Meshes[0].Rotation.Y * elapsedTime));
                 //ship.Meshes[0].Rotation = targetShip.ship.Meshes[0].Rotation;
