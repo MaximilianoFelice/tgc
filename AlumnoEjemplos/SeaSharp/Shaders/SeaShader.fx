@@ -65,11 +65,21 @@ float calculate_Position(float x, float z, float time)
 
 	float u = (x / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
 	float v = (z / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
-
+	
 	// calculo de la onda (movimiento grande)
-	float ola = sin(5 * u * 2 * 3.14159 * 2 + time)*16 + cos(1 * v * 2 * 3.14159 * 2 + time)*300;
+//	float ola = co9s(80 *x + time) *20 + cos(90 * z + time) * 10;
+
+	float A = 10;
+	float f = 70 + ((x*z) / 10000);
+	float Speed = 0.5f;
+	float L = 15;
+	float phi = Speed * 2 * 3.14159f * 2 / L;
+	float ola = sin(1 * u * 2 * 3.14159 * 2 + time) * 16 + cos(3 * v * 2 * 3.14159 * 2 + time) * 50
+		+ A * sin(f*x + phi*time) * cos(f*z / 2 + phi*time)
+		+ (A / 2) * sin(f*x / 10 + phi*time) * cos(f*z / 10 + phi * time);
 
 	return 1 * ola;
+
 	//return 100;
 }
 
@@ -104,7 +114,7 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 	Output.Position = Input.Position;
 	Output.Position.y = calculate_Position(Input.Position.x, Input.Position.z, time); //se lo aplicamos al eje y
 
-	float dr = 10;
+	float dr = 7;
 
 	//Proyectar posicion
 	float4 PosAux = Output.Position;
@@ -171,10 +181,10 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 
 	//Obtener el texel de textura
 	//float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
-	float4 fvBaseColor = float4(0, 0, 1, 0);
+	float4 fvBaseColor = float4(0, 0.25, 0.5, 0);
 
 		// suma luz diffusa, ambiente y especular
-		float4 RGBColor = float4(0, 1, 1, 0.7);
+		float4 RGBColor = float4(0, 1, 0, 0.7);
 		RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
 
 	// saturate deja los valores entre [0,1]. Una tecnica muy usada en motores modernos

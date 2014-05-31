@@ -79,6 +79,14 @@ namespace AlumnoEjemplos.SeaSharp
             foreach (TgcMesh Mesh in Scene.Meshes) Mesh.rotateY(Angle);
         }
 
+        /* Rota a todos los meshes de una scene */
+        public static void Rotate(this TgcScene Scene, Vector3 rotation)
+        {
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Rotation = rotation;
+        }
+
+
+
         public static void copyShipRotationY(this TgcScene Scene, Ship targetShip)
         {
             //foreach (TgcMesh Mesh in Scene.Meshes)
@@ -98,6 +106,11 @@ namespace AlumnoEjemplos.SeaSharp
         public static float RotationX(this TgcScene Scene)
         {
             return (Scene.Meshes[0].Rotation.X);
+        }
+
+        public static float RotationZ(this TgcScene Scene)
+        {
+            return (Scene.Meshes[0].Rotation.Z);
         }
 
         public static void Scale(this TgcScene Scene, Vector3 ScaleVector)

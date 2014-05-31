@@ -31,15 +31,15 @@ namespace AlumnoEjemplos.SeaSharp
 
             Vector3 center = new Vector3(0, -30, 0);
 
-            water = new QuadList(center, 4000, Color.Blue, 100);
-            water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
+            water = new QuadList(center, 4000, Color.Red/*Color.FromArgb(22,61,90)*/, 100);
+            water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");            
             water.Technique = "RenderScene";
 
             lightPos = new Vector3(0, 1000, 0);
             ambient = 0.9f;
             diffuse = 0.6f;
-            specular = 1.0f;
-            specularPower = 50.0f; 
+            specular = 0.8f;
+            specularPower = 40.0f; 
 
         }
 
