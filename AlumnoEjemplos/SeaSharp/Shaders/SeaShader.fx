@@ -70,13 +70,34 @@ float calculate_Position(float x, float z, float time)
 //	float ola = co9s(80 *x + time) *20 + cos(90 * z + time) * 10;
 
 	float A = 10;
-	float f = 70 + ((x*z) / 10000);
+	float f = 120 + ((x*z) / 100000);
 	float Speed = 0.5f;
-	float L = 15;
+	float L = 10;
 	float phi = Speed * 2 * 3.14159f * 2 / L;
-	float ola = sin(1 * u * 2 * 3.14159 * 2 + time) * 16 + cos(3 * v * 2 * 3.14159 * 2 + time) * 50
-		+ A * sin(f*x + phi*time) * cos(f*z / 2 + phi*time)
-		+ (A / 2) * sin(f*x / 10 + phi*time) * cos(f*z / 10 + phi * time);
+	float ola = 
+		// Mix
+		/*
+		sin(5 * u * 2 * 3.14159 * 2 + time) * 2 * cos(5 * v * 2 * 3.14159 * 2 + time) * 25
+		+ (1.5f*A) * sin(f*x * 4 + phi*time) * cos(f*z / 4 + phi*time)
+		+ (A / 2) * sin(f*x / 5 + phi*time) * cos(f*z / 2 + phi * time)
+		+ (A / 3) * sin(f*x / 5 + phi*time) * cos(f*z / 10 + phi * time)
+		*/
+
+		//Simetrica
+		/*
+		sin(5 * u * 2 * 3.14159 * 2 + time) * 2 * cos(5 * v * 2 * 3.14159 * 2 + time) * 25
+		//+ sin(10 * u * 2 * 3.14159 * 2 + time) * 1 * cos(10 * v * 2 * 3.14159 * 2 + time) * 25
+		+ sin(20 * u * 2 * 3.14159 * 2 + time) * 1 * cos(20 * v * 2 * 3.14159 * 2 + time) * 25
+		*/
+
+		// Aleatoria
+		
+		sin(1 * u * 2 * 3.14159 * 2 + time) * 16 + cos(3 * v * 2 * 3.14159 * 2 + time) * 50
+		+ (1.5f*A) * sin(f*x*4 + phi*time) * cos(f*z / 4 + phi*time)
+		+ (A / 2) * sin(f*x / 5 + phi*time) * cos(f*z / 2 + phi * time)
+		+ (A / 3) * sin(f*x / 5 + phi*time) * cos(f*z / 10 + phi * time)
+		
+		;
 
 	return 1 * ola;
 
@@ -114,7 +135,7 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 	Output.Position = Input.Position;
 	Output.Position.y = calculate_Position(Input.Position.x, Input.Position.z, time); //se lo aplicamos al eje y
 
-	float dr = 7;
+	float dr = 15;
 
 	//Proyectar posicion
 	float4 PosAux = Output.Position;

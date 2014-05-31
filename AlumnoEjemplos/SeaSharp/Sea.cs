@@ -36,10 +36,10 @@ namespace AlumnoEjemplos.SeaSharp
             water.Technique = "RenderScene";
 
             lightPos = new Vector3(0, 1000, 0);
-            ambient = 0.9f;
-            diffuse = 0.6f;
-            specular = 0.8f;
-            specularPower = 40.0f; 
+            ambient = 1.9f;
+            diffuse = 100.6f;
+            specular = 0.38f;
+            specularPower = 16.75f; 
 
         }
 
