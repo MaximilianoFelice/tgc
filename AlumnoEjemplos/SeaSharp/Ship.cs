@@ -38,13 +38,15 @@ namespace AlumnoEjemplos.SeaSharp{
 
         public bool isFiring = false;
 
+        public TgcBoundingSphere shipSphere;    
+
         public void Load()
         {
 
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
             TgcSceneLoader loader = new TgcSceneLoader();
-            ship = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Ship 01\\ShipF-TgcScene.xml");
+            ship = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Ship 10\\ShipF-TgcScene.xml");
             ship.Scale (new Vector3(2, 2, 2));
             
             // Fondo de la barra de vida
@@ -70,8 +72,9 @@ namespace AlumnoEjemplos.SeaSharp{
             targetMap.Scaling = new Vector2(0.1f, 0.1f);
             targetMap.Rotation = Geometry.DegreeToRadian(90);
             targetMap.RotationCenter = new Vector2(targetMap.Texture.Width * targetMap.Scaling.X / 2, targetMap.Texture.Height * targetMap.Scaling.Y / 2);
-                     
 
+            //BoundingSphere que va a usar el ship
+            shipSphere = new TgcBoundingSphere(ship.BoundingBox.calculateBoxCenter(), ship.BoundingBox.calculateBoxRadius() + 40f);
 
 
             // Acomoda al ship dependiendo una posicion específica de spawn
@@ -100,6 +103,7 @@ namespace AlumnoEjemplos.SeaSharp{
 
 
             ship.renderAll();
+            shipSphere.render();
         }
 
 
@@ -355,6 +359,7 @@ namespace AlumnoEjemplos.SeaSharp{
                     -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward
                     );
                 ship.Move(movementVector);
+                shipSphere.moveCenter(movementVector);
 
             }
             #endregion

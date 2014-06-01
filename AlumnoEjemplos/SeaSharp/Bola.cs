@@ -23,6 +23,11 @@ namespace AlumnoEjemplos.SeaSharp
 
         public static List<Bola> FiredBalls = new List<Bola>();
 
+        public TgcBoundingBox BoundingBox
+        {
+            get { return this.bola.BoundingBox; }
+        }
+
         #region PROPERTIES
         public Vector3 Position
         {
@@ -73,7 +78,7 @@ namespace AlumnoEjemplos.SeaSharp
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
             TgcSceneLoader loader = new TgcSceneLoader();
-            bola = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Pelota\\Sphere-TgcScene.xml").Meshes[0];
+            bola = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Pelota2\\Sphere-TgcScene.xml").Meshes[0];
 
             bola.Scale = new Vector3(0.3f, 0.3f, 0.3f);
 
@@ -86,6 +91,7 @@ namespace AlumnoEjemplos.SeaSharp
         {
 
             bola.render();
+            bola.BoundingBox.render();
         }
 
         public void Dispose()
