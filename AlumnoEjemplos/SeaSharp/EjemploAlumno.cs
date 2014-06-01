@@ -66,6 +66,7 @@ namespace AlumnoEjemplos.SeaSharp
         /// </summary>
         public override void init(){
 
+
             /* Cargamos el SkyBox, la cajita feliz que nos aporta el fondo */
             SkyDome.Load();
                
@@ -125,9 +126,82 @@ namespace AlumnoEjemplos.SeaSharp
             //GuiController.Instance.D3dDevice.Transform.Projection =
             //   Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
             //   aspectRatio, zNearPlaneDistance, zFarPlaneDistance);
+            GuiController.Instance.FpsCounterEnable = true;
             GuiController.Instance.D3dDevice.Transform.Projection =
                Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
                aspectRatio, zNearPlaneDistance, zFarPlaneDistance);
+            //////////////////////////////////////
+            Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
+            CubeTexture g_pCubeMap = new CubeTexture(device, 256, 1, Usage.RenderTarget,
+                Format.A16B16G16R16F, Pool.Default);
+            Surface pOldRT = device.GetRenderTarget(0);
+            // ojo: es fundamental que el fov sea de 90 grados.
+            // asi que re-genero la matriz de proyeccion
+            device.Transform.Projection =
+                Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(90.0f),
+                    1f, 1f, 10000f);
+
+            // Genero las caras del enviroment map
+            for (CubeMapFace nFace = CubeMapFace.PositiveX; nFace <= CubeMapFace.NegativeZ; ++nFace)
+            {
+                Surface pFace = g_pCubeMap.GetCubeMapSurface(nFace, 0);
+                device.SetRenderTarget(0, pFace);
+                Vector3 Dir, VUP;
+                Color color;
+                switch (nFace)
+                {
+                    default:
+                    case CubeMapFace.PositiveX:
+                        // Left
+                        Dir = new Vector3(1, 0, 0);
+                        VUP = new Vector3(0, 1, 0);
+                        color = Color.Black;
+                        break;
+                    case CubeMapFace.NegativeX:
+                        // Right
+                        Dir = new Vector3(-1, 0, 0);
+                        VUP = new Vector3(0, 1, 0);
+                        color = Color.Red;
+                        break;
+                    case CubeMapFace.PositiveY:
+                        // Up
+                        Dir = new Vector3(0, 1, 0);
+                        VUP = new Vector3(0, 0, -1);
+                        color = Color.Gray;
+                        break;
+                    case CubeMapFace.NegativeY:
+                        // Down
+                        Dir = new Vector3(0, -1, 0);
+                        VUP = new Vector3(0, 0, 1);
+                        color = Color.Yellow;
+                        break;
+                    case CubeMapFace.PositiveZ:
+                        // Front
+                        Dir = new Vector3(0, 0, 1);
+                        VUP = new Vector3(0, 1, 0);
+                        color = Color.Green;
+                        break;
+                    case CubeMapFace.NegativeZ:
+                        // Back
+                        Dir = new Vector3(0, 0, -1);
+                        VUP = new Vector3(0, 1, 0);
+                        color = Color.Blue;
+                        break;
+                }
+
+                //Obtener ViewMatrix haciendo un LookAt desde la posicion final anterior al centro de la camara
+                Vector3 Pos = ship.Position;
+                device.Transform.View = Matrix.LookAtLH(Pos, Pos + Dir, VUP);
+
+                device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, color, 1.0f, 0);
+                device.BeginScene();
+
+                //Renderizar 
+                render(elapsedTime);
+            //////////////////////////////////////
+
+
+
 
             /*
             *          ZONA DE CALCULO

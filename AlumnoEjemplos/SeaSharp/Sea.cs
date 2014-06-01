@@ -25,6 +25,7 @@ namespace AlumnoEjemplos.SeaSharp
         public static float time = 0f;
         public static float ambient, diffuse, specular, specularPower;
         public static Vector3 lightPos;
+        public static Texture texture;
 
         public static void Load()
         {
@@ -33,11 +34,13 @@ namespace AlumnoEjemplos.SeaSharp
 
             water = new QuadList(center, 4000, Color.Blue, 100);
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua.png");
             water.Technique = "RenderScene";
 
-            lightPos = new Vector3(0, 1000, 0);
-            ambient = 0.9f;
-            diffuse = 0.6f;
+            lightPos = new Vector3(0, 10000, 0);
+            ambient = 0.7f;
+            diffuse = 1.0f;
             specular = 1.0f;
             specularPower = 50.0f; 
 
@@ -49,7 +52,7 @@ namespace AlumnoEjemplos.SeaSharp
         }
 
         public static void Render()
-        {
+        {         
             water.Effect.SetValue("time", time);
        
             Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
@@ -58,10 +61,12 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("time", time);
             water.Effect.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPos));
             water.Effect.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.RotCamera.getPosition()));
+            water.Effect.SetValue("fvEyeLookAt", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.RotCamera.getLookAt()));
             water.Effect.SetValue("k_la", ambient);
             water.Effect.SetValue("k_ld", diffuse);
             water.Effect.SetValue("k_ls", specular);
             water.Effect.SetValue("fSpecularPower", specularPower);
+            water.Effect.SetValue("superficieAgua", texture);
             device.RenderState.AlphaBlendEnable = true;
 
             water.Render();
