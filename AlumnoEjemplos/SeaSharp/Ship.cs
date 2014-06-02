@@ -38,7 +38,8 @@ namespace AlumnoEjemplos.SeaSharp{
 
         public bool isFiring = false;
 
-        public TgcBoundingSphere shipSphere;    
+        public TgcBoundingSphere shipSphere;
+        public TgcBoundingSphere enemySphere;
 
         public void Load()
         {
@@ -76,7 +77,6 @@ namespace AlumnoEjemplos.SeaSharp{
             //BoundingSphere que va a usar el ship
             shipSphere = new TgcBoundingSphere(ship.BoundingBox.calculateBoxCenter(), ship.BoundingBox.calculateBoxRadius() + 40f);
 
-
             // Acomoda al ship dependiendo una posicion específica de spawn
             ship.Position(this.Spawn());
         }
@@ -101,15 +101,21 @@ namespace AlumnoEjemplos.SeaSharp{
             else if (life <= 25)
                 lifeBar.setTexture(TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarRed.png"));
 
-
+            if (shipSphere != null) shipSphere.render();
+            if (enemySphere != null) enemySphere.render();
             ship.renderAll();
-            shipSphere.render();
+            
         }
 
 
         public void Close()
         {
             ship.disposeAll();
+        }
+
+        public TgcBoundingSphere BoundingSphere
+        {
+            get { return shipSphere; }
         }
 
         abstract public Vector3 Spawn();
@@ -135,6 +141,13 @@ namespace AlumnoEjemplos.SeaSharp{
                 NewFireBall.Angle = ship.RotationY() - (((cantidad/ 2f) - i) / 10f) - inversion;
                 NewFireBall.Fire();
                 NewFireBall.Position = this.Position;
+                foreach (EnemyFleet enemy in EnemyFleet.Enemies)
+                {
+                    if (NewFireBall.isExplodedOnShip(enemy))
+                    {
+                        this.life -= 10f;
+                    }
+                }
             }
              
         }
@@ -336,6 +349,9 @@ namespace AlumnoEjemplos.SeaSharp{
                 else if (d3dInput.keyDown(Key.Down))
                     GuiController.Instance.ThirdPersonCamera.OffsetHeight -= ConfigParam.Ship.FORWARD * elapsedTime * 10;
 
+                /*//Guardar posicion original antes de cambiarla
+                Vector3 originalPos = this.Position;*/
+
                 //Vector de movimiento del barco
                 Vector3 movementVector = Vector3.Empty;
 
@@ -358,8 +374,36 @@ namespace AlumnoEjemplos.SeaSharp{
                     jump,
                     -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward
                     );
+
+                Vector3 originalPos = this.Position;
+                TgcBoundingSphere shipSphereAux = new TgcBoundingSphere(shipSphere.Center, shipSphere.Radius);
+                shipSphereAux.moveCenter(movementVector);
                 ship.Move(movementVector);
-                shipSphere.moveCenter(movementVector);
+
+                //Chequear si el objeto principal en su nueva posición choca con alguno de los objetos de la escena.
+                bool collisionFound = false;
+                foreach (EnemyFleet enemy in EnemyFleet.Enemies)
+                {
+                    //Ejecutar algoritmo de detección de colisiones
+                    collisionFound = TgcCollisionUtils.testSphereSphere(shipSphereAux, enemy.enemySphere);
+
+                    //Hubo colisión con un objeto. Guardar resultado y abortar loop.
+                    if (collisionFound)
+                    {
+                        break;
+                    }
+                }
+
+                //Si hubo alguna colisión, entonces restaurar la posición original del mesh (el bounding sphere original no lo movimos)
+                if (collisionFound)
+                {
+                    this.Position = originalPos;
+                }
+                else
+                {
+                    // Si no hubo colision, entonces movemos el bounding sphere
+                    shipSphere.moveCenter(movementVector);
+                }
 
             }
             #endregion
@@ -417,6 +461,9 @@ namespace AlumnoEjemplos.SeaSharp{
             Random r = new Random();
             NewEnemy.Position = new Vector3(r.Next(1000), 0, r.Next(1000));
             NewEnemy.RotateShip(r.Next(360));
+
+            NewEnemy.enemySphere = new TgcBoundingSphere(NewEnemy.ship.BoundingBox.calculateBoxCenter() + NewEnemy.Position, NewEnemy.ship.BoundingBox.calculateBoxRadius() + 40f);
+            NewEnemy.shipSphere = null;
         }
 
         public void RotateShip(float degree)
@@ -465,7 +512,7 @@ namespace AlumnoEjemplos.SeaSharp{
 
             // Si el enemigo esta cerca de nuestro barco, se detiene y nos ataca
             if (Math.Abs(ship.Meshes[0].Position.X - targetShip.ship.Meshes[0].Position.X) < XDISTANCETOMAINSHIP
-                && Math.Abs(ship.Meshes[0].Position.Z - targetShip.ship.Meshes[0].Position.Z) < ZDISTANCETOMAINSHIP)
+                && Math.Abs(ship.Meshes[0].Position.Z - targetShip.ship.Meshes[0].Position.Z) < ZDISTANCETOMAINSHIP && 1 == 2)
             {                
                 movementVector = new Vector3(0,0,0);
                 if (targetShip.life >= 0)
@@ -533,15 +580,36 @@ namespace AlumnoEjemplos.SeaSharp{
                 directionX = -1;
             else if (ship.Meshes[0].Position.X < -DISTANCE)
                 directionX = 1;
-                
+
             movementVector = new Vector3(
                 FastMath.Cos(ship.RotationY()) * moveForward * elapsedTime * speedForward * directionX,
                 jump,                    
                 -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward * directionX
                 );
           }
+
+            //Guardar posicion original antes de cambiarla
+            Vector3 originalPos = this.Position;
+
+            //Ejecutar algoritmo de detección de colisiones
+            bool collisionFound = false;
+            //Chequear si el objeto principal en su nueva posición choca con alguno de los objetos de la escena. bool collisionFound = false;
+            //Ejecutar algoritmo de detección de colisiones
+            collisionFound = TgcCollisionUtils.testSphereSphere(targetShip.BoundingSphere, this.enemySphere);
+
+            //Si hubo alguna colisión, entonces restaurar la posición original del mesh
+            if (collisionFound)
+            {
+                this.Position = originalPos;
+            }
+            else
+            {
+                ship.Move(movementVector);
+                enemySphere.moveCenter(movementVector);
+            }
            
-          ship.Move(movementVector);
+          //ship.Move(movementVector);
+          //enemySphere.moveCenter(movementVector);
 
             
             #endregion

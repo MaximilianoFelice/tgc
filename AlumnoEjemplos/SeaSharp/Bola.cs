@@ -100,6 +100,11 @@ namespace AlumnoEjemplos.SeaSharp
             bola.dispose();
         }
 
+        public bool isExplodedOnShip(Ship unShip)
+        {
+                return (TgcCollisionUtils.testSphereAABB(unShip.BoundingSphere, this.bola.BoundingBox));
+        }
+
         public void CalculatePath(float elapsedTime)
         {
             Vector3 _acceleration = new Vector3(0, _Gravity * elapsedTime, 0);
