@@ -25,6 +25,17 @@ sampler2D diffuseMap = sampler_state
 	MIPFILTER = LINEAR;
 };
 
+texture g_RenderTarget;
+sampler RenderTarget =
+sampler_state
+{
+	Texture = <g_RenderTarget>;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+};
+
+
 texture superficieAgua;
 sampler heightmap = sampler_state
 {
@@ -59,7 +70,7 @@ struct VS_INPUT
 {
 	float4 Position : POSITION0;
 	float4 Color : COLOR0;
-	float3 Tex : TEXCOORD0;
+	float2 Tex : TEXCOORD0;
 };
 
 //Output del Vertex Shader
@@ -67,7 +78,7 @@ struct VS_OUTPUT
 {
 	float4 Position :        POSITION0;
 	float4 Color :			COLOR0;
-	float3 Tex: TEXCOORD0;
+	float2 Tex: TEXCOORD0;
 	float3 Normal : TEXCOORD1;
 	float3 PosProp : TEXCOORD2;
 
@@ -87,9 +98,9 @@ float calculate_Position(float x, float z)
 
 	y = y * ola * 200;
 
-	float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
+	//float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
 
-	y = y + height * float(50);
+	//y = y + height * float(50);
 	return y;
 	//return 100;
 }
@@ -166,11 +177,14 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 // 
 
 //Pixel Shader
-float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
+float4 ps_main(float2 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 	float3 Pos : TEXCOORD2) : COLOR0
 {
 	float ld = 0;		// luz difusa
 	float le = 0;		// luz specular
+
+	//float3 normal = tex2D(heightmap, Pos).xyz;
+	//N = normalize(normal);
 
 	N = normalize(N);
 
@@ -194,8 +208,8 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 	le += ks*k_ls;
 
 	//Obtener el texel de textura
-	//float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
-	float4 fvBaseColor = float4(0.20, 0.35, 0.40, 0);
+	float4 fvBaseColor = tex2Dgrad(RenderTarget, Texcoord, ddx(Texcoord), ddy(Texcoord));
+	//float4 fvBaseColor = float4(0.20, 0.35, 0.40, 0);
 	float a = acos(dot(D, N));
 	a = saturate(sin(a) + 0.2);
 	float b = clamp(a, 0.8, 1);
@@ -213,8 +227,9 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 	// Muchas inclusive simulan el efecto de la pupila que se contrae o dilata para 
 	// adaptarse a la nueva cantidad de luz ambiente. 
 
-	return RGBColor;
+	//return RGBColor;
 	//return float4 (N, 1);
+	return fvBaseColor;
 }
 
 
@@ -305,7 +320,7 @@ technique RenderScene
 	pass Pass_0
 	{
 		VertexShader = compile vs_3_0 vs_main();
-		PixelShader = compile ps_2_0 ps_main();
+		PixelShader = compile ps_3_0 ps_main();
 	}
 
 }

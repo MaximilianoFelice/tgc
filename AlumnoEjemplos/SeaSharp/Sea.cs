@@ -35,7 +35,7 @@ namespace AlumnoEjemplos.SeaSharp
             water = new QuadList(center, 4000, Color.Blue, 100);
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua.png");
+            texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua.jpg");
             water.Technique = "RenderScene";
 
             lightPos = new Vector3(0, 10000, 0);
@@ -51,7 +51,7 @@ namespace AlumnoEjemplos.SeaSharp
             time += elapsedTime;
         }
 
-        public static void Render()
+        public static void Render(Texture surf)
         {         
             water.Effect.SetValue("time", time);
        
@@ -67,6 +67,8 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("k_ls", specular);
             water.Effect.SetValue("fSpecularPower", specularPower);
             water.Effect.SetValue("superficieAgua", texture);
+            water.Effect.SetValue("g_RenderTarget", surf);
+            
             device.RenderState.AlphaBlendEnable = true;
 
             water.Render();
