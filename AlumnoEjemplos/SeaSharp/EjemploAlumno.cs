@@ -36,7 +36,13 @@ namespace AlumnoEjemplos.SeaSharp
 
         public Texture g_pRenderTarget;
 
-        public static Surface surf;
+        public static Surface pOldRT;
+        public static bool aux = false;
+        public static bool aux2 = false;
+        public static Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
+             CubeTexture g_pCubeMap = new CubeTexture(device, 256, 1, Usage.RenderTarget,
+                    Format.A16B16G16R16F, Pool.Default);
+
 
 
         #region STRUCTURAL_INFO
@@ -133,92 +139,101 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.FpsCounterEnable = true;
             //////////////////////////////////////
             Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
-            //CubeTexture g_pCubeMap = new CubeTexture(device, 256, 1, Usage.RenderTarget,
-            //    Format.A16B16G16R16F, Pool.Default);
-            g_pRenderTarget = new Texture(device, device.PresentationParameters.BackBufferWidth
-                   , device.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
-                       Format.X8R8G8B8, Pool.Default);
 
-            Surface pSurf = g_pRenderTarget.GetSurfaceLevel(0);
+            if (aux == false)
+            {
+           
+                //g_pRenderTarget = new Texture(device, device.PresentationParameters.BackBufferWidth
+                //     , device.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
+                //       Format.X8R8G8B8, Pool.Default);
 
-            Surface pOldRT = device.GetRenderTarget(0);
-            //// ojo: es fundamental que el fov sea de 90 grados.
-            //// asi que re-genero la matriz de proyeccion
-            device.Transform.Projection =
-                Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(90.0f),
-                    1f, 1f, 10000f);
+                //Surface pSurf = g_pRenderTarget.GetSurfaceLevel(0);
 
-            device.SetRenderTarget(0, pSurf);
+                pOldRT = device.GetRenderTarget(0);
+                //// ojo: es fundamental que el fov sea de 90 grados.
+                //// asi que re-genero la matriz de proyeccion
+                device.Transform.Projection =
+                    Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(90.0f),
+                        1f, 1f, 10000f);
 
-            //// Genero las caras del enviroment map
-            //for (CubeMapFace nFace = CubeMapFace.PositiveX; nFace <= CubeMapFace.NegativeZ; ++nFace)
-            //{
-            //    Surface pFace = g_pCubeMap.GetCubeMapSurface(nFace, 0);
-            //    device.SetRenderTarget(0, pFace);
-            //    Vector3 Dir, VUP;
-            //    Color color;
-            //    switch (nFace)
-            //    {
-            //        default:
-            //        case CubeMapFace.PositiveX:
-            //            // Left
-            //            Dir = new Vector3(1, 0, 0);
-            //            VUP = new Vector3(0, 1, 0);
-            //            color = Color.Black;
-            //            break;
-            //        case CubeMapFace.NegativeX:
-            //            // Right
-            //            Dir = new Vector3(-1, 0, 0);
-            //            VUP = new Vector3(0, 1, 0);
-            //            color = Color.Red;
-            //            break;
-            //        case CubeMapFace.PositiveY:
-            //            // Up
-            //            Dir = new Vector3(0, 1, 0);
-            //            VUP = new Vector3(0, 0, -1);
-            //            color = Color.Gray;
-            //            break;
-            //        case CubeMapFace.NegativeY:
-            //            // Down
-            //            Dir = new Vector3(0, -1, 0);
-            //            VUP = new Vector3(0, 0, 1);
-            //            color = Color.Yellow;
-            //            break;
-            //        case CubeMapFace.PositiveZ:
-            //            // Front
-            //            Dir = new Vector3(0, 0, 1);
-            //            VUP = new Vector3(0, 1, 0);
-            //            color = Color.Green;
-            //            break;
-            //        case CubeMapFace.NegativeZ:
-            //            // Back
-            //            Dir = new Vector3(0, 0, -1);
-            //            VUP = new Vector3(0, 1, 0);
-            //            color = Color.Blue;
-            //            break;
-            //    }
+                //device.SetRenderTarget(0, pSurf);
 
-            //    //Obtener ViewMatrix haciendo un LookAt desde la posicion final anterior al centro de la camara
-                Vector3 Pos = ship.Position;
+                // Genero las caras del enviroment map
+                for (CubeMapFace nFace = CubeMapFace.PositiveX; nFace <= CubeMapFace.NegativeZ; ++nFace)
+                {
+                    Surface pFace = g_pCubeMap.GetCubeMapSurface(nFace, 0);
+                    device.SetRenderTarget(0, pFace);
+                    Vector3 Dir, VUP;
+                    Color color;
+                    switch (nFace)
+                    {
+                        default:
+                        case CubeMapFace.PositiveX:
+                            // Left
+                            Dir = new Vector3(1, 0, 0);
+                            VUP = new Vector3(0, 1, 0);
+                            color = Color.Black;
+                            break;
+                        case CubeMapFace.NegativeX:
+                            // Right
+                            Dir = new Vector3(-1, 0, 0);
+                            VUP = new Vector3(0, 1, 0);
+                            color = Color.Red;
+                            break;
+                        case CubeMapFace.PositiveY:
+                            // Up
+                            Dir = new Vector3(0, 1, 0);
+                            VUP = new Vector3(0, 0, -1);
+                            color = Color.Gray;
+                            break;
+                        case CubeMapFace.NegativeY:
+                            // Down
+                            Dir = new Vector3(0, -1, 0);
+                            VUP = new Vector3(0, 0, 1);
+                            color = Color.Yellow;
+                            break;
+                        case CubeMapFace.PositiveZ:
+                            // Front
+                            Dir = new Vector3(0, 0, 1);
+                            VUP = new Vector3(0, 1, 0);
+                            color = Color.Green;
+                            break;
+                        case CubeMapFace.NegativeZ:
+                            // Back
+                            Dir = new Vector3(0, 0, -1);
+                            VUP = new Vector3(0, 1, 0);
+                            color = Color.Blue;
+                            break;
+                    }
 
-                Vector3 aux = GuiController.Instance.RotCamera.getPosition() - GuiController.Instance.RotCamera.getLookAt();
+                    //    //Obtener ViewMatrix haciendo un LookAt desde la posicion final anterior al centro de la camara
+                    Vector3 Pos = ship.Position;
 
-                Vector3 Refl = new Vector3(-aux.X, aux.Y, -aux.Z);
+                    //Vector3 aux = GuiController.Instance.RotCamera.getPosition() - GuiController.Instance.RotCamera.getLookAt();
 
-                device.Transform.View = Matrix.LookAtLH(Pos, Refl, new Vector3(0, 1, 0));
-            SkyDome.CalculateMovement();
+                    //Vector3 Refl = new Vector3(-aux.X, aux.Y, -aux.Z);
 
-                device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
-                //SkyDome.Close();
-                EnemyFleet.RenderAll();
-                //Environment.Render();
-                Bola.RenderAll();
-                SkyDome.Render();
-                SurfaceLoader.Save("prueba.bmp", ImageFileFormat.Bmp, pSurf);
-               // pSurf.Dispose();
+                    device.Transform.View = Matrix.LookAtLH(Pos, Pos + Dir, VUP);
+                    SkyDome.CalculateMovement();
 
+                    device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+
+                   
+
+                    //SkyDome.Close();
+                    EnemyFleet.RenderAll();
+                    Environment.Render();
+                    Bola.RenderAll();
+                    SkyDome.Render();
+                    SurfaceLoader.Save("prueba.bmp", ImageFileFormat.Bmp, pFace);
+
+                    aux = true;
+                    // pSurf.Dispose();
+                string fname = string.Format("face{0:D}.bmp", nFace);
+                SurfaceLoader.Save(fname, ImageFileFormat.Bmp, pFace);
+                }
                 //device.BeginScene();
-
+            }
             //    //Renderizar 
             //    render(elapsedTime);
             //////////////////////////////////////
@@ -245,7 +260,7 @@ namespace AlumnoEjemplos.SeaSharp
             Sea.CalculateMovement(elapsedTime);
             //GuiController.Instance.Frustum.FarPlane 
 
-
+            SkyDome.CalculateMovement();
 
             /* Preparamos el device para aplicar shaders */
 
@@ -260,8 +275,11 @@ namespace AlumnoEjemplos.SeaSharp
             EnemyFleet.RenderAll();
             Environment.Render();
             Bola.RenderAll();
-            Sea.Render(g_pRenderTarget);
-
+            if (!aux2)
+            {
+                Sea.Render(g_pCubeMap, false);
+            }
+            Sea.Render(g_pCubeMap, true);
             
            
         }
