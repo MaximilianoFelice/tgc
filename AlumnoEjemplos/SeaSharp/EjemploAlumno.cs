@@ -140,8 +140,8 @@ namespace AlumnoEjemplos.SeaSharp
             //////////////////////////////////////
             Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
 
-            if (aux == false)
-            {
+            //if (aux == false)
+            //{
 
                 g_pRenderTarget = new Texture(device, device.PresentationParameters.BackBufferWidth
                      , device.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
@@ -231,7 +231,7 @@ namespace AlumnoEjemplos.SeaSharp
                     // pSurf.Dispose();
                 //}
                 //device.BeginScene();
-            }
+            //}
             //    //Renderizar 
             //    render(elapsedTime);
             //////////////////////////////////////

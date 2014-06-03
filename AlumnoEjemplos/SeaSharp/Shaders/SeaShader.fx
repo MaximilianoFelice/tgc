@@ -29,8 +29,8 @@ texture texRender;
 sampler2D renderMap = sampler_state
 {
 	Texture = (texRender);
-	ADDRESSU = MIRROR;
-	ADDRESSV = MIRROR;
+	ADDRESSU = CLAMP;
+	ADDRESSV = CLAMP;
 	MINFILTER = LINEAR;
 	MAGFILTER = LINEAR;
 	MIPFILTER = LINEAR;
