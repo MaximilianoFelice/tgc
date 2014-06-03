@@ -113,7 +113,7 @@ namespace AlumnoEjemplos.SeaSharp{
             ship.disposeAll();
         }
 
-        public TgcBoundingSphere BoundingSphere
+        public virtual TgcBoundingSphere BoundingSphere
         {
             get { return shipSphere; }
         }
@@ -129,7 +129,7 @@ namespace AlumnoEjemplos.SeaSharp{
             NewFireBall.Position = this.Position;
             */
             
-            int cantidad = 8;
+            int cantidad = 4;
             float inversion = 0;
             for (int i = 0; i < cantidad; i++)
             {
@@ -141,13 +141,8 @@ namespace AlumnoEjemplos.SeaSharp{
                 NewFireBall.Angle = ship.RotationY() - (((cantidad/ 2f) - i) / 10f) - inversion;
                 NewFireBall.Fire();
                 NewFireBall.Position = this.Position;
-                foreach (EnemyFleet enemy in EnemyFleet.Enemies)
-                {
-                    if (NewFireBall.isExplodedOnShip(enemy))
-                    {
-                        this.life -= 10f;
-                    }
-                }
+                NewFireBall.Owner = this;
+                
             }
              
         }
@@ -190,6 +185,28 @@ namespace AlumnoEjemplos.SeaSharp{
             lifeBar.Rotation = new Vector3(0, rotY + Geometry.DegreeToRadian(90), 0);            
         }
 
+        protected void HundirShip()
+        {
+            GuiController.Instance.ThirdPersonCamera.OffsetHeight = 0;
+            float j = 0.2f, y = -0.25f, k = 1, i = 0;
+
+            foreach (var Mesh in ship.Meshes)
+            {
+                j -= 0.01f;
+                if (i % 2 == 0)
+                    k = 1;
+                else
+                    k = -1;
+
+                Mesh.Position = new Vector3(Mesh.Position.X, Mesh.Position.Y + y, Mesh.Position.Z);
+
+                Mesh.rotateX(Geometry.DegreeToRadian(j * 0.25f * k));
+                Mesh.rotateY(Geometry.DegreeToRadian(0.1f));
+                Mesh.rotateZ(Geometry.DegreeToRadian(-j * 0.02f * k));
+                i++;
+            }
+        }
+
     }
 
 
@@ -229,24 +246,7 @@ namespace AlumnoEjemplos.SeaSharp{
             // Hundimiento
             if (life < 1)
             {
-                GuiController.Instance.ThirdPersonCamera.OffsetHeight = 0;
-                float j = 0.2f, y = -0.25f, k = 1, i=0;
-                
-                foreach (var Mesh in ship.Meshes)
-                {                    
-                    j -= 0.01f;
-                    if (i % 2 == 0)
-                        k = 1;
-                    else
-                        k = -1;
-
-                    Mesh.Position = new Vector3(Mesh.Position.X, Mesh.Position.Y + y, Mesh.Position.Z);
-
-                    Mesh.rotateX(Geometry.DegreeToRadian(j * 0.25f * k));
-                    Mesh.rotateY(Geometry.DegreeToRadian(0.1f));
-                    Mesh.rotateZ(Geometry.DegreeToRadian(-j * 0.02f * k));  
-                 i++;
-                }
+                this.HundirShip();
             }
             else
             {
@@ -409,6 +409,8 @@ namespace AlumnoEjemplos.SeaSharp{
             #endregion
         }
 
+        
+
         private void actualizarColorBarraVida()
         {
             // Cambio de color de las barras segun la cantidad que tengan
@@ -459,7 +461,7 @@ namespace AlumnoEjemplos.SeaSharp{
             
             // Le asignamos una Posicion y Rotacion inicial aleatoria
             Random r = new Random();
-            NewEnemy.Position = new Vector3(r.Next(1000), 0, r.Next(1000));
+            NewEnemy.Position = new Vector3(r.Next(1000) + 100, 0, r.Next(1000) + 100);
             NewEnemy.RotateShip(r.Next(360));
 
             NewEnemy.enemySphere = new TgcBoundingSphere(NewEnemy.ship.BoundingBox.calculateBoxCenter() + NewEnemy.Position, NewEnemy.ship.BoundingBox.calculateBoxRadius() + 40f);
@@ -508,116 +510,136 @@ namespace AlumnoEjemplos.SeaSharp{
             targetMap.Position = new Vector2(-ship.Meshes[0].Position.X / 50 + Environment.MapShipsOffsetX, ship.Meshes[0].Position.Z / 50 + Environment.MapShipsOffsetY);
             rotarBarraVidaSegunCamara(elapsedTime, GuiController.Instance.D3dInput);
 
-            
-
-            // Si el enemigo esta cerca de nuestro barco, se detiene y nos ataca
-            if (Math.Abs(ship.Meshes[0].Position.X - targetShip.ship.Meshes[0].Position.X) < XDISTANCETOMAINSHIP
-                && Math.Abs(ship.Meshes[0].Position.Z - targetShip.ship.Meshes[0].Position.Z) < ZDISTANCETOMAINSHIP && 1 == 2)
-            {                
-                movementVector = new Vector3(0,0,0);
-                if (targetShip.life >= 0)
-                {
-                    targetShip.life -= 0.2f;                    
-                }
-                if (life >= 0 && targetShip.isFiring)
-                {
-                    life -= 0.2f;
-                }
-
-                // Disparamos 1 vez por segundo
-                int ms = DateTime.Now.Millisecond;
-                if (!isFiring && (ms >= 500))
-                {
-                    Fire();
-                    isFiring = true;
-                }
-                else if (ms < 500)
-                {
-                    isFiring = false;
-                }
-
-
-                // Disparamos 2 veces por segundo
-                /*
-                int ms = DateTime.Now.Millisecond;
-                if (!isFiring && ((ms >= 250 && ms <= 333) || (ms >= 666 && ms <= 750)))
-                {
-                    Fire();
-                    isFiring = true;
-                }
-                else if (ms < 250 || (ms > 333 && ms < 666) || ms > 750)
-                {
-                    isFiring = false;
-                }
-                */
-
-
-                // Rotacion automatica mientras esta frenado
-                //ship.RotateY(Geometry.DegreeToRadian(targetShip.ship.Meshes[0].Rotation.Y * elapsedTime));
-                //ship.Meshes[0].Rotation = targetShip.ship.Meshes[0].Rotation;
-                
-                // Copia nuestra rotacion, para simular que nos apunta
-                //ship.copyShipRotationY(targetShip);
-            }
-            else { 
-            // Rota 180 y luego empieza a rotar en direccion opuesta
-            if (ship.Meshes[0].Rotation.Y > Geometry.DegreeToRadian(MAXROTATION))
-                rotationY = -1;
-            else if (ship.Meshes[0].Rotation.Y < Geometry.DegreeToRadian(-MAXROTATION))
-                rotationY = 1;
-            ship.RotateY(Geometry.DegreeToRadian(SPEEDROTATION * elapsedTime * rotationY));
-    
-            // Actualiza el icono que representa al barco en el Mapa
-            //Iniciar dibujado de todos los Sprites de la escena (en este caso es solo uno)
-            GuiController.Instance.Drawer2D.beginDrawSprite();
-            targetMap.Rotation += Geometry.DegreeToRadian(SPEEDROTATION * elapsedTime * rotationY);
-            targetMap.render();
-            //Finalizar el dibujado de Sprites
-            GuiController.Instance.Drawer2D.endDrawSprite();
-
-            // Avanza cierta distancia y luego vuelve en direccion opuesta
-            if (ship.Meshes[0].Position.X > DISTANCE)
-                directionX = -1;
-            else if (ship.Meshes[0].Position.X < -DISTANCE)
-                directionX = 1;
-
-            movementVector = new Vector3(
-                FastMath.Cos(ship.RotationY()) * moveForward * elapsedTime * speedForward * directionX,
-                jump,                    
-                -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward * directionX
-                );
-          }
-
-            //Guardar posicion original antes de cambiarla
-            Vector3 originalPos = this.Position;
-
-            //Ejecutar algoritmo de detección de colisiones
-            bool collisionFound = false;
-            //Chequear si el objeto principal en su nueva posición choca con alguno de los objetos de la escena. bool collisionFound = false;
-            //Ejecutar algoritmo de detección de colisiones
-            collisionFound = TgcCollisionUtils.testSphereSphere(targetShip.BoundingSphere, this.enemySphere);
-
-            //Si hubo alguna colisión, entonces restaurar la posición original del mesh
-            if (collisionFound)
+            // Hundimiento
+            if (life < 1)
             {
-                this.Position = originalPos;
+                this.HundirShip();
             }
             else
             {
-                ship.Move(movementVector);
-                enemySphere.moveCenter(movementVector);
-            }
-           
-          //ship.Move(movementVector);
-          //enemySphere.moveCenter(movementVector);
 
+                // Si el enemigo esta cerca de nuestro barco, se detiene y nos ataca
+                if (Math.Abs(ship.Meshes[0].Position.X - targetShip.ship.Meshes[0].Position.X) < XDISTANCETOMAINSHIP
+                    && Math.Abs(ship.Meshes[0].Position.Z - targetShip.ship.Meshes[0].Position.Z) < ZDISTANCETOMAINSHIP && 1 == 2)
+                {
+                    movementVector = new Vector3(0, 0, 0);
+                    ColisionFire(targetShip);
+
+
+                    // Disparamos 2 veces por segundo
+                    /*
+                    int ms = DateTime.Now.Millisecond;
+                    if (!isFiring && ((ms >= 250 && ms <= 333) || (ms >= 666 && ms <= 750)))
+                    {
+                        Fire();
+                        isFiring = true;
+                    }
+                    else if (ms < 250 || (ms > 333 && ms < 666) || ms > 750)
+                    {
+                        isFiring = false;
+                    }
+                    */
+
+
+                    // Rotacion automatica mientras esta frenado
+                    //ship.RotateY(Geometry.DegreeToRadian(targetShip.ship.Meshes[0].Rotation.Y * elapsedTime));
+                    //ship.Meshes[0].Rotation = targetShip.ship.Meshes[0].Rotation;
+
+                    // Copia nuestra rotacion, para simular que nos apunta
+                    //ship.copyShipRotationY(targetShip);
+                }
+                else
+                {
+                    // Rota 180 y luego empieza a rotar en direccion opuesta
+                    if (ship.Meshes[0].Rotation.Y > Geometry.DegreeToRadian(MAXROTATION))
+                        rotationY = -1;
+                    else if (ship.Meshes[0].Rotation.Y < Geometry.DegreeToRadian(-MAXROTATION))
+                        rotationY = 1;
+                    //ship.RotateY(Geometry.DegreeToRadian(SPEEDROTATION * elapsedTime * rotationY));
+
+                    // Actualiza el icono que representa al barco en el Mapa
+                    //Iniciar dibujado de todos los Sprites de la escena (en este caso es solo uno)
+                    GuiController.Instance.Drawer2D.beginDrawSprite();
+                    targetMap.Rotation += Geometry.DegreeToRadian(SPEEDROTATION * elapsedTime * rotationY);
+                    targetMap.render();
+                    //Finalizar el dibujado de Sprites
+                    GuiController.Instance.Drawer2D.endDrawSprite();
+
+                    // Avanza cierta distancia y luego vuelve en direccion opuesta
+                    if (ship.Meshes[0].Position.X > DISTANCE)
+                        directionX = -1;
+                    else if (ship.Meshes[0].Position.X < -DISTANCE)
+                        directionX = 1;
+
+                    movementVector = new Vector3(
+                        FastMath.Cos(ship.RotationY()) * moveForward * elapsedTime * speedForward * directionX,
+                        jump,
+                        -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward * directionX
+                        );
+                }
+
+                //Guardar posicion original antes de cambiarla
+                Vector3 originalPos = this.Position;
+
+                //Ejecutar algoritmo de detección de colisiones
+                bool collisionFound = false;
+                //Chequear si el objeto principal en su nueva posición choca con alguno de los objetos de la escena. bool collisionFound = false;
+                //Ejecutar algoritmo de detección de colisiones
+                collisionFound = TgcCollisionUtils.testSphereSphere(targetShip.BoundingSphere, this.enemySphere);
+
+                //Si hubo alguna colisión, entonces restaurar la posición original del mesh
+                if (collisionFound)
+                {
+                    this.Position = originalPos;
+                    ColisionFire(targetShip);
+                    
+                }
+                else
+                {
+                    ship.Move(movementVector);
+                    enemySphere.moveCenter(movementVector);
+                    ship.RotateY(Geometry.DegreeToRadian(SPEEDROTATION * elapsedTime * rotationY));
+                }
+
+                //ship.Move(movementVector);
+                //enemySphere.moveCenter(movementVector);
+            }
             
             #endregion
+        }
+
+        private void ColisionFire(Ship targetShip)
+        {/*
+            if (targetShip.life >= 0)
+            {
+                targetShip.life -= 0.2f;
+            }
+            if (life >= 0 && targetShip.isFiring)
+            {
+                life -= 0.2f;
+            }
+            */
+            // Disparamos 1 vez por segundo
+            int ms = DateTime.Now.Millisecond;
+            if (!isFiring && (ms >= 500))
+            {
+                Fire();
+                isFiring = true;
+            }
+            else if (ms < 500)
+            {
+                isFiring = false;
+            }
         }
 
         public override Vector3 Spawn()
         {
             return (new Vector3(500, 0, 500));
+        }
+
+        public override TgcBoundingSphere BoundingSphere
+        {
+            get { return enemySphere; }
         }
     }
 

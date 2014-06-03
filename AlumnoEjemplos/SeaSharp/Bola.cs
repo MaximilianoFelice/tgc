@@ -20,6 +20,9 @@ namespace AlumnoEjemplos.SeaSharp
         TgcMesh bola;
         const float ROTATESPEED = 10;
         float i = 1f;           // TODO: Renombrar esta variable a un nombre significativo.
+        public Ship Owner { get; set; }
+
+        public bool mainShipFire { get; set; }
 
         public static List<Bola> FiredBalls = new List<Bola>();
 
@@ -89,9 +92,24 @@ namespace AlumnoEjemplos.SeaSharp
 
         public void Render()
         {
+            List<Ship> ships = new List<Ship>();
 
-            bola.render();
-            bola.BoundingBox.render();
+            ships.AddRange(EnemyFleet.Enemies);
+            ships.Add(EjemploAlumno.ship);
+           
+            foreach (Ship ship in ships)
+            {
+                if (this.isExplodedOnShip(ship) && !ship.Equals(Owner))
+                {
+                    //this.Position = enemy.Position;
+                    ship.life -= 0.3f;
+                }
+                else
+                {
+                    bola.render();
+                    bola.BoundingBox.render();
+                }
+            }
         }
 
         public void Dispose()
@@ -102,13 +120,13 @@ namespace AlumnoEjemplos.SeaSharp
 
         public bool isExplodedOnShip(Ship unShip)
         {
-                return (TgcCollisionUtils.testSphereAABB(unShip.BoundingSphere, this.bola.BoundingBox));
+            return (TgcCollisionUtils.testSphereAABB(unShip.BoundingSphere, this.bola.BoundingBox));
         }
 
         public void CalculatePath(float elapsedTime)
         {
             Vector3 _acceleration = new Vector3(0, _Gravity * elapsedTime, 0);
-            _Velocity = Microsoft.DirectX.Vector3.Add(_Velocity * 0.98f, _acceleration);
+            _Velocity = Microsoft.DirectX.Vector3.Add(_Velocity * 0.99f, _acceleration);
             
             bola.move(_Velocity);   // TODO: Aclarar que es cada valor en esta linea. En lo posible pasarlos a constantes mas expresivas.   
 
