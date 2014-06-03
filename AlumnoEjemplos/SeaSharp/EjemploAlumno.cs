@@ -214,10 +214,10 @@ namespace AlumnoEjemplos.SeaSharp
                     //Vector3 Refl = new Vector3(-aux.X, aux.Y, -aux.Z);
 
                     device.Transform.View = Matrix.LookAtLH(Pos, Pos + Dir, VUP);
-                    SkyDome.CalculateMovement();
 
                     device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
 
+             
                    
 
                     //SkyDome.Close();
