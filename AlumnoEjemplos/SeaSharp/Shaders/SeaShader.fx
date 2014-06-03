@@ -59,8 +59,8 @@ float k_ld = 0.4;							// luz difusa
 float k_ls = 1.0;							// luz specular
 float fSpecularPower = 16.84;
 
-float kx = 0.5;							// coef. de reflexion
-float kc = 0.5;
+float kx = 0.7;							// coef. de reflexion
+float kc = 0;
 
 float time = 0;
 
@@ -130,44 +130,62 @@ float calculate_Position(float x, float z)
 
 // Ejemplo de un vertex shader que anima la posicion de los vertices 
 // ------------------------------------------------------------------
-VS_OUTPUT vs_main(VS_INPUT Input)
+void VSCubeMap2(float4 Pos : POSITION,
+	float3 Normal : NORMAL,
+	float2 Texcoord : TEXCOORD0,
+	out float4 oPos : POSITION,
+	out float3 EnvTex : TEXCOORD0,
+	out float2 Tex : TEXCOORD2,
+	out float3 N : TEXCOORD1,
+	out float3 EnvTex1 : TEXCOORD3,
+	out float3 EnvTex2 : TEXCOORD4,
+	out float3 EnvTex3 : TEXCOORD5,
+	out float3 wPos : TEXCOORD6
+	//out float  Fresnel : COLOR
+	)
 {
-	VS_OUTPUT Output;
+	//VS_OUTPUT Output;
 
 	float3 normal;
 
 	// Actualizo el output
-	Output.Position = Input.Position;
-	Output.Position.y = calculate_Position(Input.Position.x, Input.Position.z); //se lo aplicamos al eje y
+	oPos = Pos;
+	oPos.y = calculate_Position(Pos.x, Pos.z); //se lo aplicamos al eje y
 
 	float dr = 100;
 
 	//Proyectar posicion
-	float4 PosAux = Output.Position;
-		float heightx = calculate_Position(Input.Position.x + dr, Input.Position.z);
-	float heightz = calculate_Position(Input.Position.x, Input.Position.z + dr);
-	float3 dx = normalize(float3(dr, heightx - Output.Position.y, 0));
-		float3 dz = normalize(float3(0, heightz - Output.Position.y, dr));
+	float4 PosAux = oPos;
+		float heightx = calculate_Position(Pos.x + dr, Pos.z);
+	float heightz = calculate_Position(Pos.x, Pos.z + dr);
+	float3 dx = normalize(float3(dr, heightx - oPos.y, 0));
+		float3 dz = normalize(float3(0, heightz - oPos.y, dr));
 
-	Output.Position = mul(Output.Position, matWorldViewProj);
+		normal = cross(dx, dz);
+
+	oPos = mul(oPos, matWorldViewProj);
 	//PosAux = mul(PosAux, matWorld);
+	wPos = mul(Pos, matWorld);
+	float3 vEyeR = normalize(wPos - fvEyePosition);
 
-	Output.PosProp = float3(PosAux.x, PosAux.y, PosAux.z);
+		// corrijo la normal (depende de la malla)
+		// ej. el tanque esta ok, la esfera esta invertida.
+		//Normal*= -1;
+		float3 vN = mul(normal, (float3x3)matWorld);
+		vN = normalize(vN);
+	EnvTex = reflect(vEyeR, vN);
 
-	//Propago el color x vertice
-	float4 ColorOut = Input.Color;
-	Output.Color = ColorOut;
+	// Refraccion de la luz
+	EnvTex1 = refract(vEyeR, vN, 1.001);
+	EnvTex2 = refract(vEyeR, vN, 1.009);
+	EnvTex3 = refract(vEyeR, vN, 1.02);
+	//Fresnel = FBias + FEscala*pow(1 + dot(vEyeR, vN), FPower);
 
-	// Propago la normal
-	//normal = calculate_Normal(Input.Position.xyz, time);
+	//Propago la textura
+	Tex = Texcoord;
 
-
-	normal = cross(dz, dx);
-	Output.Normal = mul(normal, matWorld);
-
-	Output.Tex = Input.Tex;
-
-	return(Output);
+	//Propago la normal
+	N = vN;
 
 }
 
@@ -243,7 +261,7 @@ technique RenderScene
 {
 	pass Pass_0
 	{
-		VertexShader = compile vs_3_0 vs_main();
+		VertexShader = compile vs_3_0 VSCubeMap2();
 		PixelShader = compile ps_3_0 ps_main();
 	}
 
@@ -342,7 +360,7 @@ float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
 
 	// suma luz diffusa, ambiente y especular
 	fvBaseColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
-	fvBaseColor.a = 1;
+	fvBaseColor.a = 0.8;
 	float4 color_reflejado = fvBaseColor;
 
 		float4 color_refractado = float4(
@@ -363,7 +381,7 @@ technique RenderCubeMap
 {
 	pass p0
 	{
-		VertexShader = compile vs_3_0 VSCubeMap();
+		VertexShader = compile vs_3_0 VSCubeMap2();
 		PixelShader = compile ps_3_0 PSCubeMap();
 	}
 }
