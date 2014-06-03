@@ -266,7 +266,7 @@ void VSCubeMap(float4 Pos : POSITION,
 	//out float  Fresnel : COLOR
 	)
 {
-	float y = calculate_Position(Pos.x, Pos.z);
+	/*float y = calculate_Position(Pos.x, Pos.z);
 
 	float dr = 100;
 
@@ -274,7 +274,10 @@ void VSCubeMap(float4 Pos : POSITION,
 		float heightx = calculate_Position(Pos.x + dr, Pos.z);
 		float heightz = calculate_Position(Pos.x, Pos.z + dr);
 	float3 dx = normalize(float3(dr, heightx - y, 0));
-		float3 dz = normalize(float3(0, heightz - y, dr));
+		float3 dz = normalize(float3(0, heightz - y, dr));*/
+
+	float3 dx = float3(1, 0, 0);
+		float3 dz = float3(0, 0, 1);
 
 		Normal = cross(dz, dx);
 
