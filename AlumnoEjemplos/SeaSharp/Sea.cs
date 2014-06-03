@@ -51,7 +51,7 @@ namespace AlumnoEjemplos.SeaSharp
             time += elapsedTime;
         }
 
-        public static void Render(CubeTexture surf, bool aux)
+        public static void Render(Texture surf, bool aux)
         {         
                    
             water.Effect.SetValue("time", time);
@@ -70,7 +70,7 @@ namespace AlumnoEjemplos.SeaSharp
             //water.Effect.SetValue("superficieAgua", texture);
             if (!aux)
             {
-                water.Effect.SetValue("g_txCubeMap", surf);
+                water.Effect.SetValue("texRender", surf);
                 //water.Technique = "RenderCubeMap";
                 //water.Render();
             }

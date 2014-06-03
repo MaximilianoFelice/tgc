@@ -142,12 +142,12 @@ namespace AlumnoEjemplos.SeaSharp
 
             if (aux == false)
             {
-           
-                //g_pRenderTarget = new Texture(device, device.PresentationParameters.BackBufferWidth
-                //     , device.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
-                //       Format.X8R8G8B8, Pool.Default);
 
-                //Surface pSurf = g_pRenderTarget.GetSurfaceLevel(0);
+                g_pRenderTarget = new Texture(device, device.PresentationParameters.BackBufferWidth
+                     , device.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget,
+                       Format.X8R8G8B8, Pool.Default);
+
+                Surface pSurf = g_pRenderTarget.GetSurfaceLevel(0);
 
                 pOldRT = device.GetRenderTarget(0);
                 //// ojo: es fundamental que el fov sea de 90 grados.
@@ -156,64 +156,64 @@ namespace AlumnoEjemplos.SeaSharp
                     Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(90.0f),
                         1f, 1f, 10000f);
 
-                //device.SetRenderTarget(0, pSurf);
+                device.SetRenderTarget(0, pSurf);
 
                 // Genero las caras del enviroment map
-                for (CubeMapFace nFace = CubeMapFace.PositiveX; nFace <= CubeMapFace.NegativeZ; ++nFace)
-                {
-                    Surface pFace = g_pCubeMap.GetCubeMapSurface(nFace, 0);
-                    device.SetRenderTarget(0, pFace);
-                    Vector3 Dir, VUP;
-                    Color color;
-                    switch (nFace)
-                    {
-                        default:
-                        case CubeMapFace.PositiveX:
-                            // Left
-                            Dir = new Vector3(1, 0, 0);
-                            VUP = new Vector3(0, 1, 0);
-                            color = Color.Black;
-                            break;
-                        case CubeMapFace.NegativeX:
-                            // Right
-                            Dir = new Vector3(-1, 0, 0);
-                            VUP = new Vector3(0, 1, 0);
-                            color = Color.Red;
-                            break;
-                        case CubeMapFace.PositiveY:
-                            // Up
-                            Dir = new Vector3(0, 1, 0);
-                            VUP = new Vector3(0, 0, -1);
-                            color = Color.Gray;
-                            break;
-                        case CubeMapFace.NegativeY:
-                            // Down
-                            Dir = new Vector3(0, -1, 0);
-                            VUP = new Vector3(0, 0, 1);
-                            color = Color.Yellow;
-                            break;
-                        case CubeMapFace.PositiveZ:
-                            // Front
-                            Dir = new Vector3(0, 0, 1);
-                            VUP = new Vector3(0, 1, 0);
-                            color = Color.Green;
-                            break;
-                        case CubeMapFace.NegativeZ:
-                            // Back
-                            Dir = new Vector3(0, 0, -1);
-                            VUP = new Vector3(0, 1, 0);
-                            color = Color.Blue;
-                            break;
-                    }
+                //for (CubeMapFace nFace = CubeMapFace.PositiveX; nFace <= CubeMapFace.NegativeZ; ++nFace)
+                //{
+                //    Surface pFace = g_pCubeMap.GetCubeMapSurface(nFace, 0);
+                //    device.SetRenderTarget(0, pFace);
+                //    Vector3 Dir, VUP;
+                //    Color color;
+                //    switch (nFace)
+                //    {
+                //        default:
+                //        case CubeMapFace.PositiveX:
+                //            // Left
+                //            Dir = new Vector3(1, 0, 0);
+                //            VUP = new Vector3(0, 1, 0);
+                //            color = Color.Black;
+                //            break;
+                //        case CubeMapFace.NegativeX:
+                //            // Right
+                //            Dir = new Vector3(-1, 0, 0);
+                //            VUP = new Vector3(0, 1, 0);
+                //            color = Color.Red;
+                //            break;
+                //        case CubeMapFace.PositiveY:
+                //            // Up
+                //            Dir = new Vector3(0, 1, 0);
+                //            VUP = new Vector3(0, 0, -1);
+                //            color = Color.Gray;
+                //            break;
+                //        case CubeMapFace.NegativeY:
+                //            // Down
+                //            Dir = new Vector3(0, -1, 0);
+                //            VUP = new Vector3(0, 0, 1);
+                //            color = Color.Yellow;
+                //            break;
+                //        case CubeMapFace.PositiveZ:
+                //            // Front
+                //            Dir = new Vector3(0, 0, 1);
+                //            VUP = new Vector3(0, 1, 0);
+                //            color = Color.Green;
+                //            break;
+                //        case CubeMapFace.NegativeZ:
+                //            // Back
+                //            Dir = new Vector3(0, 0, -1);
+                //            VUP = new Vector3(0, 1, 0);
+                //            color = Color.Blue;
+                //            break;
+                //    }
 
                     //    //Obtener ViewMatrix haciendo un LookAt desde la posicion final anterior al centro de la camara
                     Vector3 Pos = ship.Position;
 
-                    //Vector3 aux = GuiController.Instance.RotCamera.getPosition() - GuiController.Instance.RotCamera.getLookAt();
+                    Vector3 refaux = GuiController.Instance.RotCamera.getPosition() - GuiController.Instance.RotCamera.getLookAt();
 
-                    //Vector3 Refl = new Vector3(-aux.X, aux.Y, -aux.Z);
+                    Vector3 Refl = new Vector3(-refaux.X, refaux.Y, -refaux.Z);
 
-                    device.Transform.View = Matrix.LookAtLH(Pos, Pos + Dir, VUP);
+                    device.Transform.View = Matrix.LookAtLH(Pos, Refl, new Vector3(0,-1,0));
                     SkyDome.CalculateMovement();
 
                     device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
@@ -225,13 +225,11 @@ namespace AlumnoEjemplos.SeaSharp
                     Environment.Render();
                     Bola.RenderAll();
                     SkyDome.Render();
-                    SurfaceLoader.Save("prueba.bmp", ImageFileFormat.Bmp, pFace);
+                    SurfaceLoader.Save("prueba.bmp", ImageFileFormat.Bmp, pSurf);
 
                     aux = true;
                     // pSurf.Dispose();
-                string fname = string.Format("face{0:D}.bmp", nFace);
-                SurfaceLoader.Save(fname, ImageFileFormat.Bmp, pFace);
-                }
+                //}
                 //device.BeginScene();
             }
             //    //Renderizar 
@@ -277,9 +275,9 @@ namespace AlumnoEjemplos.SeaSharp
             Bola.RenderAll();
             if (!aux2)
             {
-                Sea.Render(g_pCubeMap, false);
+                Sea.Render(g_pRenderTarget, false);
             }
-            Sea.Render(g_pCubeMap, true);
+            Sea.Render(g_pRenderTarget, true);
             
            
         }

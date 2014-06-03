@@ -25,6 +25,17 @@ sampler2D diffuseMap = sampler_state
 	MIPFILTER = LINEAR;
 };
 
+texture texRender;
+sampler2D renderMap = sampler_state
+{
+	Texture = (texRender);
+	ADDRESSU = MIRROR;
+	ADDRESSV = MIRROR;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+};
+
 texture  g_txCubeMap;
 samplerCUBE g_samCubeMap =
 sampler_state
@@ -59,8 +70,8 @@ float k_ld = 0.4;							// luz difusa
 float k_ls = 1.0;							// luz specular
 float fSpecularPower = 16.84;
 
-float kx = 0.5;							// coef. de reflexion
-float kc = 0.5;
+float kx = 1;							// coef. de reflexion
+float kc = 0;
 
 float time = 0;
 
@@ -268,13 +279,16 @@ void VSCubeMap(float4 Pos : POSITION,
 {
 	float y = calculate_Position(Pos.x, Pos.z);
 
-	float dr = 100;
+	/*float dr = 100;
 
 
 		float heightx = calculate_Position(Pos.x + dr, Pos.z);
 		float heightz = calculate_Position(Pos.x, Pos.z + dr);
 	float3 dx = normalize(float3(dr, heightx - y, 0));
-		float3 dz = normalize(float3(0, heightz - y, dr));
+		float3 dz = normalize(float3(0, heightz - y, dr));*/
+
+	float3 dx = float3(1, 0, 0);
+		float3 dz = float3(0, 0, 1);
 
 		Normal = cross(dz, dx);
 
@@ -333,7 +347,7 @@ float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
 
 	//Obtener el texel de textura
 	float k = 0.60;
-	float4 fvBaseColor = k*texCUBE(g_samCubeMap, EnvTex) +
+	float4 fvBaseColor = k*tex2D(renderMap, EnvTex) +
 		(1 - k)*float4(0.5,0.5,0.5,1);
 		//(1 - k)*tex2D(diffuseMap, Texcoord);
 
@@ -343,9 +357,9 @@ float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
 	float4 color_reflejado = fvBaseColor;
 
 		float4 color_refractado = float4(
-		texCUBE(g_samCubeMap, Tex1).x,
-		texCUBE(g_samCubeMap, Tex2).y,
-		texCUBE(g_samCubeMap, Tex3).z,
+		tex2D(renderMap, Tex1).x,
+		tex2D(renderMap, Tex2).y,
+		tex2D(renderMap, Tex3).z,
 		1);
 	//float4 color_refractado = texCUBE( g_samCubeMap, Tex1);
 
