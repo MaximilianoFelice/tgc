@@ -298,9 +298,12 @@ namespace AlumnoEjemplos.SeaSharp
                 GuiController.Instance.Drawer2D.beginDrawSprite();
 
                 // Barra de vida en pantalla
-                Environment.lifeBar.Scaling = new Vector2(ship.life * Environment.lifeScalingX / 100, Environment.lifeBar.Scaling.Y);
-                Environment.lifeBarBg.render();
-                Environment.lifeBar.render();                
+                if (ship.life >= 0)
+                {
+                    Environment.lifeBar.Scaling = new Vector2(ship.life * Environment.lifeScalingX / 100, Environment.lifeBar.Scaling.Y);
+                    Environment.lifeBarBg.render();
+                    Environment.lifeBar.render(); 
+                }               
 
                 // Nitro
                 Environment.nitroBar.Scaling = new Vector2(ship.nitro * Environment.nitroScalingX / 100, Environment.nitroBar.Scaling.Y);
@@ -323,8 +326,11 @@ namespace AlumnoEjemplos.SeaSharp
                 GuiController.Instance.Drawer2D.endDrawSprite();
 
                 // Texto que indica la cantidad de vida (encima de la barra de vida)
-                Environment.lifeText.Text = (int)ship.life + "/100";
-                Environment.lifeText.render();    
+                if (ship.life >= 0)
+                {
+                    Environment.lifeText.Text = (int)ship.life + "/100";
+                    Environment.lifeText.render();
+                }
             }
 
 

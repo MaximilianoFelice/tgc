@@ -380,12 +380,24 @@ namespace AlumnoEjemplos.SeaSharp{
                 shipSphereAux.moveCenter(movementVector);
                 ship.Move(movementVector);
 
-                //Chequear si el objeto principal en su nueva posición choca con alguno de los objetos de la escena.
+                //Chequear si el objeto principal en su nueva posición choca con alguno de los enemys.
                 bool collisionFound = false;
                 foreach (EnemyFleet enemy in EnemyFleet.Enemies)
                 {
                     //Ejecutar algoritmo de detección de colisiones
                     collisionFound = TgcCollisionUtils.testSphereSphere(shipSphereAux, enemy.enemySphere);
+
+                    //Hubo colisión con un objeto. Guardar resultado y abortar loop.
+                    if (collisionFound)
+                    {
+                        break;
+                    }
+                }
+
+                foreach (Island island in Island.Islands)
+                {
+                    //Ejecutar algoritmo de detección de colisiones
+                    collisionFound = TgcCollisionUtils.testSphereSphere(shipSphereAux, island.islandSphere);
 
                     //Hubo colisión con un objeto. Guardar resultado y abortar loop.
                     if (collisionFound)
