@@ -80,7 +80,7 @@ namespace AlumnoEjemplos.SeaSharp{
             // calculo de la onda (movimiento grande)
             float ola = FastMath.Sin(u * 2.0f * 3.14159f * 2.0f + time/2) * FastMath.Cos(v * 2.0f * 3.14159f * 2.0f + time/2);
 
-            ship.Position(new Vector3(this.Position.X, 1 * ola * 160, this.Position.Z));
+            ship.Position(new Vector3(this.Position.X, 1 * ola * 150, this.Position.Z));
         }
 
     }

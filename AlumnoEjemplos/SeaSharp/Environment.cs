@@ -30,7 +30,7 @@ namespace AlumnoEjemplos.SeaSharp
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
             //Cargar terreno: cargar heightmap y textura de color
-            Vector3 Island_Pos = new Vector3(0, -100, 0);
+            Vector3 Island_Pos = new Vector3(0, -150, 0);
             surroundingArea.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\islandGrande2.jpg", 157, 5, Island_Pos);
             surroundingArea.loadTexture(GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
 
@@ -40,8 +40,9 @@ namespace AlumnoEjemplos.SeaSharp
             palmeras.Scale(new Vector3(5, 5, 5));
             palmeras.Move(new Vector3(4300, 100, 4300));
 
-            islands.Add(new Island(new Vector3(100, 0, 100)));
-            islands.Add(new Island(new Vector3(-70, 0, -150)));
+            islands.Add(new Island(new Vector3(100, -50, 100)));
+            islands.Add(new Island(new Vector3(-10, -50, -50)));
+            islands.Add(new Island(new Vector3(70, -50, 150)));
 
 
 

@@ -221,7 +221,7 @@ namespace AlumnoEjemplos.SeaSharp
                    
 
                     //SkyDome.Close();
-                    EnemyFleet.RenderAll();
+                    
                     Environment.Render();
                     Bola.RenderAll();
                     SkyDome.Render();
@@ -241,6 +241,9 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.RotCamera.CameraCenter = ship.Position; //TODO: Make camara follow rotation
 
             device.SetRenderTarget(0, pOldRT);
+
+            EnemyFleet.RenderAll();
+
             GuiController.Instance.CurrentCamera.updateViewMatrix(device);
             device.Transform.Projection =
                Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),

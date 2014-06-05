@@ -370,7 +370,7 @@ float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
 		1);
 	//float4 color_refractado = texCUBE( g_samCubeMap, Tex1);
 
-		//return color_reflejado*kx + color_refractado*kc;
+		return color_reflejado*kx + color_refractado*kc;
 	return float4(N, 1);
 	//return color_refractado;
 	//return color_reflejado;

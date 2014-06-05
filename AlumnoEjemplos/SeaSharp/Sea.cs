@@ -20,7 +20,11 @@ namespace AlumnoEjemplos.SeaSharp
     public static class Sea
     {
 
+        public static int irender = 1;
         public static QuadList water;   // The soon-to-be-a-custom-vertex... thing.
+        public static QuadList water2;   // The soon-to-be-a-custom-vertex... thing.
+        public static QuadList water3;   // The soon-to-be-a-custom-vertex... thing.
+        public static QuadList water4;   // The soon-to-be-a-custom-vertex... thing.
 
         public static float time = 0f;
         public static float ambient, diffuse, specular, specularPower;
@@ -30,13 +34,26 @@ namespace AlumnoEjemplos.SeaSharp
         public static void Load()
         {
 
-            Vector3 center = new Vector3(0, -30, 0);
+            Vector3 center = new Vector3(-2000, 0, -2000);
 
             water = new QuadList(center, 4000, Color.Blue, 200);
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua.png");
             water.Technique = "RenderCubeMap";
+
+
+            water2 = new QuadList(center + new Vector3(0, 0, 4000), 4000, Color.Blue, 200);
+            water2.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
+            water2.Technique = "RenderCubeMap";
+
+            water3 = new QuadList(center + new Vector3(4000, 0, 0), 4000, Color.Blue, 200);
+            water3.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
+            water3.Technique = "RenderCubeMap";
+
+            water4 = new QuadList(center + new Vector3(4000, 0, 4000), 4000, Color.Blue, 200);
+            water4.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
+            water4.Technique = "RenderCubeMap";
 
             lightPos = new Vector3(0, 10000, 0);
             ambient = 0.7f;
@@ -53,11 +70,37 @@ namespace AlumnoEjemplos.SeaSharp
 
         public static void Render(CubeTexture surf, bool aux)
         {         
-                   
-            water.Effect.SetValue("time", time);
-       
             Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
+            
+            SetWaterValues(ref water, surf, aux);
+            SetWaterValues(ref water2, surf, aux);
+            SetWaterValues(ref water3, surf, aux);
+            SetWaterValues(ref water4, surf, aux);
 
+            device.RenderState.AlphaBlendEnable = true;
+
+            // Alternamos los renderizados (no se percibe por la velocidad)
+            if (irender == 1)
+            {
+                irender = 0;
+                // Renderizamos las aguas de la izquierda
+                water2.Render();
+                water4.Render(); 
+            }
+            else if (irender == 0)
+            {
+                irender = 1;
+                // Renderizamos las aguas de la derecha
+                water.Render();
+                water3.Render();
+            }
+            
+            
+
+        }
+
+        private static void SetWaterValues(ref QuadList water, CubeTexture surf, bool aux)
+        {
             //Cargar variables de shader
             water.Effect.SetValue("time", time);
             water.Effect.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPos));
@@ -74,11 +117,6 @@ namespace AlumnoEjemplos.SeaSharp
                 //water.Technique = "RenderCubeMap";
                 //water.Render();
             }
-            //water.Technique = "RenderScene";
-            device.RenderState.AlphaBlendEnable = true;
-
-            water.Render();
-
         }
         public static void Close()
         {
