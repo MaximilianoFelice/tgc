@@ -153,6 +153,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             return dividedQuads;
         }
+
     }
 
 }

@@ -20,7 +20,7 @@ namespace AlumnoEjemplos.SeaSharp
     public static class Sea
     {
 
-        public static QuadList water;   // The soon-to-be-a-custom-vertex... thing.
+        public static QuadTree water;   // The soon-to-be-a-custom-vertex... thing.
 
         public static float time = 0f;
         public static float ambient, diffuse, specular, specularPower;
@@ -32,7 +32,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             Vector3 center = new Vector3(0, -30, 0);
 
-            water = new QuadList(center, 4000, Color.Blue, 150);
+            water = QuadTree.generateNewQuad(center, 4000, Color.Blue, 200);
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua.png");
