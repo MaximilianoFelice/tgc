@@ -161,7 +161,7 @@ void VSCubeMap2(float4 Pos : POSITION,
 	float3 dx = normalize(float3(dr, heightx - oPos.y, 0));
 		float3 dz = normalize(float3(0, heightz - oPos.y, dr));
 
-		normal = cross(dx, dz);
+		normal = cross(dz, dx);
 
 	oPos = mul(oPos, matWorldViewProj);
 	//PosAux = mul(PosAux, matWorld);
@@ -370,8 +370,8 @@ float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
 		1);
 	//float4 color_refractado = texCUBE( g_samCubeMap, Tex1);
 
-		return color_reflejado*kx + color_refractado*kc;
-
+		//return color_reflejado*kx + color_refractado*kc;
+	return float4(N, 1);
 	//return color_refractado;
 	//return color_reflejado;
 }
