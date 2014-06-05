@@ -37,7 +37,7 @@ namespace AlumnoEjemplos.SeaSharp
         public Texture g_pRenderTarget;
 
         public static Surface pOldRT;
-        public static bool aux = false;
+        public static int aux = 1;
         public static bool aux2 = false;
         public static Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
              CubeTexture g_pCubeMap = new CubeTexture(device, 256, 1, Usage.RenderTarget,
@@ -140,7 +140,7 @@ namespace AlumnoEjemplos.SeaSharp
             //////////////////////////////////////
             Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
 
-            if (aux == false)
+            if (aux % 1 == 0)
             {
            
                 //g_pRenderTarget = new Texture(device, device.PresentationParameters.BackBufferWidth
@@ -154,7 +154,7 @@ namespace AlumnoEjemplos.SeaSharp
                 //// asi que re-genero la matriz de proyeccion
                 device.Transform.Projection =
                     Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(90.0f),
-                        1f, 1f, 10000f);
+                        1f, zNearPlaneDistance, zFarPlaneDistance);
 
                 //device.SetRenderTarget(0, pSurf);
 
@@ -208,6 +208,7 @@ namespace AlumnoEjemplos.SeaSharp
 
                     //    //Obtener ViewMatrix haciendo un LookAt desde la posicion final anterior al centro de la camara
                     Vector3 Pos = ship.Position;
+                    
 
                     //Vector3 aux = GuiController.Instance.RotCamera.getPosition() - GuiController.Instance.RotCamera.getLookAt();
 
@@ -217,20 +218,21 @@ namespace AlumnoEjemplos.SeaSharp
 
                     device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
 
-             
-                   
+
+
+                    SkyDome.CalculateMovement();
 
                     //SkyDome.Close();
+                    SkyDome.Render();
                     EnemyFleet.RenderAll();
+                    //ship.Render();
                     Environment.Render();
                     Bola.RenderAll();
-                    SkyDome.Render();
-                    SurfaceLoader.Save("prueba.bmp", ImageFileFormat.Bmp, pFace);
+                    //SurfaceLoader.Save("prueba.bmp", ImageFileFormat.Bmp, pFace);
 
-                    aux = true;
                     // pSurf.Dispose();
-                string fname = string.Format("face{0:D}.bmp", nFace);
-                SurfaceLoader.Save(fname, ImageFileFormat.Bmp, pFace);
+                //string fname = string.Format("face{0:D}.bmp", nFace);
+                //SurfaceLoader.Save(fname, ImageFileFormat.Bmp, pFace);
                 }
                 //device.BeginScene();
             }
@@ -260,7 +262,6 @@ namespace AlumnoEjemplos.SeaSharp
             Sea.CalculateMovement(elapsedTime);
             //GuiController.Instance.Frustum.FarPlane 
 
-            SkyDome.CalculateMovement();
 
             /* Preparamos el device para aplicar shaders */
 
@@ -275,11 +276,17 @@ namespace AlumnoEjemplos.SeaSharp
             EnemyFleet.RenderAll();
             Environment.Render();
             Bola.RenderAll();
-            if (!aux2)
+            //if (!aux2)
+            //{
+            //    Sea.Render(g_pCubeMap, false);
+            //}
+            Sea.Render(g_pCubeMap, false);
+
+            aux++;
+            if (aux >= 3)
             {
-                Sea.Render(g_pCubeMap, false);
+                aux = 1;
             }
-            Sea.Render(g_pCubeMap, true);
             
            
         }
