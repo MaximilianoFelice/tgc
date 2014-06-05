@@ -91,22 +91,22 @@ struct VS_OUTPUT
 float calculate_Position(float x, float z)
 {
 
-	float y = 250;
+	float y = -150;
 
-	float u = (x / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
-	float v = (z / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
+	float u = (x / 150 + 4000 / 150) / (2 * (4000 / 150) + 1);
+	float v = (z / 150 + 4000 / 150) / (2 * (4000 / 150) + 1);
 
 	// calculo de la onda (movimiento grande)
 	float ola = sin(u * 2 * 3.14159 * 2 + time) * cos(v * 2 * 3.14159 * 2 + time);
 	float ola2 = clamp(sin(u * 20 * 3.14159 * 2 + time/2) * cos(v * 20 * 3.14159 * 2 + time/2),0.5,1);
 
-	y =  ola * 150;
+	y = y + ola * 150;
 
 	float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
 
-	y = y - height * 250;
+	y = y + height * 250;
 	return y;
-	//return 100;
+	
 }
 
 //float3 calculate_Normal(float3 posInit, float time){
@@ -152,7 +152,7 @@ void VSCubeMap2(float4 Pos : POSITION,
 	oPos = Pos;
 	oPos.y = calculate_Position(Pos.x, Pos.z); //se lo aplicamos al eje y
 
-	float dr = 10;
+	float dr = 15;
 
 	//Proyectar posicion
 	float4 PosAux = oPos;
@@ -188,6 +188,129 @@ void VSCubeMap2(float4 Pos : POSITION,
 	N = vN;
 
 }
+
+
+float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
+	float3 N : TEXCOORD1,
+	float3 Texcoord : TEXCOORD2,
+	float3 Tex1 : TEXCOORD3,
+	float3 Tex2 : TEXCOORD4,
+	float3 Tex3 : TEXCOORD5,
+	//float Fresnel : COLOR,
+	float3 wPos : TEXCOORD6
+	) : COLOR0
+{
+	float ld = 0;		// luz difusa
+	float le = 0;		// luz specular
+
+	N = normalize(N);
+
+	// 1- calculo la luz diffusa
+	float3 LD = normalize(fvLightPosition - wPos);
+		ld += saturate(dot(N, LD))*k_ld;
+
+	// 2- calcula la reflexion specular
+	float3 D = normalize(wPos - fvEyePosition);
+		float ks = saturate(dot(reflect(LD, N), D));
+	ks = pow(ks, fSpecularPower);
+	le += ks*k_ls;
+
+	//Obtener el texel de textura
+	float k = 0.60;
+	float4 fvBaseColor = k*texCUBE(g_samCubeMap, EnvTex) +
+		(1 - k)*float4(0.5, 0.5, 0.5, 1);
+	//(1 - k)*tex2D(diffuseMap, Texcoord);
+
+	// suma luz diffusa, ambiente y especular
+	fvBaseColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
+	fvBaseColor.a = 0.8;
+	float4 color_reflejado = fvBaseColor;
+
+		float4 color_refractado = float4(
+		texCUBE(g_samCubeMap, Tex1).x,
+		texCUBE(g_samCubeMap, Tex2).y,
+		texCUBE(g_samCubeMap, Tex3).z,
+		1);
+	//float4 color_refractado = texCUBE( g_samCubeMap, Tex1);
+
+	return color_reflejado*kx + color_refractado*kc;
+	//return float4(N, 1);
+	//return color_refractado;
+	//return color_reflejado;
+}
+
+
+technique RenderCubeMap
+{
+	pass p0
+	{
+		VertexShader = compile vs_3_0 VSCubeMap2();
+		PixelShader = compile ps_3_0 PSCubeMap();
+	}
+}
+
+
+
+
+/**************************************************************************************/
+/* RenderCubeMap */
+/**************************************************************************************/
+void VSCubeMap(float4 Pos : POSITION,
+	float3 Normal : NORMAL,
+	float2 Texcoord : TEXCOORD0,
+	out float4 oPos : POSITION,
+	out float3 EnvTex : TEXCOORD0,
+	out float2 Tex : TEXCOORD2,
+	out float3 N : TEXCOORD1,
+	out float3 EnvTex1 : TEXCOORD3,
+	out float3 EnvTex2 : TEXCOORD4,
+	out float3 EnvTex3 : TEXCOORD5,
+	out float3 wPos : TEXCOORD6
+	//out float  Fresnel : COLOR
+	)
+{
+	/*float y = calculate_Position(Pos.x, Pos.z);
+
+	float dr = 100;
+
+
+		float heightx = calculate_Position(Pos.x + dr, Pos.z);
+		float heightz = calculate_Position(Pos.x, Pos.z + dr);
+	float3 dx = normalize(float3(dr, heightx - y, 0));
+		float3 dz = normalize(float3(0, heightz - y, dr));*/
+
+	float3 dx = float3(1, 0, 0);
+		float3 dz = float3(0, 0, 1);
+
+		Normal = cross(dz, dx);
+
+	wPos = mul(Pos, matWorld);
+	float3 vEyeR = normalize(wPos - fvEyePosition);
+
+		// corrijo la normal (depende de la malla)
+		// ej. el tanque esta ok, la esfera esta invertida.
+		//Normal*= -1;
+		float3 vN = mul(Normal, (float3x3)matWorld);
+		vN = normalize(vN);
+	EnvTex = reflect(vEyeR, vN);
+
+	// Refraccion de la luz
+	EnvTex1 = refract(vEyeR, vN, 1.001);
+	EnvTex2 = refract(vEyeR, vN, 1.009);
+	EnvTex3 = refract(vEyeR, vN, 1.02);
+	//Fresnel = FBias + FEscala*pow(1 + dot(vEyeR, vN), FPower);
+
+	// proyecto
+	oPos = mul(Pos, matWorldViewProj);
+
+	//Propago la textura
+	Tex = Texcoord;
+
+	//Propago la normal
+	N = vN;
+
+}
+
 
 
 
@@ -255,8 +378,6 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 	return RGBColor;
 }
 
-
-
 technique RenderScene
 {
 	pass Pass_0
@@ -266,123 +387,3 @@ technique RenderScene
 	}
 
 }
-
-/**************************************************************************************/
-/* RenderCubeMap */
-/**************************************************************************************/
-void VSCubeMap(float4 Pos : POSITION,
-	float3 Normal : NORMAL,
-	float2 Texcoord : TEXCOORD0,
-	out float4 oPos : POSITION,
-	out float3 EnvTex : TEXCOORD0,
-	out float2 Tex : TEXCOORD2,
-	out float3 N : TEXCOORD1,
-	out float3 EnvTex1 : TEXCOORD3,
-	out float3 EnvTex2 : TEXCOORD4,
-	out float3 EnvTex3 : TEXCOORD5,
-	out float3 wPos : TEXCOORD6
-	//out float  Fresnel : COLOR
-	)
-{
-	/*float y = calculate_Position(Pos.x, Pos.z);
-
-	float dr = 100;
-
-
-		float heightx = calculate_Position(Pos.x + dr, Pos.z);
-		float heightz = calculate_Position(Pos.x, Pos.z + dr);
-	float3 dx = normalize(float3(dr, heightx - y, 0));
-		float3 dz = normalize(float3(0, heightz - y, dr));*/
-
-	float3 dx = float3(1, 0, 0);
-		float3 dz = float3(0, 0, 1);
-
-		Normal = cross(dz, dx);
-
-	wPos = mul(Pos, matWorld);
-	float3 vEyeR = normalize(wPos - fvEyePosition);
-
-		// corrijo la normal (depende de la malla)
-		// ej. el tanque esta ok, la esfera esta invertida.
-		//Normal*= -1;
-		float3 vN = mul(Normal, (float3x3)matWorld);
-		vN = normalize(vN);
-	EnvTex = reflect(vEyeR, vN);
-
-	// Refraccion de la luz
-	EnvTex1 = refract(vEyeR, vN, 1.001);
-	EnvTex2 = refract(vEyeR, vN, 1.009);
-	EnvTex3 = refract(vEyeR, vN, 1.02);
-	//Fresnel = FBias + FEscala*pow(1 + dot(vEyeR, vN), FPower);
-
-	// proyecto
-	oPos = mul(Pos, matWorldViewProj);
-
-	//Propago la textura
-	Tex = Texcoord;
-
-	//Propago la normal
-	N = vN;
-
-}
-
-
-float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
-	float3 N : TEXCOORD1,
-	float3 Texcoord : TEXCOORD2,
-	float3 Tex1 : TEXCOORD3,
-	float3 Tex2 : TEXCOORD4,
-	float3 Tex3 : TEXCOORD5,
-	//float Fresnel : COLOR,
-	float3 wPos : TEXCOORD6
-	) : COLOR0
-{
-	float ld = 0;		// luz difusa
-	float le = 0;		// luz specular
-
-	N = normalize(N);
-
-	// 1- calculo la luz diffusa
-	float3 LD = normalize(fvLightPosition - wPos);
-		ld += saturate(dot(N, LD))*k_ld;
-
-	// 2- calcula la reflexion specular
-	float3 D = normalize(wPos - fvEyePosition);
-		float ks = saturate(dot(reflect(LD, N), D));
-	ks = pow(ks, fSpecularPower);
-	le += ks*k_ls;
-
-	//Obtener el texel de textura
-	float k = 0.60;
-	float4 fvBaseColor = k*texCUBE(g_samCubeMap, EnvTex) +
-		(1 - k)*float4(0.5,0.5,0.5,1);
-		//(1 - k)*tex2D(diffuseMap, Texcoord);
-
-	// suma luz diffusa, ambiente y especular
-	fvBaseColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
-	fvBaseColor.a = 0.8;
-	float4 color_reflejado = fvBaseColor;
-
-		float4 color_refractado = float4(
-		texCUBE(g_samCubeMap, Tex1).x,
-		texCUBE(g_samCubeMap, Tex2).y,
-		texCUBE(g_samCubeMap, Tex3).z,
-		1);
-	//float4 color_refractado = texCUBE( g_samCubeMap, Tex1);
-
-		//return color_reflejado*kx + color_refractado*kc;
-	return float4(N, 1);
-	//return color_refractado;
-	//return color_reflejado;
-}
-
-
-technique RenderCubeMap
-{
-	pass p0
-	{
-		VertexShader = compile vs_3_0 VSCubeMap2();
-		PixelShader = compile ps_3_0 PSCubeMap();
-	}
-}
-

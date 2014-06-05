@@ -194,7 +194,7 @@ namespace AlumnoEjemplos.SeaSharp{
                 -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward
                 );
             ship.Move(movementVector);
-            //this.reCalculateHeight(elapsedTime);
+            this.reCalculateHeight(elapsedTime);
 
             #endregion
         }
