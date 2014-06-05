@@ -29,6 +29,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             skyBox.Center = new Vector3(0, 0, 0);
             skyBox.Size = new Vector3(20000, 20000, 20000);
+
             texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Sky\\";
             SetFaceTextures();
         }
@@ -41,6 +42,7 @@ namespace AlumnoEjemplos.SeaSharp
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "der2.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "izq.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "der.jpg");
+
             skyBox.updateValues();
         }
 
@@ -49,6 +51,7 @@ namespace AlumnoEjemplos.SeaSharp
         {
             skyBox.Center = GuiController.Instance.RotCamera.getPosition();
             skyBox.updateValues();
+         
         }
 
         public static void Render()
