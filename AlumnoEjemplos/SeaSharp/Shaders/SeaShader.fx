@@ -36,16 +36,15 @@ sampler_state
 };
 
 
-texture aux_Tex;
-sampler2D auxMap =
-sampler_state
+texture superficieAgua;
+sampler heightmap = sampler_state
 {
-	Texture = (aux_Tex);
-	ADDRESSU = MIRROR;
-	ADDRESSV = MIRROR;
-	MINFILTER = LINEAR;
-	MAGFILTER = LINEAR;
-	MIPFILTER = LINEAR;
+	Texture = <superficieAgua>;
+	MIPFILTER = Point;
+	MINFILTER = Point;
+	MAGFILTER = Point;
+	ADDRESSU = Clamp;
+	ADDRESSV = Clamp;
 };
 
 
@@ -92,19 +91,20 @@ struct VS_OUTPUT
 float calculate_Position(float x, float z)
 {
 
-	float y = 1;
+	float y = 250;
 
 	float u = (x / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
 	float v = (z / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
 
 	// calculo de la onda (movimiento grande)
 	float ola = sin(u * 2 * 3.14159 * 2 + time) * cos(v * 2 * 3.14159 * 2 + time);
+	float ola2 = clamp(sin(u * 20 * 3.14159 * 2 + time/2) * cos(v * 20 * 3.14159 * 2 + time/2),0.5,1);
 
-	y = y * ola * 200;
+	y =  ola * 150;
 
-	//float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
+	float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
 
-	//y = y + height * float(50);
+	y = y - height * 250;
 	return y;
 	//return 100;
 }
@@ -152,7 +152,7 @@ void VSCubeMap2(float4 Pos : POSITION,
 	oPos = Pos;
 	oPos.y = calculate_Position(Pos.x, Pos.z); //se lo aplicamos al eje y
 
-	float dr = 100;
+	float dr = 10;
 
 	//Proyectar posicion
 	float4 PosAux = oPos;
