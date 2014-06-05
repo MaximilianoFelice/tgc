@@ -275,11 +275,8 @@ namespace AlumnoEjemplos.SeaSharp
             EnemyFleet.RenderAll();
             Environment.Render();
             Bola.RenderAll();
-            if (!aux2)
-            {
-                Sea.Render(g_pCubeMap, false);
-            }
-            Sea.Render(g_pCubeMap, true);
+
+            Sea.Render(g_pCubeMap, GuiController.Instance.Frustum);
             
            
         }

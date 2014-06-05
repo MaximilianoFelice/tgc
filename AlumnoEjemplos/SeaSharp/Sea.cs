@@ -32,7 +32,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             Vector3 center = new Vector3(0, -30, 0);
 
-            water = QuadTree.generateNewQuad(center, 4000, Color.Blue, 200);
+            water = QuadTree.generateNewQuad(center, 8000, Color.Blue, 150);
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua.png");
@@ -51,7 +51,7 @@ namespace AlumnoEjemplos.SeaSharp
             time += elapsedTime;
         }
 
-        public static void Render(CubeTexture surf, bool aux)
+        public static void Render(CubeTexture surf, TgcFrustum frustum)
         {         
                    
             water.Effect.SetValue("time", time);
@@ -68,16 +68,11 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("k_ls", specular);
             water.Effect.SetValue("fSpecularPower", specularPower);
             water.Effect.SetValue("superficieAgua", texture);
-            if (!aux)
-            {
-                water.Effect.SetValue("g_txCubeMap", surf);
-                //water.Technique = "RenderCubeMap";
-                //water.Render();
-            }
-            //water.Technique = "RenderScene";
+            water.Effect.SetValue("g_txCubeMap", surf);
+
             device.RenderState.AlphaBlendEnable = true;
 
-            water.Render();
+            water.Render(frustum);
 
         }
         public static void Close()

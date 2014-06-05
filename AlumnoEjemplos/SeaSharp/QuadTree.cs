@@ -13,6 +13,7 @@ using TgcViewer.Utils.Input;
 using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Shaders;
+using TgcViewer.Utils.TgcGeometry;
 
 namespace AlumnoEjemplos.SeaSharp
 {
@@ -25,6 +26,8 @@ namespace AlumnoEjemplos.SeaSharp
         public static int _density;    // TODO: Implement triangle density constructor
         public static Color _color;
         public Vector3 _center;
+        public float LODI = 1000;
+        public float LODII = 4000;
 
         public static QuadTree generateNewQuad(Vector3 center, int triangleSize, Color color, int module)
         {
@@ -78,7 +81,7 @@ namespace AlumnoEjemplos.SeaSharp
 
         }
 
-        public void Render()
+        public void Render(TgcFrustum frustum)
         {
             if (quadList == null)
             {
@@ -86,8 +89,40 @@ namespace AlumnoEjemplos.SeaSharp
             }
             else
             {
-                foreach (QuadTree quadTree in quadList) quadTree.Render();
+                foreach (QuadTree quadTree in quadList)
+                {
+                    TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult test = testChildVisibility(quadTree, frustum);
+                    if (test == TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.INSIDE) quadTree.RenderAll();
+                    if (test == TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.INTERSECT) quadTree.Render(frustum);
+                }
             }
+        }
+
+        public void RenderAll()
+        {
+            if (quadList == null)
+            {
+                _quad.render();
+            }
+            else
+            {
+                foreach (QuadTree quadTree in quadList)
+                {
+                   quadTree.RenderAll();
+                }
+            }
+        }
+
+        public TgcCollisionUtils.FrustumResult testChildVisibility(QuadTree quadTree, TgcFrustum frustum)
+        {
+
+            Vector3 maxPoint = new Vector3(quadTree._quad.Center.X - quadTree._quad.Size.X / 2, quadTree._quad.Center.Y, quadTree._quad.Center.Z - quadTree._quad.Size.Y / 2);
+            Vector3 minPoint = new Vector3(quadTree._quad.Center.X + quadTree._quad.Size.X / 2, quadTree._quad.Center.Y - 1, quadTree._quad.Center.Z + quadTree._quad.Size.Y / 2);
+            TgcBoundingBox quadBox = new TgcBoundingBox(maxPoint, minPoint);
+
+            TgcCollisionUtils.FrustumResult res = TgcCollisionUtils.classifyFrustumAABB(frustum, quadBox);
+
+            return res;
         }
 
         public void Dispose()
