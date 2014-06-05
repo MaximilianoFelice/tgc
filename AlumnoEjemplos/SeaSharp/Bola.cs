@@ -107,7 +107,7 @@ namespace AlumnoEjemplos.SeaSharp
                 else
                 {
                     bola.render();
-                    bola.BoundingBox.render();
+                    //bola.BoundingBox.render();
                 }
             }
         }

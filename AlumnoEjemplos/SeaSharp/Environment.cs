@@ -59,6 +59,8 @@ namespace AlumnoEjemplos.SeaSharp
 
         public static TgcSprite FlagBlack;
 
+        public static List<TgcBox> obstaculos;
+
         // public static int limit = 250; // Establece el limite del skybox y lo ajusta a la escala (20)
 
         // public static int differential = 35; // Establece la diferencia entre islas, esta en funcion de la escala de las mismas (20)
@@ -154,6 +156,45 @@ namespace AlumnoEjemplos.SeaSharp
             // Islas
             islands.Add(new Island(new Vector3(100, 0, 100)));
             islands.Add(new Island(new Vector3(-70, 0, -150)));
+
+            //Cargar obstaculos y posicionarlos. Los obstáculos se crean con TgcBox en lugar de cargar un modelo.
+            obstaculos = new List<TgcBox>();
+            TgcBox obstaculo;
+
+
+            float wallSize = 8000;
+            float wallHeight = 50;
+
+            //Obstaculo 1
+            obstaculo = TgcBox.fromExtremes(
+                new Vector3(0, 0, 0),
+                new Vector3(wallSize, wallHeight, 10),
+                TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\baldosaFacultad.jpg"));
+            obstaculo.move(-4000, 0, -4000);
+            obstaculos.Add(obstaculo);
+
+            //Obstaculo 2
+            obstaculo = TgcBox.fromExtremes(
+                new Vector3(0, 0, 0),
+                new Vector3(10, wallHeight, wallSize),
+                TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\madera.jpg"));
+            obstaculo.move(-4000, 0, -4000);
+            obstaculos.Add(obstaculo);
+
+            //Obstaculo 3
+            obstaculo = TgcBox.fromExtremes(
+                new Vector3(0, 0, wallSize),
+                new Vector3(wallSize, wallHeight, wallSize + 10),
+                TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\granito.jpg"));
+            obstaculo.move(-4000, 0, -4000);
+            obstaculos.Add(obstaculo);
+
+            //Obstaculo 4
+            obstaculo = TgcBox.fromExtremes(
+                new Vector3(wallSize, 0, 0),
+                new Vector3(wallSize + 10, wallHeight, wallSize));
+            obstaculo.move(-4000, 0, -4000);
+            obstaculos.Add(obstaculo);
             
 
             /* LOGICA DEPRECIADA: Reducia mucho los FPS*/
@@ -241,6 +282,12 @@ namespace AlumnoEjemplos.SeaSharp
             foreach (Island island in islands) island.Render();
             surroundingArea.render();
             palmeras.renderAll();
+            
+            /*//Render de obstaculos
+            foreach (TgcBox obstaculo in obstaculos)
+            {
+                obstaculo.render();
+            }*/
 
         }
 
@@ -249,6 +296,10 @@ namespace AlumnoEjemplos.SeaSharp
             foreach (Island island in islands) island.Close();
             surroundingArea.dispose();
             palmeras.renderAll();
+            foreach (TgcBox obstaculo in obstaculos)
+            {
+                obstaculo.dispose();
+            }
         }
     }
 }

@@ -101,8 +101,8 @@ namespace AlumnoEjemplos.SeaSharp{
             else if (life <= 25)
                 lifeBar.setTexture(TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarRed.png"));
 
-            if (shipSphere != null) shipSphere.render();
-            if (enemySphere != null) enemySphere.render();
+            //if (shipSphere != null) shipSphere.render();
+            //if (enemySphere != null) enemySphere.render();
             ship.renderAll();
             
         }
@@ -381,33 +381,48 @@ namespace AlumnoEjemplos.SeaSharp{
                 ship.Move(movementVector);
 
                 //Chequear si el objeto principal en su nueva posición choca con alguno de los enemys.
-                bool collisionFound = false;
+                bool collisionFound1 = false;
                 foreach (EnemyFleet enemy in EnemyFleet.Enemies)
                 {
                     //Ejecutar algoritmo de detección de colisiones
-                    collisionFound = TgcCollisionUtils.testSphereSphere(shipSphereAux, enemy.enemySphere);
+                    collisionFound1 = TgcCollisionUtils.testSphereSphere(shipSphereAux, enemy.enemySphere);
 
                     //Hubo colisión con un objeto. Guardar resultado y abortar loop.
-                    if (collisionFound)
+                    if (collisionFound1)
                     {
                         break;
                     }
                 }
 
+                bool collisionFound2 = false;
                 foreach (Island island in Island.Islands)
                 {
                     //Ejecutar algoritmo de detección de colisiones
-                    collisionFound = TgcCollisionUtils.testSphereSphere(shipSphereAux, island.islandSphere);
+                    collisionFound2 = TgcCollisionUtils.testSphereSphere(shipSphereAux, island.islandSphere);
 
                     //Hubo colisión con un objeto. Guardar resultado y abortar loop.
-                    if (collisionFound)
+                    if (collisionFound2)
                     {
                         break;
                     }
                 }
 
+                bool collisionFound3 = false;
+                foreach (TgcBox box in Environment.obstaculos)
+                {
+                    //Ejecutar algoritmo de detección de colisiones
+                    collisionFound3 = TgcCollisionUtils.testSphereAABB(shipSphereAux, box.BoundingBox);
+
+                    //Hubo colisión con un objeto. Guardar resultado y abortar loop.
+                    if (collisionFound3)
+                    {
+                        break;
+                    }
+                }
+
+
                 //Si hubo alguna colisión, entonces restaurar la posición original del mesh (el bounding sphere original no lo movimos)
-                if (collisionFound)
+                if (collisionFound1 || collisionFound2 || collisionFound3)
                 {
                     this.Position = originalPos;
                 }
