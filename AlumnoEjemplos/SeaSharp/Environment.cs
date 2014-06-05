@@ -30,7 +30,7 @@ namespace AlumnoEjemplos.SeaSharp
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
             //Cargar terreno: cargar heightmap y textura de color
-            Vector3 Island_Pos = new Vector3(0, -100, 0);
+            Vector3 Island_Pos = new Vector3(0, -110, 0);
             surroundingArea.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\islandGrande2.jpg", 157, 5, Island_Pos);
             surroundingArea.loadTexture(GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
 
@@ -44,32 +44,6 @@ namespace AlumnoEjemplos.SeaSharp
             islands.Add(new Island(new Vector3(-70, 0, -150)));
 
 
-
-            /* LOGICA DEPRECIADA: Reducia mucho los FPS*/
-            // TODO: Borrar cuando llegue el nuevo terrain.
-
-            //int upper_limit = limit;
-            //int side_limit = limit;
-
-            //for (; upper_limit > (-1) * limit; upper_limit -= differential)
-            //{
-            //    islands.Add(new Island (new Vector3(upper_limit, 0, side_limit)));
-            //}
-
-            //for (; side_limit > (-1) * limit; side_limit -= differential)
-            //{
-            //    islands.Add(new Island(new Vector3(upper_limit, 0, side_limit)));
-            //}
-
-            //for (; upper_limit < limit; upper_limit += differential)
-            //{
-            //    islands.Add(new Island(new Vector3(upper_limit, 0, side_limit)));
-            //}
-
-            //for (; side_limit < limit; side_limit += differential)
-            //{
-            //    islands.Add(new Island(new Vector3(upper_limit, 0, side_limit)));
-            //}
         }
 
         public static void Render(){

@@ -101,7 +101,7 @@ namespace AlumnoEjemplos.SeaSharp
             
             bola.move(_Velocity);   // TODO: Aclarar que es cada valor en esta linea. En lo posible pasarlos a constantes mas expresivas.   
 
-            if((bola.Position.Y) < 0f)
+            if((bola.Position.Y) < -50f)
             {
                 this.Dispose();
             }
