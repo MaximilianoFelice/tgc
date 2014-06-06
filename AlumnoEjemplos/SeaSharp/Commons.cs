@@ -79,6 +79,21 @@ namespace AlumnoEjemplos.SeaSharp
             foreach (TgcMesh Mesh in Scene.Meshes) Mesh.rotateY(Angle);
         }
 
+        public static void RotateX(this TgcScene Scene, float Angle)
+        {
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.rotateX(Angle);
+        }
+
+        public static void RotateZ(this TgcScene Scene, float Angle)
+        {
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.rotateZ(Angle);
+        }
+
+        public static void RotatationZ(this TgcScene Scene, float Angle)
+        {
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Rotation = new Vector3(Mesh.Rotation.X, Mesh.Rotation.Y, Angle);
+        }
+
         public static void copyShipRotationY(this TgcScene Scene, Ship targetShip)
         {
             //foreach (TgcMesh Mesh in Scene.Meshes)
@@ -100,10 +115,21 @@ namespace AlumnoEjemplos.SeaSharp
             return (Scene.Meshes[0].Rotation.X);
         }
 
+        public static float RotationZ(this TgcScene Scene)
+        {
+            return (Scene.Meshes[0].Rotation.Z);
+        }
+
         public static void Scale(this TgcScene Scene, Vector3 ScaleVector)
         {
             foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Scale = (ScaleVector);
         }
+
+        public static void SetNormal(this TgcScene Scene, Vector3 Normal)
+        {
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Rotation = new Vector3(-Normal.X, Mesh.Rotation.Y, Normal.Z);
+        }
+
         #endregion
     #endregion
 

@@ -54,7 +54,7 @@ namespace AlumnoEjemplos.SeaSharp
         {
             island.render();
             palmeras.renderAll();
-            islandSphere.render();
+            //islandSphere.render();
         }
 
         public void Close()

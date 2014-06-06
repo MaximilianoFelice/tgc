@@ -86,7 +86,7 @@ namespace AlumnoEjemplos.SeaSharp
             Size textureSize = mainScreen.Texture.Size;
             mainScreen.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSize.Width / 2, 0), FastMath.Max(screenSize.Height / 2 - textureSize.Height / 2, 0));
             // TODO: Verificar que ocupe el ancho y alto de la pantalla
-            mainScreen.Scaling = new Vector2(0.48f,0.26f);
+            mainScreen.Scaling = new Vector2(0.68f,0.46f);
 
             // Presionar Enter
             pressStart = new TgcText2d();
@@ -103,7 +103,7 @@ namespace AlumnoEjemplos.SeaSharp
             Size textureSizeMenu = menuBack.Texture.Size;
             menuBack.Position = new Vector2(FastMath.Max(screenSize.Width / 2 - textureSizeMenu.Width / 2, 0), screenSize.Height/*FastMath.Max(screenSize.Height / 2 - textureSizeMenu.Height / 2, 0)*/);
             // TODO: Verificar que ocupe el ancho y alto de la pantalla
-            menuBack.Scaling = new Vector2(0.48f, 0.26f);
+            menuBack.Scaling = new Vector2(0.68f, 0.46f);
 
             // Fondo de la barra de vida
             lifeBarBg = new TgcSprite();
@@ -163,7 +163,7 @@ namespace AlumnoEjemplos.SeaSharp
 
 
             float wallSize = 8000;
-            float wallHeight = 50;
+            float wallHeight = 1000;
 
             //Obstaculo 1
             obstaculo = TgcBox.fromExtremes(
@@ -284,10 +284,10 @@ namespace AlumnoEjemplos.SeaSharp
             surroundingArea.render();
             palmeras.renderAll();
             
-            foreach (TgcBox obstaculo in obstaculos)
+            /*foreach (TgcBox obstaculo in obstaculos)
             {
                 obstaculo.render();
-            }
+            }*/
 
         }
 

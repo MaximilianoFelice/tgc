@@ -102,8 +102,8 @@ namespace AlumnoEjemplos.SeaSharp{
             else if (life <= 25)
                 lifeBar.setTexture(TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarRed.png"));
 
-            if (shipSphere != null) shipSphere.render();
-            if (enemySphere != null) enemySphere.render();
+            //if (shipSphere != null) shipSphere.render();
+            //if (enemySphere != null) enemySphere.render();
             ship.renderAll();
             
         }
@@ -201,28 +201,44 @@ namespace AlumnoEjemplos.SeaSharp{
 
                 Mesh.Position = new Vector3(Mesh.Position.X, Mesh.Position.Y + y, Mesh.Position.Z);
 
-                Mesh.rotateX(Geometry.DegreeToRadian(j * 0.25f * k));
-                Mesh.rotateY(Geometry.DegreeToRadian(0.1f));
-                Mesh.rotateZ(Geometry.DegreeToRadian(-j * 0.02f * k));
+                Mesh.rotateX(Geometry.DegreeToRadian(j * 0.25f * k * 5.9f));
+                Mesh.rotateY(Geometry.DegreeToRadian(0.1f *5.9f));
+                Mesh.rotateZ(Geometry.DegreeToRadian(-j * 0.02f * k * 5.9f));
                 i++;
             }
+        }
+
+        public float calculateHeight(float time, float x, float z)
+        {
+
+            // calculo coordenadas de textura
+            float u = (x / 150 + 4000 / 150) / (2 * (4000 / 150) + 1);
+            float v = (z / 150 + 4000 / 150) / (2 * (4000 / 150) + 1);
+
+            // calculo de la onda (movimiento grande)
+            float ola = FastMath.Sin(u * 2.0f * 3.14159f * 2.0f + time / 3) * FastMath.Cos(v * 2.0f * 3.14159f * 2.0f + time / 3);
+
+            return 1 * ola * 150 - 20;
         }
 
         public void reCalculateHeight(float elapsedTime)
         {
             time += elapsedTime;
 
-            // CALCULE Y RESETTEE LA POS
-            float x = this.Position.X;
-            float z = this.Position.Z;
-            // calculo coordenadas de textura
-            float u = (x / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
-            float v = (z / 100 + 4000 / 100) / (2 * (4000 / 100) + 1);
+            float yPos = calculateHeight(time, this.Position.X, this.Position.Z);
 
-            // calculo de la onda (movimiento grande)
-            float ola = FastMath.Sin(u * 2.0f * 3.14159f * 2.0f + time/2) * FastMath.Cos(v * 2.0f * 3.14159f * 2.0f + time/2);
+            ship.Position(new Vector3(this.Position.X, yPos , this.Position.Z));
 
-            ship.Position(new Vector3(this.Position.X, 1 * ola * 160, this.Position.Z));
+            float dr = 15;
+            float heightx = calculateHeight(time, this.Position.X + dr, this.Position.Z);
+            float heightz = calculateHeight(time, this.Position.X, this.Position.Z + dr);
+            Vector3 dx = Vector3.Normalize(new Vector3(dr, heightx - yPos, 0));
+            Vector3 dz = Vector3.Normalize(new Vector3(0, heightz - yPos, dr));
+
+            Vector3 normal = Vector3.Cross(dz, dx);
+
+            this.ship.SetNormal(normal);
+            //this.ship.RotatationZ(FastMath.Asin(Vector3.Length(Vector3.Cross(normal, new Vector3(0, 1, 0)))));
         }
 
     }
@@ -445,12 +461,13 @@ namespace AlumnoEjemplos.SeaSharp{
                 if (collisionFound1 || collisionFound2 || collisionFound3)
                 {
                     this.Position = originalPos;
+                    this.reCalculateHeight(elapsedTime);
                 }
                 else
                 {
                     // Si no hubo colision, entonces movemos el bounding sphere
-                    ship.Move(movementVector);
                     this.reCalculateHeight(elapsedTime);
+                    ship.Move(movementVector);
                     shipSphere.moveCenter(movementVector);
                 }
 
@@ -509,7 +526,7 @@ namespace AlumnoEjemplos.SeaSharp{
             
             // Le asignamos una Posicion y Rotacion inicial aleatoria
             Random r = new Random();
-            NewEnemy.Position = new Vector3(r.Next(1000) + 100, 0, r.Next(1000) + 100);
+            NewEnemy.Position = new Vector3(r.Next(1000) + 200, 0, r.Next(1000) + 200);
             NewEnemy.RotateShip(r.Next(360));
 
             NewEnemy.enemySphere = new TgcBoundingSphere(NewEnemy.ship.BoundingBox.calculateBoxCenter() + NewEnemy.Position, NewEnemy.ship.BoundingBox.calculateBoxRadius() + 40f);
@@ -641,6 +658,7 @@ namespace AlumnoEjemplos.SeaSharp{
                 {
                     this.Position = originalPos;
                     ColisionFire(targetShip);
+                    this.reCalculateHeight(elapsedTime);
                     
                 }
                 else
