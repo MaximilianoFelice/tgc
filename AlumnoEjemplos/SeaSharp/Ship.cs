@@ -21,20 +21,15 @@ namespace AlumnoEjemplos.SeaSharp{
     abstract public class Ship{
 
         public TgcScene ship;
-        //public TgcSprite lifeBar;
-        public TgcBox lifeBarBg;
-        public TgcBox lifeBar;
-        public Vector3 lifeBarBgOffset = new Vector3(-100, 250, 0);
-        public Vector3 lifeBarOffset = new Vector3(-1, -1, -1);
+
+        public LifeBar lifeBar;
         public float life = 100;
-        public int lifeWidth; // Ancho de la barra de vida estando al 100%
 
         public float nitro = 100;
 
         public TgcSprite targetMap;
 
-        public float diffX = 0f;
-        public float diffY = 0f;
+
 
         public bool isFiring = false;
 
@@ -51,20 +46,9 @@ namespace AlumnoEjemplos.SeaSharp{
             ship = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Ship 10\\ShipF-TgcScene.xml");
             ship.Scale (new Vector3(2, 2, 2));
             
-            // Fondo de la barra de vida
+            /* Getting a new Life Bar */
+            lifeBar = new LifeBar();
 
-            Vector3 center = new Vector3(0, 0, 0);
-            TgcTexture texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarBack.png");                        
-            Vector3 size = new Vector3(0, texture.Size.Height/2, texture.Size.Width/2);
-            lifeBarBg = TgcBox.fromSize(center, size, texture);
-
-            // Vida variable
-            
-            TgcTexture texture2 = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarGreen.png");
-            Vector3 size2 = new Vector3(3, (texture.Size.Height / 2) - 10, (texture.Size.Width / 2) - 10);
-            Vector3 center2 = new Vector3(0, 0, 0);
-            lifeWidth = (texture.Size.Width / 2) - 10;
-            lifeBar = TgcBox.fromSize(center2, size2, texture2);
 
             // Target Map - Icono que indica en que posicion del mapa esta el barco
             targetMap = new TgcSprite();
@@ -94,13 +78,9 @@ namespace AlumnoEjemplos.SeaSharp{
             /*
             *          ZONA DE RENDERIZADO
             */
-
-            if (life >= 50)
-                lifeBar.setTexture(TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarGreen.png"));
-            else if (life < 50 && life > 25)
-                lifeBar.setTexture(TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarYellow.png"));
-            else if (life <= 25)
-                lifeBar.setTexture(TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarRed.png"));
+            
+            /* Life Bar Rendering */
+            lifeBar.Render(life);
 
             //if (shipSphere != null) shipSphere.render();
             //if (enemySphere != null) enemySphere.render();
@@ -148,43 +128,6 @@ namespace AlumnoEjemplos.SeaSharp{
              
         }
 
-
-        public void rotarBarraVidaSegunCamara(float elapsedTime, TgcD3dInput d3dInput)
-        {
-
-            // Rotar vida segun rotacion de la camara
-
-            //Obtener variacion XY del mouse
-            float mouseX = 0f;
-            float mouseY = 0f;
-            if (d3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT))
-            {
-                mouseX = d3dInput.XposRelative;
-                mouseY = d3dInput.YposRelative;
-
-                diffX += mouseX * elapsedTime * GuiController.Instance.RotCamera.RotationSpeed;
-                diffY += mouseY * elapsedTime * GuiController.Instance.RotCamera.RotationSpeed;
-            }
-            else
-            {
-                diffX += mouseX;
-                diffY += mouseY;
-            }
-
-            //Calcular rotacion a aplicar
-            float rotX = (-diffY / FastMath.PI);
-            float rotY = (diffX / FastMath.PI);
-
-            //Truncar valores de rotacion fuera de rango
-            if (rotX > FastMath.PI * 2 || rotX < -FastMath.PI * 2)
-            {
-                diffY = 0;
-                rotX = 0;
-            }
-                        
-            lifeBarBg.Rotation = new Vector3(0, rotY + Geometry.DegreeToRadian(90), 0);
-            lifeBar.Rotation = new Vector3(0, rotY + Geometry.DegreeToRadian(90), 0);            
-        }
 
         protected void HundirShip()
         {
@@ -254,6 +197,13 @@ namespace AlumnoEjemplos.SeaSharp{
         {
             targetMap.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\TargetBlack.png");
         }
+
+        /* Define la posicion en la que spawneara la nave. Como es la controlada por el usuario, arranca en (0,0,0) */
+        public override Vector3 Spawn()
+        {
+            return Commons.Vector30;
+        }
+
         /* Define el movimiento del barco controlado por el usuario */
         public void CalculateMovement(float elapsedTime)
         {
@@ -271,12 +221,8 @@ namespace AlumnoEjemplos.SeaSharp{
             float speedForward = 60f;
             float speedRotate = 0.5f;
 
-            // Actualizar Posicion, Rotacion y Color de la Barra de Vida
-            lifeBarBg.Position = new Vector3(ship.Meshes[0].Position.X + lifeBarBgOffset.X, ship.Meshes[0].Position.Y + lifeBarBgOffset.Y, ship.Meshes[0].Position.Z + lifeBarBgOffset.Z);
-            lifeBar.Position = new Vector3(lifeBarBg.Position.X + lifeBarOffset.X, lifeBarBg.Position.Y + lifeBarOffset.Y, lifeBarBg.Position.Z + lifeBarOffset.Z);
             targetMap.Position = new Vector2(-ship.Meshes[0].Position.X / 50 + Environment.MapShipsOffsetX, ship.Meshes[0].Position.Z / 50 + Environment.MapShipsOffsetY);
-            rotarBarraVidaSegunCamara(elapsedTime, d3dInput);
-            actualizarColorBarraVida();
+            lifeBar.calculatePosition(this.Position, elapsedTime, d3dInput, life, nitro);
 
             // Hundimiento
             if (life < 1)
@@ -476,29 +422,6 @@ namespace AlumnoEjemplos.SeaSharp{
         }
 
 
-        private void actualizarColorBarraVida()
-        {
-            // Cambio de color de las barras segun la cantidad que tengan
-            if (life >= 50)
-                Environment.lifeBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarGreen.png");
-            else if (life < 50 && life > 25)
-                Environment.lifeBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarYellow.png");
-            else if (life <= 25)
-                Environment.lifeBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarRed.png");
-
-            if (nitro >= 50)
-                Environment.nitroBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarBlue.png");
-            else if (nitro < 50 && nitro > 25)
-                Environment.nitroBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarViolet.png");
-            else if (nitro <= 25)
-                Environment.nitroBar.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\LifeBarRed.png");
-        }
-
-
-        /* Define la posicion en la que spawneara la nave. Como es la controlada por el usuario, arranca en (0,0,0) */
-        public override Vector3 Spawn(){
-            return Commons.Vector30;
-        }
     }
 
 
@@ -568,12 +491,12 @@ namespace AlumnoEjemplos.SeaSharp{
             float moveForward = 3;
             float speedForward = 60f;
             float jump = 0;
+            TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
 
             // Actualiza la Posicion y Rotacion de la Barra de Vida
-            lifeBarBg.Position = new Vector3(ship.Meshes[0].Position.X + lifeBarBgOffset.X, ship.Meshes[0].Position.Y + lifeBarBgOffset.Y, ship.Meshes[0].Position.Z + lifeBarBgOffset.Z);
-            lifeBar.Position = new Vector3(lifeBarBg.Position.X + lifeBarOffset.X, lifeBarBg.Position.Y + lifeBarOffset.Y, lifeBarBg.Position.Z + lifeBarOffset.Z);
             targetMap.Position = new Vector2(-ship.Meshes[0].Position.X / 50 + Environment.MapShipsOffsetX, ship.Meshes[0].Position.Z / 50 + Environment.MapShipsOffsetY);
-            rotarBarraVidaSegunCamara(elapsedTime, GuiController.Instance.D3dInput);
+            lifeBar.calculatePosition(this.Position, elapsedTime, d3dInput, life, nitro);
+            
 
             // Hundimiento
             if (life < 1)

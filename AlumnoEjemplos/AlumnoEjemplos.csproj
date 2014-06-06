@@ -92,6 +92,7 @@
     <Compile Include="SeaSharp\Commons.cs" />
     <Compile Include="SeaSharp\Environment.cs" />
     <Compile Include="SeaSharp\Island.cs" />
+    <Compile Include="SeaSharp\LifeBar.cs" />
     <Compile Include="SeaSharp\QuadTree.cs" />
     <Compile Include="SeaSharp\Sea.cs" />
     <Compile Include="SeaSharp\Ship.cs" />

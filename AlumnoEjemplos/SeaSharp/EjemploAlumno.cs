@@ -380,36 +380,11 @@ namespace AlumnoEjemplos.SeaSharp
             */
             SkyDome.Render();
             SkyDome.Close();
+
+
             ship.Render();
-            EnemyFleet.RenderAll();
-            Environment.Render();
-            Bola.RenderAll();
-                                
-                // Actualizamos las posicion de la vida del MainShip  
-                if (ship.life > 0)
-                {
-                    ship.lifeBar.Size = new Vector3(ship.lifeBar.Size.X, ship.lifeBar.Size.Y, ship.life * ship.lifeWidth / 100);
-                    ship.lifeBar.moveOrientedY((ship.lifeWidth - (ship.life * ship.lifeWidth / 100)) / 2);
-                    ship.lifeBar.updateValues();ship.lifeBar.render();
-                }
-                    ship.lifeBarBg.render();
-                    
-                    ship.Render();
-                
-                
-                // Actualizamos las posiciones de las vidas de los barcos enemigos
-                foreach (EnemyFleet e in EnemyFleet.Enemies)
-                {
-                    if (e.life > 0)
-                    {
-                        e.lifeBar.Size = new Vector3(e.lifeBar.Size.X, e.lifeBar.Size.Y, e.life * e.lifeWidth / 100);
-                        e.lifeBar.moveOrientedY((e.lifeWidth - (e.life * e.lifeWidth / 100)) / 2);
-                        e.lifeBar.updateValues();e.lifeBar.render();
-                    }
-                        e.lifeBarBg.render();
-                        
-                    
-                }                
+
+             
                 EnemyFleet.RenderAll();
                 Environment.Render();
                 Bola.RenderAll();
