@@ -516,7 +516,6 @@ namespace AlumnoEjemplos.SeaSharp{
 
 
                     // Disparamos 2 veces por segundo
-                    /*
                     int ms = DateTime.Now.Millisecond;
                     if (!isFiring && ((ms >= 250 && ms <= 333) || (ms >= 666 && ms <= 750)))
                     {
@@ -527,7 +526,6 @@ namespace AlumnoEjemplos.SeaSharp{
                     {
                         isFiring = false;
                     }
-                    */
 
 
                     // Rotacion automatica mientras esta frenado
