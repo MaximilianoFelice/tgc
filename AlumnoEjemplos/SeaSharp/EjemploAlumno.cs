@@ -153,8 +153,8 @@ namespace AlumnoEjemplos.SeaSharp
                 //// ojo: es fundamental que el fov sea de 90 grados.
                 //// asi que re-genero la matriz de proyeccion
                 device.Transform.Projection =
-                    Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(90.0f),
-                        1f, 1f, 10000f);
+                    Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
+                        1f, zNearPlaneDistance, zFarPlaneDistance);
 
                 device.SetRenderTarget(0, pSurf);
 
@@ -207,13 +207,13 @@ namespace AlumnoEjemplos.SeaSharp
                 //    }
 
                     //    //Obtener ViewMatrix haciendo un LookAt desde la posicion final anterior al centro de la camara
-                    Vector3 Pos = ship.Position;
+                    Vector3 Pos = ship.Position - new Vector3(0, 10, 0);
 
-                    Vector3 refaux = GuiController.Instance.RotCamera.getPosition() - GuiController.Instance.RotCamera.getLookAt();
+                    Vector3 refaux = GuiController.Instance.RotCamera.getPosition();
 
-                    Vector3 Refl = new Vector3(-refaux.X, refaux.Y, -refaux.Z);
+                    Vector3 Refl = new Vector3(refaux.X, -refaux.Y, refaux.Z);
 
-                    device.Transform.View = Matrix.LookAtLH(Pos, Refl, new Vector3(0,-1,0));
+                    device.Transform.View = Matrix.LookAtLH(Refl, Pos, new Vector3(0,-1,0));
                     SkyDome.CalculateMovement();
 
                     device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
@@ -222,7 +222,8 @@ namespace AlumnoEjemplos.SeaSharp
 
                     //SkyDome.Close();
                     EnemyFleet.RenderAll();
-                    Environment.Render();
+                    //Environment.Render();
+                    ship.Render();
                     Bola.RenderAll();
                     SkyDome.Render();
                     SurfaceLoader.Save("prueba.bmp", ImageFileFormat.Bmp, pSurf);
