@@ -25,8 +25,11 @@ namespace AlumnoEjemplos.SeaSharp
         public static int _density;    // TODO: Implement triangle density constructor
         public static Color _color;
         public Vector3 _center;
+
         public float LODI = 1000;
-        public float LODII = 4000;
+        public float LODI_Module = 150;
+        public float LODII = 1500;
+        public float LODII_Module = 200;
 
         public static QuadTree generateNewQuad(Vector3 center, int triangleSize, Color color, int module)
         {
@@ -88,12 +91,24 @@ namespace AlumnoEjemplos.SeaSharp
             }
             else
             {
-                foreach (QuadTree quadTree in quadList)
+                /*Calculate Frustum Distance to this quad */
+                float frustum_Distance = getDistanceTo(GuiController.Instance.CurrentCamera.getPosition());
+
+                if (childrenAreVisible(frustum_Distance))
                 {
-                    TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult test = testChildVisibility(quadTree, frustum);
-                    if (test == TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.INSIDE) quadTree.RenderAll();
-                    if (test == TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.INTERSECT) quadTree.Render(frustum);
+                    foreach (QuadTree quadTree in quadList)
+                    {
+                        /* Checking child visibility */
+                        TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult test = testChildVisibility(quadTree, frustum);
+                        if (test == TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.INSIDE) quadTree.RenderAll();
+                        if (test == TgcViewer.Utils.TgcGeometry.TgcCollisionUtils.FrustumResult.INTERSECT) quadTree.Render(frustum);
+                    }
                 }
+                else
+                {
+                    _quad.render();
+                }
+
             }
         }
 
@@ -105,13 +120,60 @@ namespace AlumnoEjemplos.SeaSharp
             }
             else
             {
-                foreach (QuadTree quadTree in quadList)
+                /*Calculate Frustum Distance to this quad */
+                float frustum_Distance = getDistanceTo(GuiController.Instance.CurrentCamera.getPosition()); 
+
+                if (childrenAreVisible(frustum_Distance))
                 {
-                   quadTree.RenderAll();
+                    foreach (QuadTree quadTree in quadList)
+                    {
+                        quadTree.RenderAll();
+                    }
                 }
+                else
+                {
+                    _quad.render();
+                }
+
             }
         }
 
+        public float getDistanceTo(Vector3 vector)
+        {
+            Vector3 distVector = this._center - vector;
+            float dist = distVector.Length();
+            if (dist < 0) dist *= (-1);
+
+            return dist;
+        }
+
+        public bool childrenAreVisible(float distance)
+        {
+            if (distance <= LODI) return true;
+            else if ((distance >= LODI) & (distance <= LODII)){
+                if (_currentModule >= LODI_Module) return true;
+                else return false;
+            }
+            else
+            {
+                if (_currentModule >= LODII_Module) return true;
+                else return false;
+            }
+        }
+
+        public bool isFullDetail(float distance)
+        {
+            return true;
+        }
+
+        public bool isLODI(float distance)
+        {
+            return true;
+        }
+        public bool isLODII(float distance)
+        {
+            return true;
+        }
         public TgcCollisionUtils.FrustumResult testChildVisibility(QuadTree quadTree, TgcFrustum frustum)
         {
             float factor = _module / 2;
