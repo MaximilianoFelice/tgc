@@ -37,6 +37,11 @@ namespace AlumnoEjemplos.SeaSharp{
         public TgcBoundingSphere enemySphere;
         public static float time = 0f;
 
+        float seaSize;
+        float triangleSize;
+        float timeFactor;
+        float posFactor;
+
 
 
         public void Load()
@@ -157,10 +162,10 @@ namespace AlumnoEjemplos.SeaSharp{
 
         public float calculateHeight(float time, float x, float z)
         {
-            float seaSize = (float)GuiController.Instance.Modifiers.getValue("tamanioMar");
-            float triangleSize = (float)GuiController.Instance.Modifiers.getValue("tamanioTriangulos");
-            float timeFactor = (float)GuiController.Instance.Modifiers.getValue("tiempo");
-            float posFactor = (float)GuiController.Instance.Modifiers.getValue("Posicion");
+            seaSize = ConfigParam.Sea.getTamanioMar();
+            triangleSize = ConfigParam.Sea.getTamaniotriangulos();
+            timeFactor = ConfigParam.Ship.getFactorTiempo();
+            posFactor = ConfigParam.Ship.getFactorPosicion();
 
             //float seaSize = 8000;
             //float triangleSize = 75;

@@ -65,6 +65,10 @@ float time = 0;
 
 float4 colorAgua;
 
+float amplitud;
+
+float frecuencia;
+
 
 /**************************************************************************************/
 /* RenderScene */
@@ -95,11 +99,11 @@ float calculate_Position(float x, float z)
 
 	float y = -150;
 
-	float u = (x / 150 + 4000 / 150) / (2 * (4000 / 150) + 1);
-	float v = (z / 150 + 4000 / 150) / (2 * (4000 / 150) + 1);
+	float u = (x / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
+	float v = (z / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
 
 	// calculo de la onda (movimiento grande)
-	float ola = sin(u * 2 * 3.14159 * 2 + time) * cos(v * 2 * 3.14159 * 2 + time);
+	float ola = sin(u * frecuencia * 3.14159 * 2 + time) * cos(v * frecuencia * 3.14159 * 2 + time);
 	float ola2 = sin(u * 20 * 3.14159 * 2 + time) *
 		cos(v * 30 * 3.14159 * 2 + time) *
 		-sin(u * 30 * 3.14159 * 2 + time) *
@@ -109,7 +113,7 @@ float calculate_Position(float x, float z)
 
 	float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
 
-	y = y + height * 100 + ola * 150;
+	y = y + height * 100 + ola * amplitud;
 	return y;
 	//return 0;
 	
