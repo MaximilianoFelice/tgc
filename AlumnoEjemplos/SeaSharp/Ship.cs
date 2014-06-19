@@ -37,7 +37,6 @@ namespace AlumnoEjemplos.SeaSharp{
         public TgcBoundingSphere enemySphere;
         public static float time = 0f;
 
-        bool modifierActivo = false;
 
 
         public void Load()
@@ -161,6 +160,7 @@ namespace AlumnoEjemplos.SeaSharp{
             float seaSize = (float)GuiController.Instance.Modifiers.getValue("tamanioMar");
             float triangleSize = (float)GuiController.Instance.Modifiers.getValue("tamanioTriangulos");
             float timeFactor = (float)GuiController.Instance.Modifiers.getValue("tiempo");
+            float posFactor = (float)GuiController.Instance.Modifiers.getValue("Posicion");
 
             //float seaSize = 8000;
             //float triangleSize = 75;
@@ -169,13 +169,15 @@ namespace AlumnoEjemplos.SeaSharp{
 
 
             // calculo coordenadas de textura
-            float u = (x / triangleSize + seaSize / triangleSize) / (2 * (seaSize / triangleSize) + 1);
-            float v = (z / triangleSize + seaSize / triangleSize) / (2 * (seaSize / triangleSize) + 1);
+            float u = (x / triangleSize + seaSize / triangleSize) / (2 * (seaSize / triangleSize) + 1) / posFactor;
+            float v = (z / triangleSize + seaSize / triangleSize) / (2 * (seaSize / triangleSize) + 1) / posFactor;
 
             // calculo de la onda (movimiento grande)
             float ola = FastMath.Sin(u * 2.0f * 3.14159f * 2.0f + time / timeFactor) * FastMath.Cos(v * 2.0f * 3.14159f * 2.0f + time / timeFactor);
 
             return 1 * ola * 150 - 20;
+
+            //return 0;
         }
 
         public void reCalculateHeight(float elapsedTime)

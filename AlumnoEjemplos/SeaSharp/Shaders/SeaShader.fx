@@ -63,6 +63,8 @@ float kc = 0;
 
 float time = 0;
 
+float4 colorAgua;
+
 
 /**************************************************************************************/
 /* RenderScene */
@@ -102,12 +104,14 @@ float calculate_Position(float x, float z)
 		cos(v * 30 * 3.14159 * 2 + time) *
 		-sin(u * 30 * 3.14159 * 2 + time) *
 		-cos(v * 20 * 3.14159 * 2 + time);
-	y = y + ola * 150 + ola2 * 10;
+	
+	//y = y + ola * 150 + ola2 * 10;
 
-	/*float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
+	float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
 
-	y = y + height * 250;*/
+	y = y + height * 100 + ola * 150;
 	return y;
+	//return 0;
 	
 }
 
@@ -220,7 +224,7 @@ float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
 	//Obtener el texel de textura
 	float k = 0.60;
 	float4 fvBaseColor = k*texCUBE(g_samCubeMap, EnvTex) +
-		(1 - k)*float4(0.5, 0.8, 1, 1);
+		(1 - k)*colorAgua;
 	//(1 - k)*tex2D(diffuseMap, Texcoord);
 
 	// suma luz diffusa, ambiente y especular

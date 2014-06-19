@@ -26,7 +26,8 @@ namespace AlumnoEjemplos.SeaSharp
         public static float ambient, diffuse, specular, specularPower;
         public static Vector3 lightPos;
         public static Texture texture;
-
+        public static Color colorMar;
+        
         public static void Load()
         {
 
@@ -38,7 +39,7 @@ namespace AlumnoEjemplos.SeaSharp
             texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua.png");
             water.Technique = "RenderCubeMap";
 
-            lightPos = new Vector3(4000, 1000, 4000);
+            
             ambient = 1.0f;
             diffuse = 1.0f;
             specular = 1.0f;
@@ -53,8 +54,10 @@ namespace AlumnoEjemplos.SeaSharp
         }
 
         public static void Render(CubeTexture surf, TgcFrustum frustum)
-        {         
-                   
+        {
+            lightPos = ConfigParam.Sea.getLightPos();
+       
+
             water.Effect.SetValue("time", time);
        
             Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
@@ -70,6 +73,9 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("fSpecularPower", specularPower);
             water.Effect.SetValue("superficieAgua", texture);
             water.Effect.SetValue("g_txCubeMap", surf);
+            //Color color = (Color)GuiController.Instance.Modifiers.getValue("ColorMar");
+            colorMar = ConfigParam.Sea.getColorMar();
+            water.Effect.SetValue("colorAgua", colorMar.ToArgb());
 
             device.RenderState.AlphaBlendEnable = true;
 

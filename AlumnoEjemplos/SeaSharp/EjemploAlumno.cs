@@ -81,7 +81,7 @@ namespace AlumnoEjemplos.SeaSharp
         public override void init()
         {
 
-
+            ConfigParam.Load();
             /* Cargamos el SkyBox, la cajita feliz que nos aporta el fondo */
             SkyDome.Load();
 
@@ -130,6 +130,8 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.Modifiers.addFloat("tamanioMar", 2000, 8000, 4000);
             GuiController.Instance.Modifiers.addFloat("tamanioTriangulos", 50, 200, 150);
             GuiController.Instance.Modifiers.addFloat("tiempo", 1, 10, 5);
+            GuiController.Instance.Modifiers.addFloat("Posicion", 1, 10, 5);
+            
 
         }
 
@@ -250,10 +252,11 @@ namespace AlumnoEjemplos.SeaSharp
 
 
 
-                        SkyDome.CalculateMovement();
+                        //SkyDome.CalculateMovement();
 
-                        //SkyDome.Close();
+                        SkyDome.CalculateMovement();
                         SkyDome.Render();
+                        SkyDome.Close();
                         EnemyFleet.RenderAll();
                         //ship.Render();
                         Environment.Render();
@@ -300,6 +303,7 @@ namespace AlumnoEjemplos.SeaSharp
                 /*
                 *          ZONA DE RENDERIZADO
                 */
+                SkyDome.CalculateMovement();
                 SkyDome.Render();
                 SkyDome.Close();
 
