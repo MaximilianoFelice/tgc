@@ -32,7 +32,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             Vector3 center = new Vector3(0, -30, 0);
 
-            water = QuadTree.generateNewQuad(center, (int)ConfigParam.Sea.getTamanioMar(), Color.Blue, (int)ConfigParam.Sea.getTamaniotriangulos());
+            water = QuadTree.generateNewQuad(center, (int)ConfigParam.Sea.getTamanioMar(), Color.Blue, 50);
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua.png");

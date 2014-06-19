@@ -26,9 +26,9 @@ namespace AlumnoEjemplos.SeaSharp
         public static Color _color;
         public Vector3 _center;
 
-        public float LODI = 1000;
-        public float LODI_Module = 150;
-        public float LODII = 1500;
+        public float LODI = 2000;
+        public float LODI_Module = 100;
+        public float LODII = 4000;
         public float LODII_Module = 200;
 
         public static QuadTree generateNewQuad(Vector3 center, int triangleSize, Color color, int module)
@@ -140,7 +140,7 @@ namespace AlumnoEjemplos.SeaSharp
 
         public float getDistanceTo(Vector3 vector)
         {
-            Vector3 distVector = this._center - vector;
+            Vector3 distVector = _quad.Center - vector;
             float dist = distVector.Length();
             if (dist < 0) dist *= (-1);
 
@@ -161,19 +161,6 @@ namespace AlumnoEjemplos.SeaSharp
             }
         }
 
-        public bool isFullDetail(float distance)
-        {
-            return true;
-        }
-
-        public bool isLODI(float distance)
-        {
-            return true;
-        }
-        public bool isLODII(float distance)
-        {
-            return true;
-        }
         public TgcCollisionUtils.FrustumResult testChildVisibility(QuadTree quadTree, TgcFrustum frustum)
         {
             float factor = _module / 2;
