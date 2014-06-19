@@ -58,7 +58,7 @@ float k_ld = 0.4;							// luz difusa
 float k_ls = 1.0;							// luz specular
 float fSpecularPower = 16.84;
 
-float kx = 0.7;							// coef. de reflexion
+float kx = 1;							// coef. de reflexion
 float kc = 0;
 
 float time = 0;
@@ -98,13 +98,15 @@ float calculate_Position(float x, float z)
 
 	// calculo de la onda (movimiento grande)
 	float ola = sin(u * 2 * 3.14159 * 2 + time) * cos(v * 2 * 3.14159 * 2 + time);
-	float ola2 = clamp(sin(u * 20 * 3.14159 * 2 + time/2) * cos(v * 20 * 3.14159 * 2 + time/2),0.5,1);
+	float ola2 = sin(u * 20 * 3.14159 * 2 + time) *
+		cos(v * 30 * 3.14159 * 2 + time) *
+		-sin(u * 30 * 3.14159 * 2 + time) *
+		-cos(v * 20 * 3.14159 * 2 + time);
+	y = y + ola2 * 10;
 
-	y = y + ola * 150;
+	/*float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
 
-	float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
-
-	y = y + height * 250;
+	y = y + height * 250;*/
 	return y;
 	
 }
@@ -218,12 +220,12 @@ float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
 	//Obtener el texel de textura
 	float k = 0.60;
 	float4 fvBaseColor = k*texCUBE(g_samCubeMap, EnvTex) +
-		(1 - k)*float4(0.5, 0.5, 0.5, 1);
+		(1 - k)*float4(0.5, 0.8, 1, 1);
 	//(1 - k)*tex2D(diffuseMap, Texcoord);
 
 	// suma luz diffusa, ambiente y especular
 	fvBaseColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
-	fvBaseColor.a = 0.8;
+	fvBaseColor.a = 1;
 	float4 color_reflejado = fvBaseColor;
 
 		float4 color_refractado = float4(
@@ -233,7 +235,9 @@ float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
 		1);
 	//float4 color_refractado = texCUBE( g_samCubeMap, Tex1);
 
-	return color_reflejado*kx + color_refractado*kc;
+	float4 col = color_reflejado*kx + color_refractado*kc;
+		col.a = 1;
+	return col;
 	//return float4(N, 1);
 	//return color_refractado;
 	//return color_reflejado;

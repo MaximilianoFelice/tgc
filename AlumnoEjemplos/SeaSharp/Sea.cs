@@ -32,17 +32,17 @@ namespace AlumnoEjemplos.SeaSharp
 
             Vector3 center = new Vector3(0, -30, 0);
 
-            water = QuadTree.generateNewQuad(center, 8000, Color.Blue, 200);
+            water = QuadTree.generateNewQuad(center, 8000, Color.Blue, 75);
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua.png");
             water.Technique = "RenderCubeMap";
 
-            lightPos = new Vector3(0, 10000, 0);
-            ambient = 0.7f;
+            lightPos = new Vector3(4000, 1000, 4000);
+            ambient = 1.0f;
             diffuse = 1.0f;
             specular = 1.0f;
-            specularPower = 50.0f; 
+            specularPower = 16.0f; 
 
 
         }
