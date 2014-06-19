@@ -37,9 +37,11 @@ namespace AlumnoEjemplos.SeaSharp{
         public TgcBoundingSphere enemySphere;
         public static float time = 0f;
 
+        bool modifierActivo = false;
+
+
         public void Load()
         {
-
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -64,6 +66,9 @@ namespace AlumnoEjemplos.SeaSharp{
 
             // Acomoda al ship dependiendo una posicion específica de spawn
             ship.Position(this.Spawn());
+
+
+         
         }
 
         public Vector3 Position
@@ -153,13 +158,22 @@ namespace AlumnoEjemplos.SeaSharp{
 
         public float calculateHeight(float time, float x, float z)
         {
+            float seaSize = (float)GuiController.Instance.Modifiers.getValue("tamanioMar");
+            float triangleSize = (float)GuiController.Instance.Modifiers.getValue("tamanioTriangulos");
+            float timeFactor = (float)GuiController.Instance.Modifiers.getValue("tiempo");
+
+            //float seaSize = 8000;
+            //float triangleSize = 75;
+            //float timeFactor = 2;
+
+
 
             // calculo coordenadas de textura
-            float u = (x / 150 + 4000 / 150) / (2 * (4000 / 150) + 1);
-            float v = (z / 150 + 4000 / 150) / (2 * (4000 / 150) + 1);
+            float u = (x / triangleSize + seaSize / triangleSize) / (2 * (seaSize / triangleSize) + 1);
+            float v = (z / triangleSize + seaSize / triangleSize) / (2 * (seaSize / triangleSize) + 1);
 
             // calculo de la onda (movimiento grande)
-            float ola = FastMath.Sin(u * 2.0f * 3.14159f * 2.0f + time / 3) * FastMath.Cos(v * 2.0f * 3.14159f * 2.0f + time / 3);
+            float ola = FastMath.Sin(u * 2.0f * 3.14159f * 2.0f + time / timeFactor) * FastMath.Cos(v * 2.0f * 3.14159f * 2.0f + time / timeFactor);
 
             return 1 * ola * 150 - 20;
         }

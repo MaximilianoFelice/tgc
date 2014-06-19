@@ -102,7 +102,7 @@ float calculate_Position(float x, float z)
 		cos(v * 30 * 3.14159 * 2 + time) *
 		-sin(u * 30 * 3.14159 * 2 + time) *
 		-cos(v * 20 * 3.14159 * 2 + time);
-	y = y + ola2 * 10;
+	y = y + ola * 150 + ola2 * 10;
 
 	/*float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
 

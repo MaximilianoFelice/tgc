@@ -125,6 +125,12 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.RotCamera.setCamera(ship.Position, 1700);
             GuiController.Instance.RotCamera.RotationSpeed = 30;
             GuiController.Instance.RotCamera.CameraDistance = 1000;
+
+
+            GuiController.Instance.Modifiers.addFloat("tamanioMar", 2000, 8000, 4000);
+            GuiController.Instance.Modifiers.addFloat("tamanioTriangulos", 50, 200, 150);
+            GuiController.Instance.Modifiers.addFloat("tiempo", 1, 10, 5);
+
         }
 
 
