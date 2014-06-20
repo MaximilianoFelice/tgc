@@ -17,7 +17,7 @@ using TgcViewer.Utils.Shaders;
 
 namespace AlumnoEjemplos.SeaSharp
 {
-    public class ConfigParam
+    public static class ConfigParam
     {
         // TODO: HACER UN NUEVO ALGORITMO PARA ESTO, QUE SEA MUCHO MAS DINAMICO
         //Calcular proxima posicion de la nave segun Input
@@ -46,6 +46,18 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.Modifiers.addFloat("tamanioMar", 2000, 8000, 8000);
             GuiController.Instance.Modifiers.addFloat("tamanioTriangulos", 50, 200, 75);
 
+
+            //Quad
+            GuiController.Instance.Modifiers.addFloat("DistLODI", 100, 10000, 2000);
+            GuiController.Instance.Modifiers.addFloat("sizeLODI", 50, 400, 100);
+            GuiController.Instance.Modifiers.addFloat("DistLODII", 100, 10000, 4000);
+            GuiController.Instance.Modifiers.addFloat("sizeLODII", 100, 800, 200);
+
+        }
+
+        public static void UpdateValues()
+        {
+            AlumnoEjemplos.SeaSharp.QuadTree.UpdateValues();
         }
         
         #region SHIP
@@ -134,6 +146,29 @@ namespace AlumnoEjemplos.SeaSharp
         }
         #endregion
 
+        public class QuadTree
+        {
+            public static float getDistLODI()
+            {
+                return (float)GuiController.Instance.Modifiers.getValue("DistLODI");
+            }
+
+            public static float getSizeLODI()
+            {
+                return (float)GuiController.Instance.Modifiers.getValue("sizeLODI");
+            }
+
+            public static float getDistLODII()
+            {
+                return (float)GuiController.Instance.Modifiers.getValue("DistLODII");
+            }
+
+            public static float getSizeLODII()
+            {
+                return (float)GuiController.Instance.Modifiers.getValue("sizeLODII");
+            }
+
+        }
 
     }
 }

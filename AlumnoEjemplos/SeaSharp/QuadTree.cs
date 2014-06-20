@@ -26,10 +26,19 @@ namespace AlumnoEjemplos.SeaSharp
         public static Color _color;
         public Vector3 _center;
 
-        public float LODI = 2000;
-        public float LODI_Module = 100;
-        public float LODII = 4000;
-        public float LODII_Module = 200;
+        public static float LODI;
+        public static float LODI_Module;
+        public static float LODII;
+        public static float LODII_Module;
+
+
+        public static void UpdateValues()
+        {
+            LODI = ConfigParam.QuadTree.getDistLODI();
+            LODI_Module = ConfigParam.QuadTree.getSizeLODI();
+            LODII = ConfigParam.QuadTree.getDistLODII();
+            LODII_Module = ConfigParam.QuadTree.getSizeLODII();
+        }
 
         public static QuadTree generateNewQuad(Vector3 center, int triangleSize, Color color, int module)
         {
@@ -85,6 +94,7 @@ namespace AlumnoEjemplos.SeaSharp
 
         public void Render(TgcFrustum frustum)
         {
+
             if (quadList == null)
             {
                 _quad.render();

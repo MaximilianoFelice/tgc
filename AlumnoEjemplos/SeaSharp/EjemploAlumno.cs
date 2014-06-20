@@ -80,6 +80,7 @@ namespace AlumnoEjemplos.SeaSharp
         /// </summary>
         public override void init()
         {
+            FPSCounters.Load();
 
             ConfigParam.Load();
             /* Cargamos el SkyBox, la cajita feliz que nos aporta el fondo */
@@ -128,7 +129,7 @@ namespace AlumnoEjemplos.SeaSharp
 
         }
 
-
+        
         /// <summary>
         /// Método que se llama cada vez que hay que refrescar la pantalla.
         /// Escribir aquí todo el código referido al renderizado.
@@ -137,6 +138,7 @@ namespace AlumnoEjemplos.SeaSharp
         /// <param name="elapsedTime">Tiempo en segundos transcurridos desde el último frame</param>
         public override void render(float elapsedTime)
         {
+            ConfigParam.UpdateValues();
 
             // Pantalla principal
             if (MainScreen.mainScreenVisible)
@@ -308,6 +310,9 @@ namespace AlumnoEjemplos.SeaSharp
                 Environment.Render();
                 Bola.RenderAll();
 
+                FPSCounters.Render(elapsedTime);
+
+
 
                 // Actualizamos los Sprites en pantalla
 
@@ -374,6 +379,7 @@ namespace AlumnoEjemplos.SeaSharp
             if (MainScreen.mainScreen != null)
                 MainScreen.mainScreen.dispose();
             Environment.Close();
+            FPSCounters.Close();
 
         }
 

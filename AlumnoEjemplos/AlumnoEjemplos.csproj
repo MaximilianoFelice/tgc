@@ -87,6 +87,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SeaSharp\FPSCounters.cs" />
     <Compile Include="SeaSharp\Bola.cs" />
     <Compile Include="SeaSharp\ConfigParam.cs" />
     <Compile Include="SeaSharp\Commons.cs" />
