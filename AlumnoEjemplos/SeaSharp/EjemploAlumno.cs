@@ -38,12 +38,14 @@ namespace AlumnoEjemplos.SeaSharp
         public Texture g_pRenderTarget;
 
         public static Surface pOldRT;
-        public static int aux = 1;
+        public static int aux = 0;
         public static bool aux2 = false;
         public static Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
         CubeTexture g_pCubeMap = new CubeTexture(device, 256, 1, Usage.RenderTarget,
                Format.A16B16G16R16F, Pool.Default);
 
+        public static int r;
+        public Random rand;
 
 
         #region STRUCTURAL_INFO
@@ -167,7 +169,7 @@ namespace AlumnoEjemplos.SeaSharp
                 //////////////////////////////////////
                 Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
 
-                if (aux % 1 == 0)
+                if (aux == 0)
                 {
 
                     //g_pRenderTarget = new Texture(device, device.PresentationParameters.BackBufferWidth
@@ -251,10 +253,10 @@ namespace AlumnoEjemplos.SeaSharp
 
                         SkyDome.CalculateMovement();
                         SkyDome.Render();
-                        SkyDome.Close();
-                        EnemyFleet.RenderAll();
+                        //SkyDome.Close();
+                        //EnemyFleet.RenderAll();
                         //ship.Render();
-                        Environment.Render();
+                        //Environment.Render();
                         Bola.RenderAll();
                         //SurfaceLoader.Save("prueba.bmp", ImageFileFormat.Bmp, pFace);
 
@@ -263,14 +265,18 @@ namespace AlumnoEjemplos.SeaSharp
                         //SurfaceLoader.Save(fname, ImageFileFormat.Bmp, pFace);
                     }
                     //device.BeginScene();
+                device.SetRenderTarget(0, pOldRT);
+                aux = 1;
                 }
                 //    //Renderizar 
                 //    render(elapsedTime);
                 //////////////////////////////////////
 
+                rand = new Random();
+                r = rand.Next(100);
+
                 GuiController.Instance.RotCamera.CameraCenter = ship.Position; //TODO: Make camara follow rotation
 
-                device.SetRenderTarget(0, pOldRT);
                 GuiController.Instance.CurrentCamera.updateViewMatrix(device);
                 device.Transform.Projection =
                    Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
@@ -282,12 +288,12 @@ namespace AlumnoEjemplos.SeaSharp
                 */
 
                 ship.CalculateMovement(elapsedTime);
-                EnemyFleet.CalculateEveryMovement(elapsedTime, ship);
+                //EnemyFleet.CalculateEveryMovement(elapsedTime, ship);
 
                 Bola.CalculateEveryMovement(elapsedTime);
 
                 //Hacer que la camara siga a la nave en su nueva posicion
-                Sea.CalculateMovement(elapsedTime);
+                Sea.CalculateMovement(elapsedTime, ship.Position);
                 //GuiController.Instance.Frustum.FarPlane 
 
 
@@ -306,8 +312,8 @@ namespace AlumnoEjemplos.SeaSharp
                 ship.Render();
 
 
-                EnemyFleet.RenderAll();
-                Environment.Render();
+                //EnemyFleet.RenderAll();
+                //Environment.Render();
                 Bola.RenderAll();
 
                 FPSCounters.Render(elapsedTime);
@@ -355,13 +361,9 @@ namespace AlumnoEjemplos.SeaSharp
                 }
             }
 
-            Sea.Render(g_pCubeMap, GuiController.Instance.Frustum);
+            Sea.Render(g_pCubeMap, GuiController.Instance.Frustum, r);
 
-            aux++;
-            if (aux >= 3)
-            {
-                aux = 1;
-            }
+            
 
         }
 

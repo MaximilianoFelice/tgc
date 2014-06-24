@@ -50,7 +50,7 @@ namespace AlumnoEjemplos.SeaSharp{
 
             TgcSceneLoader loader = new TgcSceneLoader();
             ship = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Ship 10\\ShipF-TgcScene.xml");
-            ship.Scale (new Vector3(2, 2, 2));
+            ship.Scale (new Vector3(1, 1, 1));
             
             /* Getting a new Life Bar */
             lifeBar = new LifeBar();

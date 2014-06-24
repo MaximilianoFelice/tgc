@@ -164,7 +164,7 @@ namespace AlumnoEjemplos.SeaSharp
 
         public static void Render(){
             foreach (Island island in islands) island.Render();
-            //surroundingArea.render();
+            surroundingArea.render();
             palmeras.renderAll();
             
             /*foreach (TgcBox obstaculo in obstaculos)

@@ -26,16 +26,19 @@ namespace AlumnoEjemplos.SeaSharp
         public static float ambient, diffuse, specular, specularPower;
         public static Texture texture;
         public static Color colorMar;
+        public static Random rand;
+        public static int r;
+        public static Vector3 shipPos;
         
         public static void Load()
         {
 
             Vector3 center = new Vector3(0, -30, 0);
 
-            water = QuadTree.generateNewQuad(center, (int)ConfigParam.Sea.getTamanioMar(), Color.Blue, 50);
+            water = QuadTree.generateNewQuad(center, 16000, Color.Blue, 75);
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua.png");
+            texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\aaa.jpg");
             water.Technique = "RenderCubeMap";
 
             
@@ -47,15 +50,18 @@ namespace AlumnoEjemplos.SeaSharp
 
         }
 
-        internal static void CalculateMovement(float elapsedTime)
+        internal static void CalculateMovement(float elapsedTime, Vector3 pos)
         {
             time += elapsedTime;
+            shipPos = pos;
         }
 
-        public static void Render(CubeTexture surf, TgcFrustum frustum)
-        {      
+        public static void Render(CubeTexture surf, TgcFrustum frustum, int r)
+        {
+            //Random rand = new Random();
+            
 
-            water.Effect.SetValue("time", time);
+            water.Effect.SetValue("rand", (int)r);
        
             Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
 
@@ -75,7 +81,7 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("superficieAgua", texture);
             water.Effect.SetValue("g_txCubeMap", surf);
             water.Effect.SetValue("colorAgua", ConfigParam.Sea.getColorMar().ToArgb());
-
+            water.Effect.SetValue("shipPos", TgcParserUtils.vector3ToFloat3Array(shipPos));
             device.RenderState.AlphaBlendEnable = true;
 
             water.Render(frustum);
