@@ -124,7 +124,7 @@ namespace AlumnoEjemplos.SeaSharp
 
 
             float wallSize = 8000;
-            float wallHeight = 1000;
+            float wallHeight = 10000;
 
             //Obstaculo 1
             obstaculo = TgcBox.fromExtremes(
