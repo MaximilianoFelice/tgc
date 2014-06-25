@@ -248,9 +248,6 @@ namespace AlumnoEjemplos.SeaSharp
                         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
 
 
-
-                        //SkyDome.CalculateMovement();
-
                         SkyDome.CalculateMovement();
                         SkyDome.Render();
                         //SkyDome.Close();

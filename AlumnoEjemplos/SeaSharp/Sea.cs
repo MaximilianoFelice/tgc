@@ -20,7 +20,7 @@ namespace AlumnoEjemplos.SeaSharp
     public static class Sea
     {
 
-        public static QuadTree water;   // The soon-to-be-a-custom-vertex... thing.
+        public static QuadTree water;
 
         public static float time = 0f;
         public static float ambient, diffuse, specular, specularPower;

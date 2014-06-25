@@ -37,11 +37,7 @@ namespace AlumnoEjemplos.SeaSharp{
         public TgcBoundingSphere enemySphere;
         public static float time = 0f;
 
-        float seaSize;
-        float triangleSize;
-        float timeFactor;
-        float posFactor;
-
+        public TgcArrow _Normal;
 
 
         public void Load()
@@ -71,6 +67,9 @@ namespace AlumnoEjemplos.SeaSharp{
             // Acomoda al ship dependiendo una posicion específica de spawn
             ship.Position(this.Spawn());
 
+            _Normal = new TgcArrow();
+            _Normal.Thickness = 1.5f;
+
 
          
         }
@@ -81,15 +80,19 @@ namespace AlumnoEjemplos.SeaSharp{
             set { ship.Position(value); }
         }
 
-
         public void Render()
         {
+
+
+
             /*
             *          ZONA DE RENDERIZADO
             */
             
+
             /* Life Bar Rendering */
             lifeBar.Render(life);
+            _Normal.render();
 
             //if (shipSphere != null) shipSphere.render();
             //if (enemySphere != null) enemySphere.render();
@@ -160,49 +163,75 @@ namespace AlumnoEjemplos.SeaSharp{
             }
         }
 
-        public float calculateHeight(float time, float x, float z)
+        public float calculateHeight(float time, float x, float z, int aux)
         {
-            seaSize = ConfigParam.Sea.getTamanioMar();
-            triangleSize = ConfigParam.Sea.getTamaniotriangulos();
-            timeFactor = ConfigParam.Ship.getFactorTiempo();
-            posFactor = ConfigParam.Ship.getFactorPosicion();
 
-            //float seaSize = 8000;
-            //float triangleSize = 75;
-            //float timeFactor = 2;
+            float frecuencia = ConfigParam.Sea.getFrecuencia();
+            float amplitud = ConfigParam.Sea.getAmplitud();
 
 
+            float y = -150;
 
-            // calculo coordenadas de textura
-            float u = (x / triangleSize + seaSize / triangleSize) / (2 * (seaSize / triangleSize) + 1) / posFactor;
-            float v = (z / triangleSize + seaSize / triangleSize) / (2 * (seaSize / triangleSize) + 1) / posFactor;
+            float u = (x / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
+            float v = (z / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
 
             // calculo de la onda (movimiento grande)
-            float ola = FastMath.Sin(u * 2.0f * 3.14159f * 2.0f + time / timeFactor) * FastMath.Cos(v * 2.0f * 3.14159f * 2.0f + time / timeFactor);
+            float ola = FastMath.Sin(u * frecuencia * 3.14159f * 2 + time) * FastMath.Cos(v * frecuencia * 3.14159f * 2 + time);
 
-            return 1 * ola * 150 - 20;
+            float A = 10;
+            float f = 120 + ((x * z) / 100000);
+            float Speed = 0.5f;
+            float L = 10;
+            float phi = Speed * 2 * 3.14159f * 2 / L;
 
-            //return 0;
+            // Aleatoria
+            // Aleatoria
+
+            float ola2 = FastMath.Sin(1 * u * 2 * 3.14159f * frecuencia + time) * amplitud + FastMath.Cos(3 * v * 2 * 3.14159f * frecuencia + time) * amplitud +
+                 (A / 10) * FastMath.Sin(f * z * 4 + phi * time) * FastMath.Cos(f * x / 4 + phi * time)
+                 + (A / 20) * FastMath.Sin(f * x / 5 + phi * time) * FastMath.Cos(f * z / 2 + phi * time)
+                 + (A / 30) * FastMath.Sin(f * (x + 13) / 5 + phi * time) * FastMath.Cos(f * (z + 28) / 10 + phi * time)
+
+                ;
+
+            //y = y + ola * 150 + ola2 * 10;
+
+            //float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
+
+            if (aux == 1) y = y + ola * amplitud;
+            if (aux == -1) y = ola2;
+
+            return y;
         }
 
-        public void reCalculateHeight(float elapsedTime)
+        public void reCalculateHeight()
         {
-            time += elapsedTime;
 
-            float yPos = calculateHeight(time, this.Position.X, this.Position.Z);
+            float yPos = calculateHeight(time, this.Position.X, this.Position.Z, -1);
+            ship.Position(new Vector3(this.Position.X, yPos, this.Position.Z));
 
-            ship.Position(new Vector3(this.Position.X, yPos , this.Position.Z));
+
+            //this.ship.RotatationZ(FastMath.Asin(Vector3.Length(Vector3.Cross(normal, new Vector3(0, 1, 0)))));
+
+            	//VS_OUTPUT Output;
+        }
+
+        public void reCalculateNormal()
+        {
 
             float dr = 15;
-            float heightx = calculateHeight(time, this.Position.X + dr, this.Position.Z);
-            float heightz = calculateHeight(time, this.Position.X, this.Position.Z + dr);
-            Vector3 dx = Vector3.Normalize(new Vector3(dr, heightx - yPos, 0));
-            Vector3 dz = Vector3.Normalize(new Vector3(0, heightz - yPos, dr));
+            float heightx = calculateHeight(time, this.Position.X + dr, this.Position.Z, -1);
+            float heightz = calculateHeight(time, this.Position.X, this.Position.Z + dr, -1);
+            Vector3 dx = Vector3.Normalize(new Vector3(dr, heightx - this.Position.Y, 0));
+            Vector3 dz = Vector3.Normalize(new Vector3(0, heightz - this.Position.Y, dr));
 
             Vector3 normal = Vector3.Cross(dz, dx);
 
             this.ship.SetNormal(normal);
-            //this.ship.RotatationZ(FastMath.Asin(Vector3.Length(Vector3.Cross(normal, new Vector3(0, 1, 0)))));
+
+            _Normal.PStart = this.Position;
+            _Normal.PEnd = this.Position + normal * 100;
+            _Normal.updateValues();
         }
 
     }
@@ -228,6 +257,8 @@ namespace AlumnoEjemplos.SeaSharp{
         /* Define el movimiento del barco controlado por el usuario */
         public void CalculateMovement(float elapsedTime)
         {
+            time += elapsedTime;
+
             #region MAINSHIP_MOVEMENT
 
 
@@ -428,12 +459,14 @@ namespace AlumnoEjemplos.SeaSharp{
                 if (collisionFound1 || collisionFound2 || collisionFound3)
                 {
                     this.Position = originalPos;
-                    this.reCalculateHeight(elapsedTime);
+                    this.reCalculateHeight();
+                    this.reCalculateNormal();
                 }
                 else
                 {
                     // Si no hubo colision, entonces movemos el bounding sphere
-                    this.reCalculateHeight(elapsedTime);
+                    this.reCalculateHeight();
+                    this.reCalculateNormal();
                     ship.Move(movementVector);
                     shipSphere.moveCenter(movementVector);
                 }
@@ -600,13 +633,15 @@ namespace AlumnoEjemplos.SeaSharp{
                 {
                     this.Position = originalPos;
                     ColisionFire(targetShip);
-                    this.reCalculateHeight(elapsedTime);
+                    this.reCalculateHeight();
+                    this.reCalculateNormal();
                     
                 }
                 else
                 {
                     ship.Move(movementVector);
-                    this.reCalculateHeight(elapsedTime);
+                    this.reCalculateHeight();
+                    this.reCalculateNormal();
                     enemySphere.moveCenter(movementVector);
                     ship.RotateY(Geometry.DegreeToRadian(SPEEDROTATION * elapsedTime * rotationY));
                 }
