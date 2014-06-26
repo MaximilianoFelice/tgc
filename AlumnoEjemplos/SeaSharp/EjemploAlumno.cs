@@ -13,7 +13,7 @@ using TgcViewer.Utils.Input;
 using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils._2D;
-
+using TgcViewer.Utils.Sound;
 
 namespace AlumnoEjemplos.SeaSharp
 {
@@ -48,6 +48,9 @@ namespace AlumnoEjemplos.SeaSharp
         public Random rand;
 
         public static Lluvia lluvia;
+
+        static TgcStaticSound sonidoAmbiente;
+        static TgcStaticSound sonidoOpen;
 
 
         #region STRUCTURAL_INFO
@@ -107,6 +110,12 @@ namespace AlumnoEjemplos.SeaSharp
             /* Cargamos el environment */
             Environment.Load();
 
+            //Cargar sonido de apertura y ambiente
+            sonidoOpen = new TgcStaticSound();
+            sonidoOpen.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\open.wav");
+            sonidoAmbiente = new TgcStaticSound();
+            sonidoAmbiente.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\SeaWave.wav");
+
 
             #region (Otras Camaras)
 
@@ -148,15 +157,19 @@ namespace AlumnoEjemplos.SeaSharp
         {
             ConfigParam.UpdateValues();
 
+            
+
             // Pantalla principal
             if (MainScreen.mainScreenVisible)
             {
                 MainScreen.MainScreenRender();
+                sonidoOpen.play(true);
             }
             // Pantalla Menu
             else if (MainScreen.menuBackVisible)
             {
                 MainScreen.MenuScreenRender();
+                sonidoOpen.play(true);
             }
             // Pantalla en Juego
             else
@@ -324,6 +337,10 @@ namespace AlumnoEjemplos.SeaSharp
 
                 Sea.Render(g_pCubeMap, GuiController.Instance.Frustum, r);
 
+                sonidoOpen.stop();
+                sonidoAmbiente.play(true);
+
+
                 // Actualizamos los Sprites en pantalla
 
                 //Iniciar dibujado de todos los Sprites de la escena (en este caso es solo uno)
@@ -393,6 +410,8 @@ namespace AlumnoEjemplos.SeaSharp
             Environment.Close();
             FPSCounters.Close();
             lluvia.Close();
+            sonidoAmbiente.dispose();
+            sonidoOpen.dispose();
 
         }
 

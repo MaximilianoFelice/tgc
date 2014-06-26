@@ -36,7 +36,7 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.Modifiers.addFloat("Reflexion", 0f, 1f, 1f);
             GuiController.Instance.Modifiers.addFloat("Refraccion", 0f, 1f, 0f);
             GuiController.Instance.Modifiers.addFloat("HeightMapScale", 0f, 20f, 1f);
-            GuiController.Instance.Modifiers.addFloat("TexScale", 0f, 200f, 100f);
+            GuiController.Instance.Modifiers.addFloat("TexScale", 0f, 200f, 20f);
 
 
             //Ship

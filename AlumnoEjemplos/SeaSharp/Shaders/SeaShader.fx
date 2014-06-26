@@ -67,9 +67,10 @@ float rand;
 
 float3 shipPos;
 
+float coeficiente = 0;
 
 
-float3 g_LightDir = float3(0, 100, 0);
+float3 g_LightDir = float3(0, -100, 0);
 
 float g_fSpecularExponent = 3;
 
@@ -435,15 +436,19 @@ technique RenderScene
 
 
 // calcula la iluminaciond dinamica
-float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float dy, float3 EnvTex)
+float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float dy, float3 vEyeR)
 {
 	// Color Basico
 	//float4 cBaseColor = tex2Dgrad(auxMap, texCoord, dx, dy);
-		float4 cBaseColor = colorAgua;
+	float a = coeficiente;
+	float4 cBaseColor = colorAgua;
 		/*if (phong_lighting)
 		{*/
 		// Busco el vector normal en la textura Normal-Height Map  (esta en Tangent Space)
-		float3 vNormalTS = normalize(tex2Dgrad(heightmap, texCoord, dx, dy) * 2 - 1);
+		float3 samp1 = normalize(tex2Dgrad(heightmap, texCoord, dx, dy) * 2 - 1);
+		float3 samp2 = normalize(tex2Dgrad(diffuseMap, texCoord, dx, dy) * 2 - 1);
+		float3 vNormalTS = lerp(samp1, samp2, coeficiente);
+		float3 EnvTex = reflect(vEyeR, vNormalTS);
 
 
 			// Color difuso
@@ -456,7 +461,7 @@ float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float d
 			float fRdotL = saturate(dot(vReflectionTS, vLightTSAdj));
 		cSpecular = saturate(pow(fRdotL, g_fSpecularExponent))*k_ls;
 
-		float k = 0.30;
+		float k = 0.60;
 		cBaseColor = k*texCUBE(g_samCubeMap, EnvTex) +
 			(1 - k)*colorAgua;
 		//(1 - k)*tex2D(diffuseMap, text*20);
@@ -493,9 +498,12 @@ void RenderSceneVS(float4 Pos : POSITION,
 	out float3 tsLight : TEXCOORD3,
 	out float3 wsNormal : TEXCOORD2,
 	out float3 wsView : TEXCOORD4,
-	out float3 EnvTex : TEXCOORD5
+	out float3 EnvTex : TEXCOORD5,
+	out float3 Eye : TEXCOORD6
 	)
 {
+	g_LightDir = fvLightPosition;
+
 	oPos = Pos;
 	oPos.y = calculate_Position(Pos.x, Pos.z, -1); //se lo aplicamos al eje y
 	float3 wPos = mul(oPos, matWorld);
@@ -556,6 +564,7 @@ void RenderSceneVS(float4 Pos : POSITION,
 		float3 vN = mul(normal, (float3x3)matWorld);
 		vN = normalize(vN);
 	EnvTex = reflect(vEyeR, vN);
+	Eye = vEyeR;
 
 }
 
@@ -567,9 +576,12 @@ float4 PSParallaxOcclusion(float2 Texcoord: TEXCOORD0,
 	float3 wsNormal : TEXCOORD2,
 	float3 tsLight : TEXCOORD3,
 	float3 wsView : TEXCOORD4,
-	float3 EnvTex : TEXCOORD5
+	float3 EnvTex : TEXCOORD5,
+	float3 vEyeR : TEXCOORD6
 	) : COLOR0
 {
+	g_LightDir = fvLightPosition;
+
 	float textx = smoothstep(-8000, 8000, Texcoord.x);
 	float textz = smoothstep(-8000, 8000, Texcoord.y);
 	Texcoord = float2(textx, textz)*fTexScale;
@@ -607,9 +619,14 @@ float4 PSParallaxOcclusion(float2 Texcoord: TEXCOORD0,
 	float4 vCurrSample;
 	float4 vLastSample;
 
+	float4 samp1;
+	float4 samp2;
+
 	while (nCurrSample < nNumSamples)
 	{
-		vCurrSample = tex2Dgrad(heightmap, Texcoord + vCurrOffset, dx, dy);
+		samp1 = tex2Dgrad(heightmap, Texcoord + vCurrOffset, dx, dy);
+		samp2 = tex2Dgrad(diffuseMap, Texcoord + vCurrOffset, dx, dy);
+		vCurrSample = lerp(samp1, samp2, coeficiente);
 		fCurrH = vCurrSample.a;
 		if (fCurrH > stepHeight)
 		{
@@ -631,7 +648,7 @@ float4 PSParallaxOcclusion(float2 Texcoord: TEXCOORD0,
 		}
 	}
 
-	return Phong(Texcoord + vCurrOffset, tsLight, -tsView, dx, dy, EnvTex);
+	return Phong(Texcoord + vCurrOffset, tsLight, -tsView, dx, dy, vEyeR);
 }
 
 // Parallax oclussion
