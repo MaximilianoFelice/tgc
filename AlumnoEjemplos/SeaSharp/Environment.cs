@@ -43,6 +43,8 @@ namespace AlumnoEjemplos.SeaSharp
 
         public static List<TgcBox> obstaculos;
 
+        public static List<TgcBox> gotas;
+
         // public static int limit = 250; // Establece el limite del skybox y lo ajusta a la escala (20)
 
         // public static int differential = 35; // Establece la diferencia entre islas, esta en funcion de la escala de las mismas (20)
@@ -156,8 +158,8 @@ namespace AlumnoEjemplos.SeaSharp
                 new Vector3(wallSize + 10, wallHeight, wallSize));
             obstaculo.move(-4000, 0, -4000);
             obstaculos.Add(obstaculo);
-            
 
+            
         }
 
                
