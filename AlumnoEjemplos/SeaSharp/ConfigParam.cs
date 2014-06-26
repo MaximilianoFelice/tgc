@@ -21,15 +21,16 @@ namespace AlumnoEjemplos.SeaSharp
     {
         static float _PreviousSeaDetail = 0;
 
+        public static Color colorMar;
         public static void Load()
         {
             //Sea
-            GuiController.Instance.Modifiers.addColor("ColorMar", Color.FromArgb(5, 50, 116));
+            GuiController.Instance.Modifiers.addColor("ColorMar",  ConfigParam.colorMar = Color.FromArgb(5, 50, 116));
             GuiController.Instance.Modifiers.addVertex3f("LightPos", new Vector3(-8000, 0, -8000), new Vector3(8000, 20000, 8000), new Vector3(0, 10000, 0));
             GuiController.Instance.Modifiers.addFloat("Ambient", 0f, 1f, 0.6f);
             GuiController.Instance.Modifiers.addFloat("Diffuse", 0f, 1f, 1f);
             GuiController.Instance.Modifiers.addFloat("Specular", 0f, 1f, 1f);
-            GuiController.Instance.Modifiers.addFloat("SpecularPower", 0f, 50f, 16f);
+            GuiController.Instance.Modifiers.addFloat("SpecularPower", 0f, 150f, 50f);
             GuiController.Instance.Modifiers.addFloat("Amplitud", 0f, 300f, 150f);
             GuiController.Instance.Modifiers.addFloat("Frecuencia", 0f, 10f, 2f);
             GuiController.Instance.Modifiers.addFloat("Reflexion", 0f, 1f, 1f);
@@ -56,6 +57,9 @@ namespace AlumnoEjemplos.SeaSharp
 
             //Lluvia
             GuiController.Instance.Modifiers.addBoolean("Tormenta", "Activa lluvia y relampagos",false);
+
+            //Environment
+            GuiController.Instance.Modifiers.addBoolean("Terreno", "Activa terreno", false);
 
         }
 
@@ -197,6 +201,14 @@ namespace AlumnoEjemplos.SeaSharp
             public static Boolean getLluvia()
             {
                 return (Boolean)GuiController.Instance.Modifiers.getValue("Tormenta");
+            }
+        }
+
+        public class Environment
+        {
+            public static Boolean getEnvironment()
+            {
+                return (Boolean)GuiController.Instance.Modifiers.getValue("Terreno");
             }
         }
 
