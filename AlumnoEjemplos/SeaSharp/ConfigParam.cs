@@ -35,6 +35,8 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.Modifiers.addFloat("Frecuencia", 0f, 10f, 2f);
             GuiController.Instance.Modifiers.addFloat("Reflexion", 0f, 1f, 1f);
             GuiController.Instance.Modifiers.addFloat("Refraccion", 0f, 1f, 0f);
+            GuiController.Instance.Modifiers.addFloat("HeightMapScale", 0f, 20f, 1f);
+            GuiController.Instance.Modifiers.addFloat("TexScale", 0f, 200f, 100f);
 
 
             //Ship
@@ -142,6 +144,16 @@ namespace AlumnoEjemplos.SeaSharp
             public static float getFrecuencia()
             {
                 return (float)GuiController.Instance.Modifiers.getValue("Frecuencia");
+            }
+
+            public static float getHeightmapScale()
+            {
+                return (float)GuiController.Instance.Modifiers.getValue("HeightMapScale");
+            }
+
+            public static float getTexScale()
+            {
+                return (float)GuiController.Instance.Modifiers.getValue("TexScale");
             }
         }
         #endregion

@@ -36,11 +36,11 @@ namespace AlumnoEjemplos.SeaSharp
 
             Vector3 center = new Vector3(0, -30, 0);
 
-            water = QuadTree.generateNewQuad(center, 8000, Color.Blue,75);
+            water = QuadTree.generateNewQuad(center, 8000, Color.Blue,150);
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\aaa.tga");
-            diffuseMap = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\dudvmap.jpg");
+            diffuseMap = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\aaa.jpg");
             water.Technique = "ParallaxOcclusion";
 
             
@@ -85,6 +85,8 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("g_txCubeMap", surf);
             water.Effect.SetValue("colorAgua", ConfigParam.Sea.getColorMar().ToArgb());
             water.Effect.SetValue("shipPos", TgcParserUtils.vector3ToFloat3Array(shipPos));
+            water.Effect.SetValue("fHeightMapScale", ConfigParam.Sea.getHeightmapScale());
+            water.Effect.SetValue("fTexScale", ConfigParam.Sea.getTexScale());
             device.RenderState.AlphaBlendEnable = true;
 
             water.Render(frustum);
