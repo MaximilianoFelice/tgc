@@ -13,15 +13,21 @@ using TgcViewer.Utils.Input;
 using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Shaders;
+
 using TgcViewer.Utils._2D;
+
+using TgcViewer.Utils.Sound;
+
 
 
 namespace AlumnoEjemplos.SeaSharp
 {
     public class Lluvia
     {
-        //TgcBox gota;
-        List<TgcBox> gotas;
+
+        static TgcStaticSound sonidoLluvia;
+        static TgcStaticSound sonidoViento;
+
 
         TgcSprite lluvia1;
         TgcSprite lluvia2;
@@ -39,11 +45,7 @@ namespace AlumnoEjemplos.SeaSharp
         public static bool relampago;
         public void Load()
         {
-            //gota = TgcBox.fromSize(new Vector3(0, 1000, 0), new Vector3(0.1f, 50, 0.1f), Color.Red);
-            //gota = new TgcCylinder(new Vector3(0, 100, 0), 0.2f, 0.1f, 50);
-            //gota.Center = new Vector3(0, 100, 0);
-            //gota.TopRadius = 10;
-            //gota.BottomRadius = 1;
+
             lluvia1 = new TgcSprite();
             lluvia1.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\RainA2.png");
             lluvia1.Position = new Vector2(0, 0);
@@ -82,6 +84,15 @@ namespace AlumnoEjemplos.SeaSharp
             relampago2.Scaling = new Vector2(0.9f, 0.9f);
 
             relampago = false;
+
+            
+            //Cargar sonido de lluvia y viento
+            sonidoLluvia = new TgcStaticSound();
+            sonidoLluvia.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\lluvia.wav");
+            sonidoViento = new TgcStaticSound();
+            sonidoViento.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\viento.wav");
+            
+
         }
 
         public void Render()
@@ -91,21 +102,37 @@ namespace AlumnoEjemplos.SeaSharp
             if (r.Next(80) == 5)
             {
                 relampago2.render();
+                TgcStaticSound sonidoRelampago = new TgcStaticSound();
+                sonidoRelampago.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\relampago.wav");
+                sonidoRelampago.play(false);
                 relampago = true;
             }
 
             if (relampago)
             {
                 if (r.Next(2) == 1)
+                {
                     relampago2.render();
+                    TgcStaticSound sonidoRelampago = new TgcStaticSound();
+                    sonidoRelampago.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\relampago.wav");
+                    sonidoRelampago.play(false);
+                }
                 else
                 {
                     relampago1.render();
+                    TgcStaticSound sonidoRelampago2 = new TgcStaticSound();
+                    sonidoRelampago2.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\relampago2.wav");
+                    sonidoRelampago2.play(false);
                     relampago = false;
                 }
             }
             if (r.Next(150) == 5)
+            {
                 relampago2.render();
+                TgcStaticSound sonidoRelampago = new TgcStaticSound();
+                sonidoRelampago.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\relampago.wav");
+                sonidoRelampago.play(false);
+            }
 
             switch (lluvia)
             {
@@ -132,17 +159,17 @@ namespace AlumnoEjemplos.SeaSharp
                 default:
                     break;
             }
-            //gota.move(new Vector3(0, -50, 0));
-            //if(gota.Position.Y < 0)
-            //{
-            //    gota.Position = new Vector3(0, 1000, 0);
-            //}
-            //gota.render();
+
+            sonidoLluvia.play(true);
+            sonidoViento.play(true);
+  
         }
 
         public void Close()
         {
-            //gotas.dispose();
+            sonidoLluvia.dispose();
+            sonidoViento.dispose();
+
         }
     }
 }

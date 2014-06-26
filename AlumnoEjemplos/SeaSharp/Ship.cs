@@ -14,6 +14,7 @@ using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils._2D;
 using TgcViewer.Utils.Shaders;
+using TgcViewer.Utils.Sound;
 
 /* Clase abstracta que contiene comportamiento en comun de los barcos */
 namespace AlumnoEjemplos.SeaSharp{
@@ -94,6 +95,13 @@ namespace AlumnoEjemplos.SeaSharp{
             //if (shipSphere != null) shipSphere.render();
             //if (enemySphere != null) enemySphere.render();
             ship.renderAll();
+
+            if (GuiController.Instance.D3dInput.keyDown(Key.J))
+            {
+                TgcStaticSound sonidoBocina = new TgcStaticSound();
+                sonidoBocina.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\horn.wav");
+                sonidoBocina.play(false);
+            }
             
         }
 
@@ -132,6 +140,9 @@ namespace AlumnoEjemplos.SeaSharp{
                 NewFireBall.Fire();
                 NewFireBall.Position = this.Position;
                 NewFireBall.Owner = this;
+                TgcStaticSound sonidoExpl = new TgcStaticSound();
+                sonidoExpl.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\boom.wav");
+                sonidoExpl.play(false);
                 
             }
              
