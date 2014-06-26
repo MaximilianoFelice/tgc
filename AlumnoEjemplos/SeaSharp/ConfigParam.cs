@@ -42,6 +42,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             //Ship
             GuiController.Instance.Modifiers.addFloat("Posicion", 1, 10, 5);
+            GuiController.Instance.Modifiers.addBoolean("Normal", "Dibuja normal del barco", false);
             
 
             //General
@@ -86,6 +87,11 @@ namespace AlumnoEjemplos.SeaSharp
             public static float getFactorTiempo()
             {
                 return (float)GuiController.Instance.Modifiers.getValue("tiempo");
+            }
+
+            public static bool getNormal()
+            {
+                return (bool)GuiController.Instance.Modifiers.getValue("Normal");
             }
         }
         #endregion
