@@ -47,6 +47,8 @@ namespace AlumnoEjemplos.SeaSharp
         public static int r;
         public Random rand;
 
+        public static Lluvia lluvia;
+
 
         #region STRUCTURAL_INFO
         /// <summary>
@@ -91,12 +93,16 @@ namespace AlumnoEjemplos.SeaSharp
             /* Cargamos el mar */
             Sea.Load();
 
+
             /* Creamos un nuevo barco y lo cargamos */
             ship = new MainShip();
             ship.Load();
             ship.CambiarTargetMap();
             EnemyFleet.AddEnemy();
             EnemyFleet.AddEnemy();
+
+            lluvia = new Lluvia();
+            lluvia.Load();
 
             /* Cargamos el environment */
             Environment.Load();
@@ -309,8 +315,8 @@ namespace AlumnoEjemplos.SeaSharp
                 ship.Render();
 
 
-                //EnemyFleet.RenderAll();
-                //Environment.Render();
+                EnemyFleet.RenderAll();
+                Environment.Render();
                 Bola.RenderAll();
 
                 FPSCounters.Render(elapsedTime);
@@ -359,6 +365,7 @@ namespace AlumnoEjemplos.SeaSharp
             }
 
             Sea.Render(g_pCubeMap, GuiController.Instance.Frustum, r);
+            lluvia.Render();
 
             
 
@@ -379,6 +386,7 @@ namespace AlumnoEjemplos.SeaSharp
                 MainScreen.mainScreen.dispose();
             Environment.Close();
             FPSCounters.Close();
+            lluvia.Close();
 
         }
 
