@@ -293,6 +293,7 @@ namespace AlumnoEjemplos.SeaSharp
                 ship.CalculateMovement(elapsedTime);
                 //EnemyFleet.CalculateEveryMovement(elapsedTime, ship);
 
+
                 Bola.CalculateEveryMovement(elapsedTime);
 
                 //Hacer que la camara siga a la nave en su nueva posicion
@@ -313,7 +314,7 @@ namespace AlumnoEjemplos.SeaSharp
 
 
                 ship.Render();
-
+                
 
                 EnemyFleet.RenderAll();
                 Environment.Render();
@@ -321,12 +322,16 @@ namespace AlumnoEjemplos.SeaSharp
 
                 FPSCounters.Render(elapsedTime);
 
-
+                Sea.Render(g_pCubeMap, GuiController.Instance.Frustum, r);
 
                 // Actualizamos los Sprites en pantalla
 
                 //Iniciar dibujado de todos los Sprites de la escena (en este caso es solo uno)
                 GuiController.Instance.Drawer2D.beginDrawSprite();
+
+                //GuiController.Instance.Drawer2D.beginDrawSprite();
+                if (ConfigParam.Lluvia.getLluvia()) lluvia.Render();
+                //GuiController.Instance.Drawer2D.endDrawSprite();
 
                 // Barra de vida en pantalla
                 if (ship.life >= 0)
@@ -352,7 +357,7 @@ namespace AlumnoEjemplos.SeaSharp
                 {
                     e.targetMap.render();
                 }
-
+                
                 //Finalizar el dibujado de Sprites
                 GuiController.Instance.Drawer2D.endDrawSprite();
 
@@ -364,10 +369,11 @@ namespace AlumnoEjemplos.SeaSharp
                 }
             }
 
-            Sea.Render(g_pCubeMap, GuiController.Instance.Frustum, r);
-            lluvia.Render();
+            //Sea.Render(g_pCubeMap, GuiController.Instance.Frustum, r);
 
-            
+            //GuiController.Instance.Drawer2D.beginDrawSprite();
+            //lluvia.Render();
+            //GuiController.Instance.Drawer2D.endDrawSprite();
 
         }
 

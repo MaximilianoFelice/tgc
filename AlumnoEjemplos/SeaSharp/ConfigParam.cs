@@ -55,6 +55,9 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.Modifiers.addFloat("DistLODII", 100, 10000, 4000);
             GuiController.Instance.Modifiers.addFloat("sizeLODII", 100, 800, 300);
 
+            //Lluvia
+            GuiController.Instance.Modifiers.addBoolean("Tormenta", "Activa lluvia y relampagos",false);
+
         }
 
         public static void UpdateValues()
@@ -180,6 +183,14 @@ namespace AlumnoEjemplos.SeaSharp
                 return (float)GuiController.Instance.Modifiers.getValue("sizeLODII");
             }
 
+        }
+
+        public class Lluvia
+        {
+            public static Boolean getLluvia()
+            {
+                return (Boolean)GuiController.Instance.Modifiers.getValue("Tormenta");
+            }
         }
 
     }
