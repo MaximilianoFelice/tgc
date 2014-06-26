@@ -29,8 +29,6 @@ namespace AlumnoEjemplos.SeaSharp{
 
         public TgcSprite targetMap;
 
-
-
         public bool isFiring = false;
 
         public TgcBoundingSphere shipSphere;
@@ -272,6 +270,9 @@ namespace AlumnoEjemplos.SeaSharp{
             float jump = 0;
             float speedForward = 60f;
             float speedRotate = 0.5f;
+            float maxSpeed = 0;
+            float acc = 0;
+
 
             targetMap.Position = new Vector2(-ship.Meshes[0].Position.X / 50 + Environment.MapShipsOffsetX, ship.Meshes[0].Position.Z / 50 + Environment.MapShipsOffsetY);
             lifeBar.calculatePosition(this.Position, elapsedTime, d3dInput, life, nitro);
@@ -286,17 +287,54 @@ namespace AlumnoEjemplos.SeaSharp{
                 //Adelante
                 if (d3dInput.keyDown(Key.W))
                 {
-                    lastMoveForward = ConfigParam.Ship.FORWARD;
-                    moveForward = ConfigParam.Ship.FORWARD;
+                    acc = ConfigParam.Ship.FORWARD - 0.3f*ship.RotationZ();
+                    if (ship.RotationZ() > 0)
+                    {
+                        maxSpeed = 8 - 3*ship.RotationZ();
+                        if (lastMoveForward > maxSpeed)
+                        {
+                            lastMoveForward = lastMoveForward - ship.RotationZ();
+                        }
+                        else
+                        {
+                            lastMoveForward = lastMoveForward + acc;
+                        }
+                    }
+                    else
+                    {
+                        maxSpeed = 8 - ship.RotationZ();
+                        if(lastMoveForward > maxSpeed)
+                        {
+                            lastMoveForward = lastMoveForward + ship.RotationZ();
+                        }
+                        else
+                        {
+                            lastMoveForward = lastMoveForward + acc;
+                        }
+                    }
+                    //if (lastMoveForward > 7.5f)
+                    //{
+                    //    lastMoveForward = 8;
+                    //}
+                    //else
+                    //{
+                    //    lastMoveForward = lastMoveForward + ConfigParam.Ship.FORWARD;
+                    //}
+                    moveForward = lastMoveForward;
                     moving = true;
                 }
                 else
                     //Atras
                     if (d3dInput.keyDown(Key.S))
                     {
-                        lastMoveForward = -ConfigParam.Ship.FORWARD;
-                        moveForward = -ConfigParam.Ship.FORWARD;
-                        moving = true;
+                        lastMoveForward = lastMoveForward * 0.9f;
+                        moveForward = lastMoveForward;
+                        // Cuando la desaceleracion llega a un valor muy bajo, le asignamos 0 para que no tienda a 0 infinitamente
+                        if (moveForward < 1)
+                        {
+                            lastMoveForward = 0;
+                            moveForward = 0;
+                        }
                     }
 
                 // Nitro

@@ -26,7 +26,7 @@ namespace AlumnoEjemplos.SeaSharp
         {
             //Sea
             GuiController.Instance.Modifiers.addColor("ColorMar", Color.FromArgb(221, 249, 255));
-            GuiController.Instance.Modifiers.addVertex3f("LightPos", new Vector3(-8000, -10000, -8000), new Vector3(8000, 1000000, 8000), new Vector3(6400, 1000, 2400));
+            GuiController.Instance.Modifiers.addVertex3f("LightPos", new Vector3(-8000, 0, -8000), new Vector3(8000, 20000, 8000), new Vector3(6400, 1000, 2400));
             GuiController.Instance.Modifiers.addFloat("Ambient", 0f, 1f, 0.6f);
             GuiController.Instance.Modifiers.addFloat("Diffuse", 0f, 1f, 1f);
             GuiController.Instance.Modifiers.addFloat("Specular", 0f, 1f, 1f);
@@ -49,9 +49,9 @@ namespace AlumnoEjemplos.SeaSharp
 
             //Quad
             GuiController.Instance.Modifiers.addFloat("DistLODI", 100, 10000, 2000);
-            GuiController.Instance.Modifiers.addFloat("sizeLODI", 50, 400, 100);
+            GuiController.Instance.Modifiers.addFloat("sizeLODI", 50, 400, 150);
             GuiController.Instance.Modifiers.addFloat("DistLODII", 100, 10000, 4000);
-            GuiController.Instance.Modifiers.addFloat("sizeLODII", 100, 800, 200);
+            GuiController.Instance.Modifiers.addFloat("sizeLODII", 100, 800, 300);
 
         }
 
@@ -63,7 +63,7 @@ namespace AlumnoEjemplos.SeaSharp
         #region SHIP
         public class Ship
         {
-            public const float FORWARD = 8;
+            public const float FORWARD = 0.1f;
             public const float ROTATE = 200;
             public const float NITRO = 4.5f;
             public const float DESROTATION = 0.97f;
