@@ -11,6 +11,7 @@ using TgcViewer.Utils.Terrain;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils._2D;
 using TgcViewer.Utils.TgcGeometry;
+using TgcViewer.Utils.Shaders;
 
 namespace AlumnoEjemplos.SeaSharp
 {
@@ -43,6 +44,9 @@ namespace AlumnoEjemplos.SeaSharp
 
         public static List<TgcBox> obstaculos;
 
+        public static Texture text;
+        public static Texture height;
+
         // public static int limit = 250; // Establece el limite del skybox y lo ajusta a la escala (20)
 
         // public static int differential = 35; // Establece la diferencia entre islas, esta en funcion de la escala de las mismas (20)
@@ -54,7 +58,11 @@ namespace AlumnoEjemplos.SeaSharp
             //Cargar terreno: cargar heightmap y textura de color
             Vector3 Island_Pos = new Vector3(0, -250, 0);
             surroundingArea.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\Terrain.jpg", 157, 5, Island_Pos);
+            text = TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
+            height = TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\Terrain.jpg");
             surroundingArea.loadTexture(GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
+            //surroundingArea.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx"); ;
+            //surroundingArea.Technique = "RenderScene";
             
             TgcSceneLoader loader = new TgcSceneLoader();
             palmeras = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Palmeras\\palmerasIslaGrande-TgcScene.xml");
@@ -163,6 +171,15 @@ namespace AlumnoEjemplos.SeaSharp
                
 
         public static void Render(){
+            //surroundingArea.Effect.SetValue("texDiffuseMap", text);
+            //surroundingArea.Effect.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(ConfigParam.Sea.getLightPos()));
+            //surroundingArea.Effect.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.RotCamera.getPosition()));
+            //surroundingArea.Effect.SetValue("fvEyeLookAt", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.RotCamera.getLookAt()));
+            //surroundingArea.Effect.SetValue("k_la", ConfigParam.Sea.getAmbient());
+            //surroundingArea.Effect.SetValue("k_ld", ConfigParam.Sea.getDiffuse());
+            //surroundingArea.Effect.SetValue("k_ls", ConfigParam.Sea.getSpecular());
+            //surroundingArea.Effect.SetValue("fSpecularPower", ConfigParam.Sea.getSpecularPower());
+
             foreach (Island island in islands) island.Render();
             surroundingArea.render();
             palmeras.renderAll();

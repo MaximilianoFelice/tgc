@@ -25,6 +25,7 @@ namespace AlumnoEjemplos.SeaSharp
         public static float time = 0f;
         public static float ambient, diffuse, specular, specularPower;
         public static Texture texture;
+        public static Texture diffuseMap;
         public static Color colorMar;
         public static Random rand;
         public static int r;
@@ -35,11 +36,12 @@ namespace AlumnoEjemplos.SeaSharp
 
             Vector3 center = new Vector3(0, -30, 0);
 
-            water = QuadTree.generateNewQuad(center, 8000, Color.Blue,120);
+            water = QuadTree.generateNewQuad(center, 8000, Color.Blue,75);
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\aaa.jpg");
-            water.Technique = "RenderCubeMap";
+            texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\aaa.tga");
+            diffuseMap = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\dudvmap.jpg");
+            water.Technique = "ParallaxOcclusion";
 
             
             ambient = 1.0f;
@@ -79,6 +81,7 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("kx", ConfigParam.Sea.getReflexion());
             water.Effect.SetValue("kc", ConfigParam.Sea.getRefraccion());
             water.Effect.SetValue("superficieAgua", texture);
+            water.Effect.SetValue("texDiffuseMap", diffuseMap);
             water.Effect.SetValue("g_txCubeMap", surf);
             water.Effect.SetValue("colorAgua", ConfigParam.Sea.getColorMar().ToArgb());
             water.Effect.SetValue("shipPos", TgcParserUtils.vector3ToFloat3Array(shipPos));

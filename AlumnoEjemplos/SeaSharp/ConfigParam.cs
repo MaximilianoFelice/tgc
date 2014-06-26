@@ -25,7 +25,7 @@ namespace AlumnoEjemplos.SeaSharp
         public static void Load()
         {
             //Sea
-            GuiController.Instance.Modifiers.addColor("ColorMar", Color.FromArgb(221, 249, 255));
+            GuiController.Instance.Modifiers.addColor("ColorMar", Color.FromArgb(5, 50, 116));
             GuiController.Instance.Modifiers.addVertex3f("LightPos", new Vector3(-8000, 0, -8000), new Vector3(8000, 20000, 8000), new Vector3(6400, 1000, 2400));
             GuiController.Instance.Modifiers.addFloat("Ambient", 0f, 1f, 0.6f);
             GuiController.Instance.Modifiers.addFloat("Diffuse", 0f, 1f, 1f);
