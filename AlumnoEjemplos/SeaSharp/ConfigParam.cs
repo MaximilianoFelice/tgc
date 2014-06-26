@@ -19,10 +19,9 @@ namespace AlumnoEjemplos.SeaSharp
 {
     public static class ConfigParam
     {
+        static float _PreviousSeaDetail = 0;
+
         public static Color colorMar;
-        // TODO: HACER UN NUEVO ALGORITMO PARA ESTO, QUE SEA MUCHO MAS DINAMICO
-        //Calcular proxima posicion de la nave segun Input
-        
         public static void Load()
         {
             //Sea
@@ -48,7 +47,7 @@ namespace AlumnoEjemplos.SeaSharp
             //General
             GuiController.Instance.Modifiers.addFloat("tiempo", 1, 10, 3);
             GuiController.Instance.Modifiers.addFloat("tamanioMar", 2000, 8000, 8000);
-            GuiController.Instance.Modifiers.addFloat("tamanioTriangulos", 50, 200, 75);
+            GuiController.Instance.Modifiers.addFloat("tamanioTriangulos", 50, 200, 150);
 
 
             //Quad
@@ -68,6 +67,14 @@ namespace AlumnoEjemplos.SeaSharp
         public static void UpdateValues()
         {
             AlumnoEjemplos.SeaSharp.QuadTree.UpdateValues();
+
+            if (_PreviousSeaDetail != Sea.getTamaniotriangulos())
+            {
+                AlumnoEjemplos.SeaSharp.Sea.Close();
+                FPSCounters.Status.Text = "LOADING... PLEASE WAIT   =)";
+                AlumnoEjemplos.SeaSharp.Sea.Load();
+                _PreviousSeaDetail = Sea.getTamaniotriangulos();
+            }
         }
         
         #region SHIP
