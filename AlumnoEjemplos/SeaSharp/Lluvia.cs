@@ -20,8 +20,6 @@ namespace AlumnoEjemplos.SeaSharp
 {
     public class Lluvia
     {
-        //TgcBox gota;
-        List<TgcBox> gotas;
 
         TgcSprite lluvia1;
         TgcSprite lluvia2;

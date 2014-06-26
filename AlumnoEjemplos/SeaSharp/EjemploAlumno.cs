@@ -291,7 +291,7 @@ namespace AlumnoEjemplos.SeaSharp
                 */
 
                 ship.CalculateMovement(elapsedTime);
-                //EnemyFleet.CalculateEveryMovement(elapsedTime, ship);
+                EnemyFleet.CalculateEveryMovement(elapsedTime, ship);
 
 
                 Bola.CalculateEveryMovement(elapsedTime);
