@@ -666,16 +666,37 @@ namespace AlumnoEjemplos.SeaSharp{
                     GuiController.Instance.Drawer2D.endDrawSprite();
 
                     // Avanza cierta distancia y luego vuelve en direccion opuesta
-                    if (ship.Meshes[0].Position.X > DISTANCE)
-                        directionX = -1;
-                    else if (ship.Meshes[0].Position.X < -DISTANCE)
-                        directionX = 1;
+                    //if (ship.Meshes[0].Position.X > DISTANCE)
+                    //    directionX = -1;
+                    //else if (ship.Meshes[0].Position.X < -DISTANCE)
+                    //    directionX = 1;
+
+                    /* Avanza para acercarse al barco del personaje */
+                    float _ZDirection;
+                    float _XDirection;
+
+                    if (targetShip.Position.X < this.Position.X) _XDirection = -1;
+                    else if (targetShip.Position.X > this.Position.X) _XDirection = 1;
+                    else _XDirection = 0;
+
+                    if (targetShip.Position.Z < this.Position.Z) _ZDirection = -1;
+                    else if (targetShip.Position.Z > this.Position.Z) _ZDirection = 1;
+                    else _ZDirection = 0;
+                    
+                    Vector3 vectorDist = targetShip.Position - ship.Meshes[0].Position;
+
+                    //if (vectorDist.Length() > DISTANCE)
+                    //{
+                    //    rotationY = 
+                    //}
+
 
                     movementVector = new Vector3(
-                        FastMath.Cos(ship.RotationY()) * moveForward * elapsedTime * speedForward * directionX,
+                        FastMath.Cos(ship.RotationY()) * moveForward * elapsedTime * speedForward * _XDirection,
                         jump,
-                        -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward * directionX
+                        -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward * _ZDirection
                         );
+
                 }
 
                 //Guardar posicion original antes de cambiarla

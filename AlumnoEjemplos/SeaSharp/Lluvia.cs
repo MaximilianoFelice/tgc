@@ -28,7 +28,6 @@ namespace AlumnoEjemplos.SeaSharp
         static TgcStaticSound sonidoLluvia;
         static TgcStaticSound sonidoViento;
 
-
         TgcSprite lluvia1;
         TgcSprite lluvia2;
         TgcSprite lluvia3;
