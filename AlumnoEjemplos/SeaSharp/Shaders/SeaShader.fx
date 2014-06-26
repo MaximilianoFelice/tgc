@@ -261,9 +261,9 @@ float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
 	float3 posmin = shipPos - float3(80, 0, 20);
 		float3 posmax = shipPos + float3(80, 0, 20);
 
-		//float4 aux = tex2Dgrad(heightmap, text * 20, ddx(text), ddy(text));
-		float4 aux = float4(0, hei, 0, 1);
-		N = normalize(N);
+		float4 aux = tex2Dgrad(heightmap, text * 20, ddx(text), ddy(text));
+		//float4 aux = float4(hei, 0, 0, 1);
+		N = normalize(N + aux.xyz);
 
 	// 1- calculo la luz diffusa
 	float3 LD = normalize(fvLightPosition - wPos);
@@ -325,15 +325,10 @@ technique RenderCubeMap
 void VSCubeMap(float4 Pos : POSITION,
 	float3 Normal : NORMAL,
 	float2 Texcoord : TEXCOORD0,
-	out float4 oPos : POSITION,
-	out float3 EnvTex : TEXCOORD0,
-	out float2 Tex : TEXCOORD2,
-	out float3 N : TEXCOORD1,
-	out float3 EnvTex1 : TEXCOORD3,
-	out float3 EnvTex2 : TEXCOORD4,
-	out float3 EnvTex3 : TEXCOORD5,
-	out float3 wPos : TEXCOORD6
-	//out float  Fresnel : COLOR
+	float4 Color : COLOR0,
+	out float3 N : NORMAL,
+	out float2 Tex : TEXCOORD0,
+	out float3 oPos : TEXCOORD2
 	)
 {
 	/*float y = calculate_Position(Pos.x, Pos.z);
@@ -345,36 +340,11 @@ void VSCubeMap(float4 Pos : POSITION,
 		float heightz = calculate_Position(Pos.x, Pos.z + dr);
 	float3 dx = normalize(float3(dr, heightx - y, 0));
 		float3 dz = normalize(float3(0, heightz - y, dr));*/
+	oPos = Pos;
 
-	float3 dx = float3(1, 0, 0);
-		float3 dz = float3(0, 0, 1);
+	N = Normal;
 
-		Normal = cross(dz, dx);
-
-	wPos = mul(Pos, matWorld);
-	float3 vEyeR = normalize(wPos - fvEyePosition);
-
-		// corrijo la normal (depende de la malla)
-		// ej. el tanque esta ok, la esfera esta invertida.
-		//Normal*= -1;
-		float3 vN = mul(Normal, (float3x3)matWorld);
-		vN = normalize(vN);
-	EnvTex = reflect(vEyeR, vN);
-
-	// Refraccion de la luz
-	EnvTex1 = refract(vEyeR, vN, 1.001);
-	EnvTex2 = refract(vEyeR, vN, 1.009);
-	EnvTex3 = refract(vEyeR, vN, 1.02);
-	//Fresnel = FBias + FEscala*pow(1 + dot(vEyeR, vN), FPower);
-
-	// proyecto
-	oPos = mul(Pos, matWorldViewProj);
-
-	//Propago la textura
-	Tex = float2(Pos.x, Pos.z);
-
-	//Propago la normal
-	N = vN;
+	Tex = Texcoord;
 
 }
 
@@ -396,10 +366,7 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 	float le = 0;		// luz specular
 
 	//float3 normal = tex2D(heightmap, Pos).xyz;
-	//N = normalize(normal);
-
-	N = normalize(tex2Dgrad(heightmap, Texcoord, ddx(Texcoord), ddy(Texcoord)) * 2 - 1);;
-
+	N = normalize(N);
 
 	// si hubiera varias luces, se podria iterar por c/u. 
 	// Pero hay que tener en cuenta que este algoritmo es bastante pesado
@@ -420,15 +387,15 @@ float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
 	le += ks*k_ls;
 
 	//Obtener el texel de textura
-	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+	//float4 fvBaseColor = col;
 	//float4 fvBaseColor = texCUBE(g_samCubeMap, Texcoord);
-	//float4 fvBaseColor = float4(0.20, 0.35, 0.40, 0);
-	float a = acos(dot(D, N));
+	float4 fvBaseColor = float4(0.20, 0.35, 0.40, 0);
+	/*float a = acos(dot(D, N));
 	a = saturate(sin(a) + 0.2);
-	float b = clamp(a, 0.8, 1);
+	float b = clamp(a, 0.8, 1);*/
 	
 		// suma luz diffusa, ambiente y especular
-		float4 RGBColor = float4(0, 0, 0, b);
+		float4 RGBColor = float4(0, 0, 0, 1);
 		RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
 
 	// saturate deja los valores entre [0,1]. Una tecnica muy usada en motores modernos

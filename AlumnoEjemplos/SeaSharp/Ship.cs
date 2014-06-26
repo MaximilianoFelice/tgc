@@ -37,6 +37,8 @@ namespace AlumnoEjemplos.SeaSharp{
 
         public TgcArrow _Normal;
 
+        Microsoft.DirectX.Direct3D.Effect effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
+
 
         public void Load()
         {
@@ -68,8 +70,6 @@ namespace AlumnoEjemplos.SeaSharp{
             _Normal = new TgcArrow();
             _Normal.Thickness = 1.5f;
 
-
-         
         }
 
         public Vector3 Position
@@ -80,8 +80,7 @@ namespace AlumnoEjemplos.SeaSharp{
 
         public void Render()
         {
-
-
+           
 
             /*
             *          ZONA DE RENDERIZADO
@@ -298,6 +297,10 @@ namespace AlumnoEjemplos.SeaSharp{
                         else
                         {
                             lastMoveForward = lastMoveForward + acc;
+                        }
+                        if (lastMoveForward < 0)
+                        {
+                            lastMoveForward = 0;
                         }
                     }
                     else

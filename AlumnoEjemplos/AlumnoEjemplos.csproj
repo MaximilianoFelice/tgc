@@ -94,6 +94,7 @@
     <Compile Include="SeaSharp\Environment.cs" />
     <Compile Include="SeaSharp\Island.cs" />
     <Compile Include="SeaSharp\LifeBar.cs" />
+    <Compile Include="SeaSharp\Lluvia.cs" />
     <Compile Include="SeaSharp\MainScreen.cs" />
     <Compile Include="SeaSharp\QuadTree.cs" />
     <Compile Include="SeaSharp\Sea.cs" />
