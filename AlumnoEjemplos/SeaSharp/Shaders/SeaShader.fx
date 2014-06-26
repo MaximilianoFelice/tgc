@@ -572,7 +572,7 @@ float4 PSParallaxOcclusion(float2 Texcoord: TEXCOORD0,
 {
 	float textx = smoothstep(-8000, 8000, Texcoord.x);
 	float textz = smoothstep(-8000, 8000, Texcoord.y);
-	Texcoord = float2(textx, textz)*10;
+	Texcoord = float2(textx, textz)*fTexScale;
 
 	// normalizo todo lo que interpola el PS
 	wsView = normalize(wsView);
