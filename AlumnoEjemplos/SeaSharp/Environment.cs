@@ -57,7 +57,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             //Cargar terreno: cargar heightmap y textura de color
             Vector3 Island_Pos = new Vector3(0, -250, 0);
-            surroundingArea.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\Terrain.jpg", 157, 5, Island_Pos);
+            surroundingArea.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\Terrain.jpg", 300, 100, Island_Pos);
             text = TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
             height = TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\Terrain.jpg");
             surroundingArea.loadTexture(GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
@@ -67,7 +67,7 @@ namespace AlumnoEjemplos.SeaSharp
             TgcSceneLoader loader = new TgcSceneLoader();
             palmeras = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Palmeras\\palmerasIslaGrande-TgcScene.xml");
             palmeras.Scale(new Vector3(5, 5, 5));
-            palmeras.Move(new Vector3(4300, 100, 4300));
+            palmeras.Move(new Vector3(8300, 500, 8300));
 
 
             MainScreen.Load();
@@ -131,7 +131,7 @@ namespace AlumnoEjemplos.SeaSharp
             TgcBox obstaculo;
 
 
-            float wallSize = 8000;
+            float wallSize = 16000;
             float wallHeight = 1000;
 
             //Obstaculo 1
@@ -184,10 +184,10 @@ namespace AlumnoEjemplos.SeaSharp
             if(islaGrande) surroundingArea.render();
             palmeras.renderAll();
             
-            /*foreach (TgcBox obstaculo in obstaculos)
+            foreach (TgcBox obstaculo in obstaculos)
             {
                 obstaculo.render();
-            }*/
+            }
 
         }
 
