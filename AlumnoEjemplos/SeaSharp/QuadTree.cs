@@ -25,6 +25,7 @@ namespace AlumnoEjemplos.SeaSharp
         public static int _density;    // TODO: Implement triangle density constructor
         public static Color _color;
         public Vector3 _center;
+        public TgcBoundingBox _BoundingBox;
 
         public static float LODI;
         public static float LODI_Module;
@@ -69,6 +70,13 @@ namespace AlumnoEjemplos.SeaSharp
             _quad.Size = new Vector2(triangleSize, triangleSize);
 
             _quad.updateValues();
+
+            float factor = _module / 2;
+            float waveMaxHeigth = 500;
+            Vector3 maxPoint = new Vector3(_quad.Center.X - _quad.Size.X / 2 - factor, _quad.Center.Y - waveMaxHeigth, _quad.Center.Z - _quad.Size.Y / 2 - factor);
+            Vector3 minPoint = new Vector3(_quad.Center.X + _quad.Size.X / 2 + factor, _quad.Center.Y + waveMaxHeigth, _quad.Center.Z + _quad.Size.Y / 2 + factor);
+
+            _BoundingBox = new TgcBoundingBox(maxPoint, minPoint);
 
             /* Applying Triangle Density */
             this.ApplyDensity();
@@ -173,16 +181,8 @@ namespace AlumnoEjemplos.SeaSharp
 
         public TgcCollisionUtils.FrustumResult testChildVisibility(QuadTree quadTree, TgcFrustum frustum)
         {
-            float factor = _module / 2;
-            float waveMaxHeigth = 500;
-            Vector3 maxPoint = new Vector3(quadTree._quad.Center.X - quadTree._quad.Size.X / 2 - factor, quadTree._quad.Center.Y - waveMaxHeigth, quadTree._quad.Center.Z - quadTree._quad.Size.Y / 2 - factor);
-            Vector3 minPoint = new Vector3(quadTree._quad.Center.X + quadTree._quad.Size.X / 2 + factor, quadTree._quad.Center.Y + waveMaxHeigth, quadTree._quad.Center.Z + quadTree._quad.Size.Y / 2 + factor);
 
-            //Vector3 maxPoint = new Vector3(quadTree._quad.Center.X - quadTree._quad.Size.X , quadTree._quad.Center.Y, quadTree._quad.Center.Z - quadTree._quad.Size.Y );
-            //Vector3 minPoint = new Vector3(quadTree._quad.Center.X + quadTree._quad.Size.X , quadTree._quad.Center.Y + 1, quadTree._quad.Center.Z + quadTree._quad.Size.Y );
-            TgcBoundingBox quadBox = new TgcBoundingBox(maxPoint, minPoint);
-
-            TgcCollisionUtils.FrustumResult res = TgcCollisionUtils.classifyFrustumAABB(frustum, quadBox);
+            TgcCollisionUtils.FrustumResult res = TgcCollisionUtils.classifyFrustumAABB(frustum, _BoundingBox);
 
             return res;
         }
