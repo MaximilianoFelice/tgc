@@ -189,8 +189,8 @@ namespace AlumnoEjemplos.SeaSharp
 
         public void Dispose()
         {
-            _quad.dispose();
             if (quadList != null) foreach (QuadTree quadTree in quadList) quadTree.Dispose();
+            _quad.dispose();
         }
 
         #region SETTERS_AND_GETTERS
