@@ -57,7 +57,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             //Cargar terreno: cargar heightmap y textura de color
             Vector3 Island_Pos = new Vector3(0, -250, 0);
-            surroundingArea.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\Terrain.jpg", 300, 100, Island_Pos);
+            surroundingArea.loadHeightmap(GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\Terrain.jpg", 305, 100, Island_Pos);
             text = TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
             height = TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Island\\Terrain.jpg");
             surroundingArea.loadTexture(GuiController.Instance.ExamplesMediaDir + "Texturas\\" + "tierra.jpg");
@@ -139,7 +139,7 @@ namespace AlumnoEjemplos.SeaSharp
                 new Vector3(0, 0, 0),
                 new Vector3(wallSize, wallHeight, 10),
                 TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\baldosaFacultad.jpg"));
-            obstaculo.move(-4000, 0, -4000);
+            obstaculo.move(-8000, 0, -8000);
             obstaculos.Add(obstaculo);
 
             //Obstaculo 2
@@ -147,7 +147,7 @@ namespace AlumnoEjemplos.SeaSharp
                 new Vector3(0, 0, 0),
                 new Vector3(10, wallHeight, wallSize),
                 TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\madera.jpg"));
-            obstaculo.move(-4000, 0, -4000);
+            obstaculo.move(-8000, 0, -8000);
             obstaculos.Add(obstaculo);
 
             //Obstaculo 3
@@ -155,14 +155,14 @@ namespace AlumnoEjemplos.SeaSharp
                 new Vector3(0, 0, wallSize),
                 new Vector3(wallSize, wallHeight, wallSize + 10),
                 TgcTexture.createTexture(d3dDevice, GuiController.Instance.ExamplesMediaDir + "Texturas\\granito.jpg"));
-            obstaculo.move(-4000, 0, -4000);
+            obstaculo.move(-8000, 0, -8000);
             obstaculos.Add(obstaculo);
 
             //Obstaculo 4
             obstaculo = TgcBox.fromExtremes(
                 new Vector3(wallSize, 0, 0),
                 new Vector3(wallSize + 10, wallHeight, wallSize));
-            obstaculo.move(-4000, 0, -4000);
+            obstaculo.move(-8000, 0, -8000);
             obstaculos.Add(obstaculo);
 
             
@@ -181,13 +181,13 @@ namespace AlumnoEjemplos.SeaSharp
             //surroundingArea.Effect.SetValue("fSpecularPower", ConfigParam.Sea.getSpecularPower());
 
             foreach (Island island in islands) island.Render();
-            if(islaGrande) surroundingArea.render();
+            if(islaGrande && ConfigParam.Environment.getEnvironment()) surroundingArea.render();
             palmeras.renderAll();
             
-            foreach (TgcBox obstaculo in obstaculos)
+            /*foreach (TgcBox obstaculo in obstaculos)
             {
                 obstaculo.render();
-            }
+            }*/
 
         }
 

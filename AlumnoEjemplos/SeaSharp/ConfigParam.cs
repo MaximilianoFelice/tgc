@@ -58,6 +58,9 @@ namespace AlumnoEjemplos.SeaSharp
             //Lluvia
             GuiController.Instance.Modifiers.addBoolean("Tormenta", "Activa lluvia y relampagos",false);
 
+            //Environment
+            GuiController.Instance.Modifiers.addBoolean("Terreno", "Activa terreno", false);
+
         }
 
         public static void UpdateValues()
@@ -190,6 +193,14 @@ namespace AlumnoEjemplos.SeaSharp
             public static Boolean getLluvia()
             {
                 return (Boolean)GuiController.Instance.Modifiers.getValue("Tormenta");
+            }
+        }
+
+        public class Environment
+        {
+            public static Boolean getEnvironment()
+            {
+                return (Boolean)GuiController.Instance.Modifiers.getValue("Terreno");
             }
         }
 
