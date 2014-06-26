@@ -164,8 +164,8 @@ namespace AlumnoEjemplos.SeaSharp
                 new Vector3(wallSize + 10, wallHeight, wallSize));
             obstaculo.move(-4000, 0, -4000);
             obstaculos.Add(obstaculo);
-            
 
+            
         }
 
                

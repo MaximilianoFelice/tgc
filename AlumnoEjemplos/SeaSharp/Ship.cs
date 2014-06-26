@@ -224,11 +224,18 @@ namespace AlumnoEjemplos.SeaSharp{
 
             Vector3 normal = Vector3.Cross(dz, dx);
 
+            //Vector3 rotatedNormal = new Vector3(FastMath.Cos(this.ship.RotationX()) * normal.X, normal.Y, FastMath.Sin(this.ship.RotationZ()) * normal.Z);
+            Vector3 rotatedNormal = new Vector3(normal.X, normal.Y, normal.Z);
+            // (-1) * FastMath.Cos(this.ship.RotationY()) * 
             this.ship.SetNormal(normal);
 
             _Normal.PStart = this.Position;
-            _Normal.PEnd = this.Position + normal * 100;
+            _Normal.PEnd = this.Position + rotatedNormal * 100;
             _Normal.updateValues();
+
+            FPSCounters.Status.Text = "X Rot: " + this.ship.RotationX().ToString();
+            FPSCounters.Status.Text = FPSCounters.Status.Text + " - Y Rot: " + this.ship.RotationY().ToString();
+            FPSCounters.Status.Text = FPSCounters.Status.Text + " - z Rot: " + this.ship.RotationZ().ToString();
         }
 
     }
