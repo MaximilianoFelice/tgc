@@ -461,7 +461,7 @@ float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float d
 			float fRdotL = saturate(dot(vReflectionTS, vLightTSAdj));
 		cSpecular = saturate(pow(fRdotL, g_fSpecularExponent))*k_ls;
 
-		float k = 0.60;
+		float k = 0.90;
 		cBaseColor = k*texCUBE(g_samCubeMap, EnvTex) +
 			(1 - k)*colorAgua;
 		//(1 - k)*tex2D(diffuseMap, text*20);

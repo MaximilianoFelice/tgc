@@ -267,12 +267,12 @@ namespace AlumnoEjemplos.SeaSharp
                         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
 
 
-                        SkyDome.CalculateMovement();
+                        //SkyDome.CalculateMovement();
                         SkyDome.Render();
                         //SkyDome.Close();
                         //EnemyFleet.RenderAll();
                         //ship.Render();
-                        //Environment.Render();
+                        Environment.Render(false);
                         Bola.RenderAll();
                         //SurfaceLoader.Save("prueba.bmp", ImageFileFormat.Bmp, pFace);
 
@@ -330,7 +330,7 @@ namespace AlumnoEjemplos.SeaSharp
                 
 
                 EnemyFleet.RenderAll();
-                Environment.Render();
+                Environment.Render(true);
                 Bola.RenderAll();
 
                 FPSCounters.Render(elapsedTime);

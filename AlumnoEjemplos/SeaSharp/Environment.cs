@@ -170,7 +170,7 @@ namespace AlumnoEjemplos.SeaSharp
 
                
 
-        public static void Render(){
+        public static void Render(bool islaGrande){
             //surroundingArea.Effect.SetValue("texDiffuseMap", text);
             //surroundingArea.Effect.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(ConfigParam.Sea.getLightPos()));
             //surroundingArea.Effect.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.RotCamera.getPosition()));
@@ -181,7 +181,7 @@ namespace AlumnoEjemplos.SeaSharp
             //surroundingArea.Effect.SetValue("fSpecularPower", ConfigParam.Sea.getSpecularPower());
 
             foreach (Island island in islands) island.Render();
-            surroundingArea.render();
+            if(islaGrande) surroundingArea.render();
             palmeras.renderAll();
             
             /*foreach (TgcBox obstaculo in obstaculos)

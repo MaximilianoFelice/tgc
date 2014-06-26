@@ -127,10 +127,10 @@ namespace AlumnoEjemplos.SeaSharp
 
         public static void SetNormal(this TgcScene Scene, Vector3 Normal)
         {
-            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Rotation = new Vector3(Normal.X, Mesh.Rotation.Y, Normal.Z); // FIXME HAY ALGO RARISIMO ACA.
+            //foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Rotation = new Vector3(Normal.X, Mesh.Rotation.Y, Normal.Z); // FIXME HAY ALGO RARISIMO ACA.
 
             //foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Rotation = new Vector3(Normal.X, FastMath.Cos(Mesh.Rotation.Y) * Normal.Y, Normal.Z); // FIXME HAY ALGO RARISIMO ACA.
-            //foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Rotation = new Vector3(-Normal.X * FastMath.Cos(-Mesh.Rotation.Y), Mesh.Rotation.Y, Normal.Z * FastMath.Sin(Mesh.Rotation.Y));
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Rotation = new Vector3(-Normal.X * FastMath.Cos(-Mesh.Rotation.Y), Mesh.Rotation.Y, Normal.Z * FastMath.Sin(Mesh.Rotation.Y));
 
         }
 
