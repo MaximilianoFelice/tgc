@@ -330,7 +330,7 @@ namespace AlumnoEjemplos.SeaSharp
                 GuiController.Instance.Drawer2D.beginDrawSprite();
 
                 //GuiController.Instance.Drawer2D.beginDrawSprite();
-                lluvia.Render();
+                if (ConfigParam.Lluvia.getLluvia()) lluvia.Render();
                 //GuiController.Instance.Drawer2D.endDrawSprite();
 
                 // Barra de vida en pantalla
