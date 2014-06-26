@@ -136,6 +136,7 @@ namespace AlumnoEjemplos.SeaSharp
                 {
                     if (selector.Position.Y == opcion1.Position.Y)
                     {
+                        //ConfigParam.colorMar = Color.FromArgb(5, 50, 116);
                         //SkyDome.texturesPath += "";
                         //SkyDome.SetFaceTextures();
                     }
@@ -146,6 +147,7 @@ namespace AlumnoEjemplos.SeaSharp
                     }
                     else if (selector.Position.Y == opcion3.Position.Y)
                     {
+                        //ConfigParam.colorMar = Color.FromArgb(5, 50, 0);
                         SkyDome.texturesPath += "Noche\\";
                         SkyDome.SetFaceTextures();
                     }

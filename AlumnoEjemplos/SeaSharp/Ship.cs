@@ -184,7 +184,7 @@ namespace AlumnoEjemplos.SeaSharp{
             float v = (z / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
 
             // calculo de la onda (movimiento grande)
-            float ola = FastMath.Sin(u * frecuencia * 3.14159f * 2 + time) * FastMath.Cos(v * frecuencia * 3.14159f * 2 + time);
+            //float ola = FastMath.Sin(u * frecuencia * 3.14159f * 2 + time) * FastMath.Cos(v * frecuencia * 3.14159f * 2 + time);
 
             float A = 10;
             float f = 120 + ((x * z) / 100000);
@@ -195,10 +195,10 @@ namespace AlumnoEjemplos.SeaSharp{
             // Aleatoria
             // Aleatoria
 
-            float ola2 = FastMath.Sin(1 * u * 2 * 3.14159f * frecuencia + time) * amplitud + FastMath.Cos(3 * v * 2 * 3.14159f * frecuencia + time) * amplitud +
-                 (A / 10) * FastMath.Sin(f * z * 4 + phi * time) * FastMath.Cos(f * x / 4 + phi * time)
-                 + (A / 20) * FastMath.Sin(f * x / 5 + phi * time) * FastMath.Cos(f * z / 2 + phi * time)
-                 + (A / 30) * FastMath.Sin(f * (x + 13) / 5 + phi * time) * FastMath.Cos(f * (z + 28) / 10 + phi * time)
+            float ola2 = FastMath.Sin(1 * u * 2 * 3.14159f * frecuencia + time) * amplitud + FastMath.Cos(3 * v * 2 * 3.14159f * frecuencia + time) * amplitud// +
+                 //(A / 10) * FastMath.Sin(f * z * 4 + phi * time) * FastMath.Cos(f * x / 4 + phi * time)
+                 //+ (A / 20) * FastMath.Sin(f * x / 5 + phi * time) * FastMath.Cos(f * z / 2 + phi * time)
+                 //+ (A / 30) * FastMath.Sin(f * (x + 13) / 5 + phi * time) * FastMath.Cos(f * (z + 28) / 10 + phi * time)
 
                 ;
 
@@ -206,7 +206,7 @@ namespace AlumnoEjemplos.SeaSharp{
 
             //float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
 
-            if (aux == 1) y = y + ola * amplitud;
+            //if (aux == 1) y = y + ola * amplitud;
             if (aux == -1) y = ola2;
 
             return y;

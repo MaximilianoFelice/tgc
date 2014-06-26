@@ -117,9 +117,6 @@ float calculate_Position(float x, float z, float aux)
 	float u = (x / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
 	float v = (z / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
 
-	float a = x / 7500;
-	float b = z / 7500;
-
 	// calculo de la onda (movimiento grande)
 	float A = 10;
 	float f = 120 + ((x*z) / 100000);
@@ -127,12 +124,12 @@ float calculate_Position(float x, float z, float aux)
 	float L = 10;
 	float phi = Speed * 2 * 3.14159f * 2 / L;
 
-	float ola = //sin(1 * u * 2 * 3.14159 * frecuencia + time) * amplitud + cos(3 * v * 2 * 3.14159 * frecuencia + time) * amplitud +
-		(A / 10) * sin(f*b * 4 + phi*time) * cos(f*a / 4 + phi*time)
+	float ola = 0; //sin(1 * u * 2 * 3.14159 * frecuencia + time) * amplitud + cos(3 * v * 2 * 3.14159 * frecuencia + time) * amplitud +
+		/*(A / 10) * sin(f*b * 4 + phi*time) * cos(f*a / 4 + phi*time)
 		+ (A / 20) * sin(f*a / 5 + phi*time) * cos(f*b / 2 + phi * time)
 		+ (A / 30) * sin(f*(a + 13) / 5 + phi*time) * cos(f*(b + 28) / 10 + phi * time)
 
-		;
+		;*/
 		//sin(u * frecuencia * 3.14159 * 2 + time) * cos(v * frecuencia * 3.14159 * 2 + time);
 
 	// Aleatoria
@@ -140,10 +137,10 @@ float calculate_Position(float x, float z, float aux)
 	
 	float ola2 = //sin(v*4 + u * 40 * frecuencia * 2 + time) * cos((u+62) * 5 * frecuencia * 3.14159 * 2 - 2 * time) *
 	//	-sin(u+v * 10 * frecuencia * 3.14159 * 2 )  //cos(v * 40 * frecuencia * 3.14159 * 2)
-	sin(1 * u * 2 * 3.14159 * frecuencia + time) * amplitud + cos(3 * v * 2 * 3.14159 * frecuencia + time) * amplitud +
+	sin(1 * u * 2 * 3.14159 * frecuencia + time) * amplitud + cos(3 * v * 2 * 3.14159 * frecuencia + time) * amplitud/* +
 		 (A/10) * sin(f*z * 4 + phi*time) * cos(f*x / 4 + phi*time)
 		 +(A / 20) * sin(f*x / 5 + phi*time) * cos(f*z / 2 + phi * time)
-		 +(A / 30) * sin(f*(x+13) / 5 + phi*time) * cos(f*(z+28) / 10 + phi * time)
+		 +(A / 30) * sin(f*(x+13) / 5 + phi*time) * cos(f*(z+28) / 10 + phi * time)*/
 		
 		;
 

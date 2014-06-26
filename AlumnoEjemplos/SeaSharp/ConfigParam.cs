@@ -19,18 +19,19 @@ namespace AlumnoEjemplos.SeaSharp
 {
     public static class ConfigParam
     {
+        public static Color colorMar;
         // TODO: HACER UN NUEVO ALGORITMO PARA ESTO, QUE SEA MUCHO MAS DINAMICO
         //Calcular proxima posicion de la nave segun Input
         
         public static void Load()
         {
             //Sea
-            GuiController.Instance.Modifiers.addColor("ColorMar", Color.FromArgb(5, 50, 116));
+            GuiController.Instance.Modifiers.addColor("ColorMar",  ConfigParam.colorMar = Color.FromArgb(5, 50, 116));
             GuiController.Instance.Modifiers.addVertex3f("LightPos", new Vector3(-8000, 0, -8000), new Vector3(8000, 20000, 8000), new Vector3(0, 10000, 0));
             GuiController.Instance.Modifiers.addFloat("Ambient", 0f, 1f, 0.6f);
             GuiController.Instance.Modifiers.addFloat("Diffuse", 0f, 1f, 1f);
             GuiController.Instance.Modifiers.addFloat("Specular", 0f, 1f, 1f);
-            GuiController.Instance.Modifiers.addFloat("SpecularPower", 0f, 50f, 16f);
+            GuiController.Instance.Modifiers.addFloat("SpecularPower", 0f, 150f, 50f);
             GuiController.Instance.Modifiers.addFloat("Amplitud", 0f, 300f, 150f);
             GuiController.Instance.Modifiers.addFloat("Frecuencia", 0f, 10f, 2f);
             GuiController.Instance.Modifiers.addFloat("Reflexion", 0f, 1f, 1f);
