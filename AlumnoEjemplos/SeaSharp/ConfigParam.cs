@@ -35,12 +35,13 @@ namespace AlumnoEjemplos.SeaSharp
 
 
             //Ship
-            GuiController.Instance.Modifiers.addFloat("Posicion", 1, 10, 5);
+            //GuiController.Instance.Modifiers.addFloat("Posicion", 1, 10, 5);
             GuiController.Instance.Modifiers.addBoolean("Normal", "Dibuja normal del barco", false);
+            GuiController.Instance.Modifiers.addBoolean("BoundingSpheres", "Dibuja boundingSpheres de los barcos", false);
             
 
             //General
-            GuiController.Instance.Modifiers.addFloat("tiempo", 1, 10, 3);
+            //GuiController.Instance.Modifiers.addFloat("tiempo", 1, 10, 3);
             GuiController.Instance.Modifiers.addFloat("tamanioMar", 2000, 8000, 8000);
             GuiController.Instance.Modifiers.addFloat("tamanioTriangulos", 50, 200, 150);
 
@@ -83,20 +84,27 @@ namespace AlumnoEjemplos.SeaSharp
             public const float DESROTATION = 0.97f;
             public const float DESFORWARD = 0.99f;
 
-            public static float getFactorPosicion()
-            {
-                return (float)GuiController.Instance.Modifiers.getValue("Posicion");
-            }
+            //public static float getFactorPosicion()
+            //{
+            //    return (float)GuiController.Instance.Modifiers.getValue("Posicion");
+            //}
 
-            public static float getFactorTiempo()
-            {
-                return (float)GuiController.Instance.Modifiers.getValue("tiempo");
-            }
+            //public static float getFactorTiempo()
+            //{
+            //    return (float)GuiController.Instance.Modifiers.getValue("tiempo");
+            //}
 
             public static bool getNormal()
             {
                 return (bool)GuiController.Instance.Modifiers.getValue("Normal");
             }
+
+            public static bool getBoundingSpheres()
+            {
+                return (bool)GuiController.Instance.Modifiers.getValue("BoundingSpheres");
+            }
+
+
         }
         #endregion
 

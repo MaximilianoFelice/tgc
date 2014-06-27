@@ -81,7 +81,7 @@ namespace AlumnoEjemplos.SeaSharp
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
             TgcSceneLoader loader = new TgcSceneLoader();
-            bola = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Pelota2\\Sphere-TgcScene.xml").Meshes[0];
+            bola = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Bola\\Sphere-TgcScene.xml").Meshes[0];
 
             bola.Scale = new Vector3(0.3f, 0.3f, 0.3f);
 

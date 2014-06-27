@@ -45,8 +45,8 @@ namespace AlumnoEjemplos.SeaSharp
             water = QuadTree.generateNewQuad(center, 16000, Color.Blue, (int) ConfigParam.Sea.getTamaniotriangulos());
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\aaa.tga");
-            texture2 = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\aaaa.tga");
+            texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua.tga");
+            texture2 = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\superficieAgua2.tga");
             water.Technique = "ParallaxOcclusion";
         }
 

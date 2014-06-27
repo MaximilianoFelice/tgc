@@ -103,8 +103,8 @@ namespace AlumnoEjemplos.SeaSharp{
                 lifeBar.Render(life);
                 if(ConfigParam.Ship.getNormal()) _Normal.render();
 
-                if (shipSphere != null) shipSphere.render();
-                if (enemySphere != null) enemySphere.render();
+                if (shipSphere != null && ConfigParam.Ship.getBoundingSpheres()) shipSphere.render();
+                if (enemySphere != null && ConfigParam.Ship.getBoundingSpheres()) enemySphere.render();
                 ship.renderAll();
 
                 if (GuiController.Instance.D3dInput.keyDown(Key.J))
