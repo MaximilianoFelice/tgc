@@ -47,7 +47,7 @@ namespace AlumnoEjemplos.SeaSharp{
 
             TgcSceneLoader loader = new TgcSceneLoader();
             ship = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "Scenes\\Ships\\Ship 10\\ShipF-TgcScene.xml");
-            ship.Scale (new Vector3(1, 1, 1));
+            ship.Scale(new Vector3(1, 1, 1));
             
             /* Getting a new Life Bar */
             lifeBar = new LifeBar();
@@ -192,7 +192,7 @@ namespace AlumnoEjemplos.SeaSharp{
             float amplitudZ = ConfigParam.Sea.getAmplitudZ();
 
 
-            float y = -150;
+            float y = 10;
 
             float u = (x / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
             float v = (z / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
@@ -221,7 +221,7 @@ namespace AlumnoEjemplos.SeaSharp{
             //float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
 
             //if (aux == 1) y = y + ola * amplitud;
-            if (aux == -1) y = ola2;
+            if (aux == -1) y = y + ola2;
 
             return y;
         }

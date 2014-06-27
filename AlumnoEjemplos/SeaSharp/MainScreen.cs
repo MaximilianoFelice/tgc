@@ -136,10 +136,7 @@ namespace AlumnoEjemplos.SeaSharp
                 {
                     if (selector.Position.Y == opcion1.Position.Y)
                     {
-                        //ConfigParam.colorMar = Color.FromArgb(5, 50, 116);
-                        //SkyDome.texturesPath += "";
-                        //SkyDome.SetFaceTextures();
-                        ConfigParam.Sea.setWater(Color.FromArgb(13, 45, 94), 0.80f, 1f, 1f, 150, 0.65f, Color.FromArgb(255, 255, 255), Color.FromArgb(255, 255, 255));
+                        ConfigParam.Sea.setWater(Color.FromArgb(13, 45, 94), 0.80f, 1f, 1f, 4.5f, 0.65f, Color.FromArgb(255, 255, 255), Color.FromArgb(255, 255, 255));
                     }
                     else if (selector.Position.Y == opcion2.Position.Y)
                     {
@@ -149,10 +146,9 @@ namespace AlumnoEjemplos.SeaSharp
                     }
                     else if (selector.Position.Y == opcion3.Position.Y)
                     {
-                        //ConfigParam.colorMar = Color.FromArgb(5, 50, 0);
                         SkyDome.texturesPath += "Noche\\";
                         SkyDome.SetFaceTextures();
-                        ConfigParam.Sea.setWater(Color.FromArgb(10, 15, 41), 0.4f, 0.2f, 0.4f, 150, 0.65f, Color.FromArgb(255, 255, 255), Color.FromArgb(255, 255, 255));
+                        ConfigParam.Sea.setWater(Color.FromArgb(10, 15, 41), 0.4f, 0.2f, 0.4f, 30, 0.65f, Color.FromArgb(255, 255, 255), Color.FromArgb(255, 255, 255));
                     }
                 }
             }

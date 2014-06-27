@@ -26,54 +26,39 @@ namespace AlumnoEjemplos.SeaSharp
         public static float time = 0f;
         public static float ambient, diffuse, specular, specularPower;
         public static Texture texture;
-        public static Texture diffuseMap;
+        public static Texture texture2;
         public static Color colorMar;
-        public static Random rand;
-        public static int r;
         public static Vector3 shipPos;
         public static InterpoladorVaiven interpolador;
         public static float alfa = 0f;
         
         public static void Load()
-        {
-            
-            Vector3 center = new Vector3(0, -30, 0);
+        {     
+            //Creo el interpolador para los normal map
             interpolador = new InterpoladorVaiven();
+            interpolador.Max = 0.9f;
+            interpolador.Min = 0;
+            interpolador.Speed = 1f;            
 
+            //Genero el agua
+            Vector3 center = new Vector3(0, -30, 0);
             water = QuadTree.generateNewQuad(center, 16000, Color.Blue, (int) ConfigParam.Sea.getTamaniotriangulos());
             water.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosDir + "SeaSharp\\Shaders\\SeaShader.fx");
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             texture = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\aaa.tga");
-            diffuseMap = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\aaaa.tga");
+            texture2 = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "Textures\\Water\\aaaa.tga");
             water.Technique = "ParallaxOcclusion";
-
-            interpolador.Max = 0.9f;
-            interpolador.Min = 0;
-            interpolador.Speed = 1f;
-            //interpolador.reset();
-            
-            
-            ambient = 1.0f;
-            diffuse = 1.0f;
-            specular = 1.0f;
-            specularPower = 16.0f; 
         }
 
         internal static void CalculateMovement(float elapsedTime, Vector3 pos)
         {
             time += elapsedTime;
             shipPos = pos;
-            //alfa = interpolador.Current;
         }
 
-        public static void Render(CubeTexture surf, TgcFrustum frustum, int r)
+        public static void Render(CubeTexture surf, TgcFrustum frustum)
         {
-            //Random rand = new Random();
-            
-
-            water.Effect.SetValue("rand", (int)r);
             interpolador.update();
-            alfa = interpolador.Current;
        
             Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
 
@@ -91,9 +76,8 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("frecuenciax", ConfigParam.Sea.getFrecuenciaX());
             water.Effect.SetValue("frecuenciaz", ConfigParam.Sea.getFrecuenciaZ());
             water.Effect.SetValue("kx", ConfigParam.Sea.getReflexion());
-            //water.Effect.SetValue("kc", ConfigParam.Sea.getRefraccion());
             water.Effect.SetValue("superficieAgua", texture);
-            water.Effect.SetValue("texDiffuseMap", diffuseMap);
+            water.Effect.SetValue("superficieAgua2", texture2);
             water.Effect.SetValue("g_txCubeMap", surf);
             water.Effect.SetValue("colorAgua", ConfigParam.Sea.getColorMar().ToArgb());
             water.Effect.SetValue("shipPos", TgcParserUtils.vector3ToFloat3Array(shipPos));

@@ -28,10 +28,8 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.Modifiers.addVertex3f("LightPos", new Vector3(-8000, 0, -8000), new Vector3(8000, 20000, 8000), new Vector3(0, 10000, 0));
             GuiController.Instance.Modifiers.addFloat("AmplitudX", 0f, 300f, 150f);
             GuiController.Instance.Modifiers.addFloat("AmplitudZ", 0f, 300f, 150f);
-            GuiController.Instance.Modifiers.addFloat("FrecuenciaX", 0f, 10f, 2f);
-            GuiController.Instance.Modifiers.addFloat("FrecuenciaZ", 0f, 10f, 2f);
-            //GuiController.Instance.Modifiers.addFloat("Reflexion", 0f, 1f, 1f);
-            GuiController.Instance.Modifiers.addFloat("Refraccion", 0f, 1f, 0f);
+            GuiController.Instance.Modifiers.addFloat("FrecuenciaX", 0f, 10f, 1f);
+            GuiController.Instance.Modifiers.addFloat("FrecuenciaZ", 0f, 10f, 5f);
             GuiController.Instance.Modifiers.addFloat("HeightMapScale", 0f, 20f, 1f);
             GuiController.Instance.Modifiers.addFloat("TexScale", 0f, 200f, 20f);
 
@@ -57,7 +55,7 @@ namespace AlumnoEjemplos.SeaSharp
             GuiController.Instance.Modifiers.addBoolean("Tormenta", "Activa lluvia y relampagos",false);
 
             //Environment
-            GuiController.Instance.Modifiers.addBoolean("Terreno", "Activa terreno", false);
+            GuiController.Instance.Modifiers.addBoolean("Terreno", "Activa terreno", true);
 
         }
 
@@ -214,11 +212,6 @@ namespace AlumnoEjemplos.SeaSharp
                 {
                     return 1;
                 }
-            }
-
-            public static float getRefraccion()
-            {
-                return (float)GuiController.Instance.Modifiers.getValue("Refraccion");
             }
 
             public static float getAmplitudX()

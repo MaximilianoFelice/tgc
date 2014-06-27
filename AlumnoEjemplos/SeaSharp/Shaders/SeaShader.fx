@@ -14,10 +14,10 @@ float4x4 matInverseTransposeWorld; //Matriz Transpose(Invert(World))
 
 
 //Textura para DiffuseMap
-texture texDiffuseMap;
-sampler2D diffuseMap = sampler_state
+texture superficieAgua2;
+sampler2D heightmap2 = sampler_state
 {
-	Texture = <texDiffuseMap>;
+	Texture = <superficieAgua2>;
 	MIPFILTER = LINEAR;
 	MINFILTER = LINEAR;
 	MAGFILTER = LINEAR;
@@ -43,45 +43,35 @@ sampler heightmap = sampler_state
 	MAGFILTER = LINEAR;
 };
 
-float3 fvLightPosition = float3(-100.00, 100.00, -100.00);
-float3 fvEyePosition = float3(0.00, 0.00, -100.00);
-float3 fvEyeLookAt = float3(0.00, 0.00, -100.00);
+float3 fvLightPosition = float3(-100.00, 100.00, -100.00);	// posicion de la luz
+float3 fvEyePosition = float3(0.00, 0.00, -100.00);	// posicion de la camara
+float3 fvEyeLookAt = float3(0.00, 0.00, -100.00);	// posicion del objetivo
 
 float k_la = 0.7;							// luz ambiente global
 float k_ld = 0.4;							// luz difusa
 float k_ls = 1.0;							// luz specular
-float fSpecularPower = 16.84;
-float4 specularColor;
-float4 diffuseColor;
+float fSpecularPower = 16.84;				// exponente luz specular
+float4 specularColor;						// color luz specular
+float4 diffuseColor;						// color luz difusa
 
 float kx = 1;							// coef. de reflexion
-float kc = 0;
+float kc = 0;							// coef. de refraccion
 
 float time = 0;
 
 float4 colorAgua;
 
-float amplitudx;
-float amplitudz;
-float frecuenciax;
-float frecuenciaz;
+float amplitudx;							// amplitud de la ola en eje x
+float amplitudz;							// amplitud de la ola en eje z
+float frecuenciax;							// frecuencia de la ola en eje x
+float frecuenciaz;							// frecuencia de la ola en eje z
 
-float rand;
+float3 shipPos;								// posicion del barco
 
-float3 shipPos;
-
-float coeficiente = 0;
-
-
-float3 g_LightDir = float3(0, -100, 0);
-
-float g_fSpecularExponent = 3;
-
-bool phong_lighting = true;
+float coeficiente = 0;						// coeficiente para interpolar heightmaps
 
 float min_cant_samples = 10;
-float max_cant_samples = 50;
-
+float max_cant_samples = 200;
 
 float fHeightMapScale = 1;
 float fTexScale = 10;
@@ -112,51 +102,15 @@ struct VS_OUTPUT
 };
 
 
-float calculate_Position(float x, float z, float aux)
+float calculate_Position(float x, float z)
 {
-
-	float y = -150;
-
 	float u = (x / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
 	float v = (z / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
-
-	// calculo de la onda (movimiento grande)
-	float A = 10;
-	float f = 120 + ((x*z) / 100000);
-	float Speed = 0.5f;
-	float L = 10;
-	float phi = Speed * 2 * 3.14159f * 2 / L;
-
-	float ola = 0; //sin(1 * u * 2 * 3.14159 * frecuencia + time) * amplitud + cos(3 * v * 2 * 3.14159 * frecuencia + time) * amplitud +
-		/*(A / 10) * sin(f*b * 4 + phi*time) * cos(f*a / 4 + phi*time)
-		+ (A / 20) * sin(f*a / 5 + phi*time) * cos(f*b / 2 + phi * time)
-		+ (A / 30) * sin(f*(a + 13) / 5 + phi*time) * cos(f*(b + 28) / 10 + phi * time)
-
-		;*/
-		//sin(u * frecuencia * 3.14159 * 2 + time) * cos(v * frecuencia * 3.14159 * 2 + time);
-
-	// Aleatoria
-	// Aleatoria
 	
-	float ola2 = //sin(v*4 + u * 40 * frecuencia * 2 + time) * cos((u+62) * 5 * frecuencia * 3.14159 * 2 - 2 * time) *
-	//	-sin(u+v * 10 * frecuencia * 3.14159 * 2 )  //cos(v * 40 * frecuencia * 3.14159 * 2)
-	sin(1 * u * 2 * 3.14159 * frecuenciax + time) * amplitudx + cos(1 * v * 2 * 3.14159 * frecuenciaz + time) * amplitudz/* +
-		 (A/10) * sin(f*z * 4 + phi*time) * cos(f*x / 4 + phi*time)
-		 +(A / 20) * sin(f*x / 5 + phi*time) * cos(f*z / 2 + phi * time)
-		 +(A / 30) * sin(f*(x+13) / 5 + phi*time) * cos(f*(z+28) / 10 + phi * time)*/
-		
-		;
-
-	//y = y + ola * 150 + ola2 * 10;
-
-	//float height = tex2Dlod(heightmap, float4(u, v, 0, 0)).r;
-
-	if (aux == 1) y = ola;
-	if (aux == -1) y = ola2;
+	float ola2 = 
+	sin(1 * u * 2 * 3.14159 * frecuenciax + time) * amplitudx + cos(1 * v * 2 * 3.14159 * frecuenciaz + time) * amplitudz;
 	
-	return y;
-	//return 0;
-	
+	return ola2;
 }
 
 //float3 calculate_Normal(float3 posInit, float time){
@@ -201,13 +155,13 @@ void VSCubeMap2(float4 Pos : POSITION,
 
 	// Actualizo el output
 	oPos = Pos;
-	oPos.y = calculate_Position(Pos.x, Pos.z, -1); //se lo aplicamos al eje y
+	oPos.y = calculate_Position(Pos.x, Pos.z); //se lo aplicamos al eje y
 
 	float dr = 15;
 
 	//Proyectar posicion
-		float heightx = calculate_Position(Pos.x + dr, Pos.z, -1);
-	float heightz = calculate_Position(Pos.x, Pos.z + dr, -1);
+		float heightx = calculate_Position(Pos.x + dr, Pos.z);
+	float heightz = calculate_Position(Pos.x, Pos.z + dr);
 	float3 dx = normalize(float3(dr, heightx - oPos.y, 0));
 		float3 dz = normalize(float3(0, heightz - oPos.y, dr));
 
@@ -258,7 +212,7 @@ float4 PSCubeMap(float3 EnvTex: TEXCOORD0,
 	/*if (Pos.x < 0) N = float3(1, 0, 0);
 	if (Pos.x >= 0) N = float3(0, 1, 0);*/
 
-	float hei = calculate_Position(Pos.x, Pos.z, 1);
+	float hei = calculate_Position(Pos.x, Pos.z);
 	
 	float textx = smoothstep(-8000, 8000, Pos.x);
 	float textz = smoothstep(-8000, 8000, Pos.z);
@@ -323,118 +277,6 @@ technique RenderCubeMap
 }
 
 
-
-
-/**************************************************************************************/
-/* RenderCubeMap */
-/**************************************************************************************/
-void VSCubeMap(float4 Pos : POSITION,
-	float3 Normal : NORMAL,
-	float2 Texcoord : TEXCOORD0,
-	float4 Color : COLOR0,
-	out float3 N : NORMAL,
-	out float2 Tex : TEXCOORD0,
-	out float3 oPos : POSITION,
-	out float3 PosPix : TEXCOORD2
-	)
-{
-	/*float y = calculate_Position(Pos.x, Pos.z);
-
-	float dr = 100;
-
-
-		float heightx = calculate_Position(Pos.x + dr, Pos.z);
-		float heightz = calculate_Position(Pos.x, Pos.z + dr);
-	float3 dx = normalize(float3(dr, heightx - y, 0));
-		float3 dz = normalize(float3(0, heightz - y, dr));*/
-	oPos = Pos;
-	oPos.y = -1000;
-	oPos = mul(oPos, matWorldViewProj);
-
-	PosPix = mul(oPos, matWorld);
-
-	N = Normal;
-
-	Tex = Texcoord;
-
-}
-
-
-
-
-// (*) Usar las coordenadas de texturas 2, 3 y demas es un "hack" habitual,
-// que permite pasarle al pixel shader distintas variables que se calculan por vertice
-// El rasterizer se ocupa de que al PS le lleguen los valores interpolados. 
-// El hardware no tiene idea que son todos esos valores, es lo mismo si fuesen coordenadas
-// de textura reales, o factores de iluminacion, o la velocidad de un punto. 
-// 
-
-//Pixel Shader
-float4 ps_main(float3 Texcoord: TEXCOORD0, float3 N : TEXCOORD1,
-	float3 Pos : POSITION) : COLOR0
-{
-	float ld = 0;		// luz difusa
-	float le = 0;		// luz specular
-
-	//float3 normal = tex2D(heightmap, Pos).xyz;
-	N = normalize(N);
-
-	// si hubiera varias luces, se podria iterar por c/u. 
-	// Pero hay que tener en cuenta que este algoritmo es bastante pesado
-	// ya que todas estas formulas se calculan x cada pixel. 
-	// En la practica no es usual tomar mas de 2 o 3 luces. Generalmente 
-	// se determina las luces que mas contribucion a la escena tienen, y 
-	// el resto se aproxima con luz ambiente. 
-	// for(int =0;i<cant_ligths;++i)
-	// 1- calculo la luz diffusa
-	float3 LD = normalize(fvLightPosition - float3(Pos.x, Pos.y, Pos.z));
-		ld += saturate(abs(dot(N, LD)))*k_ld;
-
-	// 2- calcula la reflexion specular
-	float3 D = normalize(float3(Pos.x, Pos.y, Pos.z) - fvEyePosition);
-		float ks = saturate(dot(reflect(LD, N), D));
-		//float ks = saturate(dot(normalize(LD + D), N));
-	ks = pow(ks, fSpecularPower);
-	le += ks*k_ls;
-
-	//Obtener el texel de textura
-	//float4 fvBaseColor = col;
-	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
-	//float4 fvBaseColor = float4(0.20, 0.35, 0.40, 0);
-	/*float a = acos(dot(D, N));
-	a = saturate(sin(a) + 0.2);
-	float b = clamp(a, 0.8, 1);*/
-	
-		// suma luz diffusa, ambiente y especular
-		float4 RGBColor = float4(0, 0, 0, 1);
-		RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la + ld)) + le);
-
-	// saturate deja los valores entre [0,1]. Una tecnica muy usada en motores modernos
-	// es usar floating point textures auxialres, para almacenar mucho mas que 256 valores posibles 
-	// de iluminiacion. En esos casos, el valor del rgb podria ser mucho mas que 1. 
-	// Imaginen una excena outdoor, a la luz de sol, hay mucha diferencia de iluminacion
-	// entre los distintos puntos, que no se pueden almacenar usando solo 8bits por canal.
-	// Estas tecnicas se llaman HDRLighting (High Dynamic Range Lighting). 
-	// Muchas inclusive simulan el efecto de la pupila que se contrae o dilata para 
-	// adaptarse a la nueva cantidad de luz ambiente. 
-
-	//return RGBColor;
-	return float4 (N, 1);
-	//return RGBColor;
-}
-
-technique RenderScene
-{
-	pass Pass_0
-	{
-		VertexShader = compile vs_3_0 VSCubeMap2();
-		PixelShader = compile ps_3_0 ps_main();
-	}
-
-}
-
-
-
 // calcula la iluminaciond dinamica
 float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float dy, float3 vEyeR, float3 normal)
 {
@@ -446,7 +288,7 @@ float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float d
 		{*/
 		// Busco el vector normal en la textura Normal-Height Map  (esta en Tangent Space)
 		float3 samp1 = normalize(tex2Dgrad(heightmap, texCoord, dx, dy) * 2 - 1);
-		float3 samp2 = normalize(tex2Dgrad(diffuseMap, texCoord, dx, dy) * 2 - 1);
+		float3 samp2 = normalize(tex2Dgrad(heightmap2, texCoord, dx, dy) * 2 - 1);
 		float3 vNormalTS = normalize(lerp(samp1, samp2, coeficiente) + 0.5*normal);
 		float3 EnvTex = reflect(vEyeR, vNormalTS);
 
@@ -459,7 +301,7 @@ float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float d
 		float4 cSpecular = 0;
 			float3 vReflectionTS = normalize(2 * dot(vViewTS, vNormalTS) * vNormalTS - vViewTS);
 			float fRdotL = saturate(dot(vReflectionTS, vLightTSAdj));
-		cSpecular = saturate(pow(fRdotL, g_fSpecularExponent))*k_ls*specularColor;
+		cSpecular = saturate(pow(fRdotL, fSpecularPower))*k_ls*specularColor;
 
 		float k = 0.60;
 		cBaseColor = k*texCUBE(g_samCubeMap, EnvTex) +
@@ -502,16 +344,14 @@ void RenderSceneVS(float4 Pos : POSITION,
 	out float3 Eye : TEXCOORD6
 	)
 {
-	g_LightDir = fvLightPosition;
-
 	oPos = Pos;
-	oPos.y = calculate_Position(Pos.x, Pos.z, -1); //se lo aplicamos al eje y
+	oPos.y = calculate_Position(Pos.x, Pos.z); //se lo aplicamos al eje y
 	float3 wPos = mul(oPos, matWorld);
 	float dr = 15;
 
 	//Proyectar posicion
-	float heightx = calculate_Position(Pos.x + dr, Pos.z, -1);
-	float heightz = calculate_Position(Pos.x, Pos.z + dr, -1);
+	float heightx = calculate_Position(Pos.x + dr, Pos.z);
+	float heightz = calculate_Position(Pos.x, Pos.z + dr);
 	float3 dx = normalize(float3(dr, heightx - oPos.y, 0));
 		float3 dz = normalize(float3(0, heightz - oPos.y, dr));
 
@@ -551,7 +391,7 @@ void RenderSceneVS(float4 Pos : POSITION,
 	Tex = float2(Pos.x, Pos.z);
 
 	tsView = mul(wsView, worldToTangentSpace);		// Vector View en TangentSpace
-	tsLight = mul(g_LightDir, worldToTangentSpace);	// Vector Light en TangentSpace
+	tsLight = mul(fvLightPosition, worldToTangentSpace);	// Vector Light en TangentSpace
 
 	// propago el vector normal en Worldspace
 	wsNormal = normal;
@@ -580,8 +420,6 @@ float4 PSParallaxOcclusion(float2 Texcoord: TEXCOORD0,
 	float3 vEyeR : TEXCOORD6
 	) : COLOR0
 {
-	g_LightDir = fvLightPosition;
-
 	float textx = smoothstep(-16000, 16000, Texcoord.x);
 	float textz = smoothstep(-16000, 16000, Texcoord.y);
 	Texcoord = float2(textx, textz)*fTexScale;
@@ -625,7 +463,7 @@ float4 PSParallaxOcclusion(float2 Texcoord: TEXCOORD0,
 	while (nCurrSample < nNumSamples)
 	{
 		samp1 = tex2Dgrad(heightmap, Texcoord + vCurrOffset, dx, dy);
-		samp2 = tex2Dgrad(diffuseMap, Texcoord + vCurrOffset, dx, dy);
+		samp2 = tex2Dgrad(heightmap2, Texcoord + vCurrOffset, dx, dy);
 		vCurrSample = lerp(samp1, samp2, coeficiente);
 		fCurrH = vCurrSample.a;
 		if (fCurrH > stepHeight)

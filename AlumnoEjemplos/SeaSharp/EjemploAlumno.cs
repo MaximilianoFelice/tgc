@@ -335,7 +335,7 @@ namespace AlumnoEjemplos.SeaSharp
 
                 FPSCounters.Render(elapsedTime);
 
-                Sea.Render(g_pCubeMap, GuiController.Instance.Frustum, r);
+                Sea.Render(g_pCubeMap, GuiController.Instance.Frustum);
 
                 sonidoOpen.stop();
                 sonidoAmbiente.play(true);
