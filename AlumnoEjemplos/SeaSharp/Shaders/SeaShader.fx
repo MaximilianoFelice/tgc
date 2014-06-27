@@ -61,9 +61,10 @@ float time = 0;
 
 float4 colorAgua;
 
-float amplitud;
-
-float frecuencia;
+float amplitudx;
+float amplitudz;
+float frecuenciax;
+float frecuenciaz;
 
 float rand;
 
@@ -139,7 +140,7 @@ float calculate_Position(float x, float z, float aux)
 	
 	float ola2 = //sin(v*4 + u * 40 * frecuencia * 2 + time) * cos((u+62) * 5 * frecuencia * 3.14159 * 2 - 2 * time) *
 	//	-sin(u+v * 10 * frecuencia * 3.14159 * 2 )  //cos(v * 40 * frecuencia * 3.14159 * 2)
-	sin(1 * u * 2 * 3.14159 * frecuencia + time) * amplitud + cos(3 * v * 2 * 3.14159 * frecuencia + time) * amplitud/* +
+	sin(1 * u * 2 * 3.14159 * frecuenciax + time) * amplitudx + cos(1 * v * 2 * 3.14159 * frecuenciaz + time) * amplitudz/* +
 		 (A/10) * sin(f*z * 4 + phi*time) * cos(f*x / 4 + phi*time)
 		 +(A / 20) * sin(f*x / 5 + phi*time) * cos(f*z / 2 + phi * time)
 		 +(A / 30) * sin(f*(x+13) / 5 + phi*time) * cos(f*(z+28) / 10 + phi * time)*/

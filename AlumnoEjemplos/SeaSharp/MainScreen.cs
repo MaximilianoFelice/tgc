@@ -139,7 +139,7 @@ namespace AlumnoEjemplos.SeaSharp
                         //ConfigParam.colorMar = Color.FromArgb(5, 50, 116);
                         //SkyDome.texturesPath += "";
                         //SkyDome.SetFaceTextures();
-                        ConfigParam.Sea.setWater(Color.FromArgb(13, 45, 94), 0.90f, 1f, 1f, 150, 1, Color.FromArgb(255, 255, 255), Color.FromArgb(255, 255, 255));
+                        ConfigParam.Sea.setWater(Color.FromArgb(13, 45, 94), 0.80f, 1f, 1f, 150, 0.65f, Color.FromArgb(255, 255, 255), Color.FromArgb(255, 255, 255));
                     }
                     else if (selector.Position.Y == opcion2.Position.Y)
                     {

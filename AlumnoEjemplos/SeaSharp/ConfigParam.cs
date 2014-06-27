@@ -25,14 +25,11 @@ namespace AlumnoEjemplos.SeaSharp
         public static void Load()
         {
             //Sea
-            //GuiController.Instance.Modifiers.addColor("ColorMar",  ConfigParam.colorMar = Color.FromArgb(5, 50, 116));
             GuiController.Instance.Modifiers.addVertex3f("LightPos", new Vector3(-8000, 0, -8000), new Vector3(8000, 20000, 8000), new Vector3(0, 10000, 0));
-            //GuiController.Instance.Modifiers.addFloat("Ambient", 0f, 1f, 0.6f);
-            //GuiController.Instance.Modifiers.addFloat("Diffuse", 0f, 1f, 1f);
-            //GuiController.Instance.Modifiers.addFloat("Specular", 0f, 1f, 1f);
-            //GuiController.Instance.Modifiers.addFloat("SpecularPower", 0f, 150f, 50f);
-            GuiController.Instance.Modifiers.addFloat("Amplitud", 0f, 300f, 150f);
-            GuiController.Instance.Modifiers.addFloat("Frecuencia", 0f, 10f, 2f);
+            GuiController.Instance.Modifiers.addFloat("AmplitudX", 0f, 300f, 150f);
+            GuiController.Instance.Modifiers.addFloat("AmplitudZ", 0f, 300f, 150f);
+            GuiController.Instance.Modifiers.addFloat("FrecuenciaX", 0f, 10f, 2f);
+            GuiController.Instance.Modifiers.addFloat("FrecuenciaZ", 0f, 10f, 2f);
             //GuiController.Instance.Modifiers.addFloat("Reflexion", 0f, 1f, 1f);
             GuiController.Instance.Modifiers.addFloat("Refraccion", 0f, 1f, 0f);
             GuiController.Instance.Modifiers.addFloat("HeightMapScale", 0f, 20f, 1f);
@@ -47,7 +44,7 @@ namespace AlumnoEjemplos.SeaSharp
             //General
             GuiController.Instance.Modifiers.addFloat("tiempo", 1, 10, 3);
             GuiController.Instance.Modifiers.addFloat("tamanioMar", 2000, 8000, 8000);
-            GuiController.Instance.Modifiers.addFloat("tamanioTriangulos", 50, 200, 200);
+            GuiController.Instance.Modifiers.addFloat("tamanioTriangulos", 50, 200, 150);
 
 
             //Quad
@@ -224,14 +221,24 @@ namespace AlumnoEjemplos.SeaSharp
                 return (float)GuiController.Instance.Modifiers.getValue("Refraccion");
             }
 
-            public static float getAmplitud()
+            public static float getAmplitudX()
             {
-                return (float)GuiController.Instance.Modifiers.getValue("Amplitud");
+                return (float)GuiController.Instance.Modifiers.getValue("AmplitudX");
             }
 
-            public static float getFrecuencia()
+            public static float getAmplitudZ()
             {
-                return (float)GuiController.Instance.Modifiers.getValue("Frecuencia");
+                return (float)GuiController.Instance.Modifiers.getValue("AmplitudZ");
+            }
+
+            public static float getFrecuenciaX()
+            {
+                return (float)GuiController.Instance.Modifiers.getValue("FrecuenciaX");
+            }
+
+            public static float getFrecuenciaZ()
+            {
+                return (float)GuiController.Instance.Modifiers.getValue("FrecuenciaZ");
             }
 
             public static float getHeightmapScale()

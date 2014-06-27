@@ -86,8 +86,10 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("k_ld", ConfigParam.Sea.getDiffuse());
             water.Effect.SetValue("k_ls", ConfigParam.Sea.getSpecular());
             water.Effect.SetValue("fSpecularPower", ConfigParam.Sea.getSpecularPower());
-            water.Effect.SetValue("amplitud", ConfigParam.Sea.getAmplitud());
-            water.Effect.SetValue("frecuencia", ConfigParam.Sea.getFrecuencia());
+            water.Effect.SetValue("amplitudx", ConfigParam.Sea.getAmplitudX());
+            water.Effect.SetValue("amplitudz", ConfigParam.Sea.getAmplitudZ());
+            water.Effect.SetValue("frecuenciax", ConfigParam.Sea.getFrecuenciaX());
+            water.Effect.SetValue("frecuenciaz", ConfigParam.Sea.getFrecuenciaZ());
             water.Effect.SetValue("kx", ConfigParam.Sea.getReflexion());
             //water.Effect.SetValue("kc", ConfigParam.Sea.getRefraccion());
             water.Effect.SetValue("superficieAgua", texture);

@@ -186,8 +186,10 @@ namespace AlumnoEjemplos.SeaSharp{
         public float calculateHeight(float time, float x, float z, int aux)
         {
 
-            float frecuencia = ConfigParam.Sea.getFrecuencia();
-            float amplitud = ConfigParam.Sea.getAmplitud();
+            float frecuenciaX = ConfigParam.Sea.getFrecuenciaX();
+            float amplitudX = ConfigParam.Sea.getAmplitudX();
+            float frecuenciaZ = ConfigParam.Sea.getFrecuenciaZ();
+            float amplitudZ = ConfigParam.Sea.getAmplitudZ();
 
 
             float y = -150;
@@ -207,7 +209,7 @@ namespace AlumnoEjemplos.SeaSharp{
             // Aleatoria
             // Aleatoria
 
-            float ola2 = FastMath.Sin(1 * u * 2 * 3.14159f * frecuencia + time) * amplitud + FastMath.Cos(3 * v * 2 * 3.14159f * frecuencia + time) * amplitud// +
+            float ola2 = FastMath.Sin(1 * u * 2 * 3.14159f * frecuenciaX + time) * amplitudX + FastMath.Cos(1 * v * 2 * 3.14159f * frecuenciaZ + time) * amplitudZ// +
                  //(A / 10) * FastMath.Sin(f * z * 4 + phi * time) * FastMath.Cos(f * x / 4 + phi * time)
                  //+ (A / 20) * FastMath.Sin(f * x / 5 + phi * time) * FastMath.Cos(f * z / 2 + phi * time)
                  //+ (A / 30) * FastMath.Sin(f * (x + 13) / 5 + phi * time) * FastMath.Cos(f * (z + 28) / 10 + phi * time)
