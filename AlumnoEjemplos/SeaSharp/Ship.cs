@@ -79,6 +79,16 @@ namespace AlumnoEjemplos.SeaSharp{
             set { ship.Position(value); }
         }
 
+        public Boolean CalculateFrustumCulling()
+        {
+            if (this is MainShip) return true;
+            else
+            {
+                if (TgcCollisionUtils.classifyFrustumSphere(GuiController.Instance.Frustum, enemySphere) == TgcCollisionUtils.FrustumResult.OUTSIDE) return false;
+                else return true;
+            }
+        }
+
         public void Render()
         {
            
@@ -86,21 +96,23 @@ namespace AlumnoEjemplos.SeaSharp{
             /*
             *          ZONA DE RENDERIZADO
             */
-            
 
-            /* Life Bar Rendering */
-            lifeBar.Render(life);
-            if(ConfigParam.Ship.getNormal()) _Normal.render();
+            if (CalculateFrustumCulling())
+            { 
+                /* Life Bar Rendering */
+                lifeBar.Render(life);
+                if(ConfigParam.Ship.getNormal()) _Normal.render();
 
-            //if (shipSphere != null) shipSphere.render();
-            //if (enemySphere != null) enemySphere.render();
-            ship.renderAll();
+                //if (shipSphere != null) shipSphere.render();
+                //if (enemySphere != null) enemySphere.render();
+                ship.renderAll();
 
-            if (GuiController.Instance.D3dInput.keyDown(Key.J))
-            {
-                TgcStaticSound sonidoBocina = new TgcStaticSound();
-                sonidoBocina.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\horn.wav");
-                sonidoBocina.play(false);
+                if (GuiController.Instance.D3dInput.keyDown(Key.J))
+                {
+                    TgcStaticSound sonidoBocina = new TgcStaticSound();
+                    sonidoBocina.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\horn.wav");
+                    sonidoBocina.play(false);
+                }
             }
             
         }
@@ -591,6 +603,7 @@ namespace AlumnoEjemplos.SeaSharp{
         }
 
         #endregion
+
 
         /* TODO: ESTA ES LA ZONA EN LA QUE HAY QUE DEFINIR LA INTELIGENCIA ARTIFICIAL DE CADA ENEMIGO */
         public void CalculateMovement(float elapsedTime, Ship targetShip)
