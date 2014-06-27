@@ -21,19 +21,19 @@ namespace AlumnoEjemplos.SeaSharp
     {
         static float _PreviousSeaDetail = 0;
 
-        public static Color colorMar;
+        public static bool cargado = false;
         public static void Load()
         {
             //Sea
-            GuiController.Instance.Modifiers.addColor("ColorMar",  ConfigParam.colorMar = Color.FromArgb(5, 50, 116));
+            //GuiController.Instance.Modifiers.addColor("ColorMar",  ConfigParam.colorMar = Color.FromArgb(5, 50, 116));
             GuiController.Instance.Modifiers.addVertex3f("LightPos", new Vector3(-8000, 0, -8000), new Vector3(8000, 20000, 8000), new Vector3(0, 10000, 0));
-            GuiController.Instance.Modifiers.addFloat("Ambient", 0f, 1f, 0.6f);
-            GuiController.Instance.Modifiers.addFloat("Diffuse", 0f, 1f, 1f);
-            GuiController.Instance.Modifiers.addFloat("Specular", 0f, 1f, 1f);
-            GuiController.Instance.Modifiers.addFloat("SpecularPower", 0f, 150f, 50f);
+            //GuiController.Instance.Modifiers.addFloat("Ambient", 0f, 1f, 0.6f);
+            //GuiController.Instance.Modifiers.addFloat("Diffuse", 0f, 1f, 1f);
+            //GuiController.Instance.Modifiers.addFloat("Specular", 0f, 1f, 1f);
+            //GuiController.Instance.Modifiers.addFloat("SpecularPower", 0f, 150f, 50f);
             GuiController.Instance.Modifiers.addFloat("Amplitud", 0f, 300f, 150f);
             GuiController.Instance.Modifiers.addFloat("Frecuencia", 0f, 10f, 2f);
-            GuiController.Instance.Modifiers.addFloat("Reflexion", 0f, 1f, 1f);
+            //GuiController.Instance.Modifiers.addFloat("Reflexion", 0f, 1f, 1f);
             GuiController.Instance.Modifiers.addFloat("Refraccion", 0f, 1f, 0f);
             GuiController.Instance.Modifiers.addFloat("HeightMapScale", 0f, 20f, 1f);
             GuiController.Instance.Modifiers.addFloat("TexScale", 0f, 200f, 20f);
@@ -108,7 +108,38 @@ namespace AlumnoEjemplos.SeaSharp
         {
             public static Color getColorMar()
             {
-                return (Color)GuiController.Instance.Modifiers.getValue("ColorMar");
+                if (cargado)
+                {
+                    return (Color)GuiController.Instance.Modifiers.getValue("ColorMar");
+                }
+                else
+                {
+                    return Color.AliceBlue;
+                }
+            }
+
+            public static Color getDiffuseColor()
+            {
+                if (cargado)
+                {
+                    return (Color)GuiController.Instance.Modifiers.getValue("diffuseColor");
+                }
+                else
+                {
+                    return Color.AliceBlue;
+                }
+            }
+
+            public static Color getSpecularColor()
+            {
+                if (cargado)
+                {
+                    return (Color)GuiController.Instance.Modifiers.getValue("specularColor");
+                }
+                else
+                {
+                    return Color.AliceBlue;
+                }
             }
 
             public static Vector3 getLightPos()
@@ -128,27 +159,62 @@ namespace AlumnoEjemplos.SeaSharp
 
             public static float getAmbient()
             {
-                return (float)GuiController.Instance.Modifiers.getValue("Ambient");
+                if (cargado)
+                {
+                    return (float)GuiController.Instance.Modifiers.getValue("Ambient");
+                }
+                else
+                {
+                    return 1;
+                }
             }
 
             public static float getDiffuse()
             {
-                return (float)GuiController.Instance.Modifiers.getValue("Diffuse");
+                if (cargado)
+                {
+                    return (float)GuiController.Instance.Modifiers.getValue("Diffuse");
+                }
+                else
+                {
+                    return 1;
+                }
             }
 
             public static float getSpecular()
             {
-                return (float)GuiController.Instance.Modifiers.getValue("Specular");
+                if (cargado)
+                {
+                    return (float)GuiController.Instance.Modifiers.getValue("Specular");
+                }
+                else
+                {
+                    return 1;
+                }
             }
 
             public static float getSpecularPower()
             {
-                return (float)GuiController.Instance.Modifiers.getValue("SpecularPower");
+                if (cargado)
+                {
+                    return (float)GuiController.Instance.Modifiers.getValue("SpecularPower");
+                }
+                else
+                {
+                    return 1;
+                }
             }
 
             public static float getReflexion()
             {
-                return (float)GuiController.Instance.Modifiers.getValue("Reflexion");
+                if (cargado)
+                {
+                    return (float)GuiController.Instance.Modifiers.getValue("Reflexion");
+                }
+                else
+                {
+                    return 1;
+                }
             }
 
             public static float getRefraccion()
@@ -175,6 +241,20 @@ namespace AlumnoEjemplos.SeaSharp
             {
                 return (float)GuiController.Instance.Modifiers.getValue("TexScale");
             }
+
+            public static void setWater(Color color, float ambient, float diffuse, float specular, float sPower, float reflexion, Color diffuseColor, Color specularColor)
+            {
+                GuiController.Instance.Modifiers.addColor("ColorMar", color);
+                GuiController.Instance.Modifiers.addFloat("Ambient", 0f, 1f, ambient);
+                GuiController.Instance.Modifiers.addFloat("Diffuse", 0f, 1f, diffuse);
+                GuiController.Instance.Modifiers.addFloat("Specular", 0f, 1f, specular);
+                GuiController.Instance.Modifiers.addFloat("SpecularPower", 0f, 150f, sPower);
+                GuiController.Instance.Modifiers.addFloat("Reflexion", 0f, 1f, reflexion);
+                GuiController.Instance.Modifiers.addColor("diffuseColor", diffuseColor);
+                GuiController.Instance.Modifiers.addColor("specularColor", specularColor);
+                cargado = true;
+            }
+
         }
         #endregion
 
