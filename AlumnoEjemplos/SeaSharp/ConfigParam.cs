@@ -72,7 +72,9 @@ namespace AlumnoEjemplos.SeaSharp
             {
                 AlumnoEjemplos.SeaSharp.Sea.Close();
                 FPSCounters.Status.Text = "LOADING... PLEASE WAIT   =)";
+                FPSCounters.Render(0f);
                 AlumnoEjemplos.SeaSharp.Sea.Load();
+                FPSCounters.Status.Text = "";
                 _PreviousSeaDetail = Sea.getTamaniotriangulos();
             }
         }
