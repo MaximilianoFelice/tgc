@@ -127,14 +127,15 @@ namespace AlumnoEjemplos.SeaSharp{
             NewFireBall.Position = this.Position;
             */
             
-            int cantidad = 4;
+            int cantidad = 2;
             float inversion = 0;
             for (int i = 0; i < cantidad; i++)
             {
                 Bola NewFireBall = new Bola();
 
                 // La mitad de las bolas disparan para el lado contrario
-                inversion = i % 2 == 0 ? Geometry.DegreeToRadian(180) : 0f;
+                //inversion = i % 2 == 0 ? Geometry.DegreeToRadian(180) : 0f;
+                inversion = Geometry.DegreeToRadian(90);
 
                 NewFireBall.Angle = ship.RotationY() - (((cantidad/ 2f) - i) / 10f) - inversion;
                 NewFireBall.Fire();
@@ -672,18 +673,18 @@ namespace AlumnoEjemplos.SeaSharp{
                     //    directionX = 1;
 
                     /* Avanza para acercarse al barco del personaje */
-                    float _ZDirection;
-                    float _XDirection;
+                    //float _ZDirection;
+                    //float _XDirection;
 
-                    if (targetShip.Position.X < this.Position.X) _XDirection = -1;
-                    else if (targetShip.Position.X > this.Position.X) _XDirection = 1;
-                    else _XDirection = 0;
+                    //if (targetShip.Position.X < this.Position.X) _XDirection = -1;
+                    //else if (targetShip.Position.X > this.Position.X) _XDirection = 1;
+                    //else _XDirection = 0;
 
-                    if (targetShip.Position.Z < this.Position.Z) _ZDirection = -1;
-                    else if (targetShip.Position.Z > this.Position.Z) _ZDirection = 1;
-                    else _ZDirection = 0;
+                    //if (targetShip.Position.Z < this.Position.Z) _ZDirection = -1;
+                    //else if (targetShip.Position.Z > this.Position.Z) _ZDirection = 1;
+                    //else _ZDirection = 0;
                     
-                    Vector3 vectorDist = targetShip.Position - ship.Meshes[0].Position;
+                    //Vector3 vectorDist = targetShip.Position - ship.Meshes[0].Position;
 
                     //if (vectorDist.Length() > DISTANCE)
                     //{
@@ -692,9 +693,9 @@ namespace AlumnoEjemplos.SeaSharp{
 
 
                     movementVector = new Vector3(
-                        FastMath.Cos(ship.RotationY()) * moveForward * elapsedTime * speedForward * _XDirection,
+                        FastMath.Cos(ship.RotationY()) * moveForward * elapsedTime * speedForward ,
                         jump,
-                        -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward * _ZDirection
+                        -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward 
                         );
 
                 }
@@ -716,14 +717,50 @@ namespace AlumnoEjemplos.SeaSharp{
                     this.reCalculateHeight();
                     this.reCalculateNormal();
                     
+                    // TODO: reposicionar barco de costado?
+                    
                 }
                 else
                 {
+                    if (EnemyFleet.Enemies.LastIndexOf(this) == 0)
+                    {
+
+                        float O = FastMath.Abs(ship.Meshes[0].Position.Z - targetShip.Position.Z);
+                        float A = FastMath.Abs(ship.Meshes[0].Position.X - targetShip.Position.X);
+                        float H = FastMath.Sqrt(O * O + A * A);
+                        float auxangle = 0;
+
+                        if (ship.Meshes[0].Position.X < targetShip.Position.X && ship.Meshes[0].Position.Z < targetShip.Position.Z)
+                            auxangle = FastMath.ToDeg(FastMath.Asin(O / H));
+                        else if (ship.Meshes[0].Position.X > targetShip.Position.X && ship.Meshes[0].Position.Z < targetShip.Position.Z)
+                            auxangle = 180 - FastMath.ToDeg(FastMath.Asin(O / H));
+                        else if (ship.Meshes[0].Position.X > targetShip.Position.X && ship.Meshes[0].Position.Z > targetShip.Position.Z)
+                            auxangle = 180 + FastMath.ToDeg(FastMath.Asin(O / H));
+                        else if (ship.Meshes[0].Position.X < targetShip.Position.X && ship.Meshes[0].Position.Z > targetShip.Position.Z)
+                            auxangle = 360 - FastMath.ToDeg(FastMath.Asin(O / H));
+
+                        ship.SetRotation(new Vector3(ship.Meshes[0].Rotation.X, -FastMath.ToRad(auxangle), ship.Meshes[0].Rotation.Z));
+
+                        // Recalulamos el movementvector
+                        movementVector = new Vector3(
+                            FastMath.Cos(ship.RotationY()) * moveForward * elapsedTime * speedForward,
+                            jump,
+                            -FastMath.Sin(ship.RotationY()) * moveForward * elapsedTime * speedForward
+                            );
+                    }
+                    else
+                    {
+                        ship.RotateY(Geometry.DegreeToRadian(SPEEDROTATION * elapsedTime * rotationY));
+                    }
                     ship.Move(movementVector);
+
                     this.reCalculateHeight();
                     this.reCalculateNormal();
                     enemySphere.moveCenter(movementVector);
-                    ship.RotateY(Geometry.DegreeToRadian(SPEEDROTATION * elapsedTime * rotationY));
+                    
+                    
+                    
+                    
                 }
 
                 //ship.Move(movementVector);

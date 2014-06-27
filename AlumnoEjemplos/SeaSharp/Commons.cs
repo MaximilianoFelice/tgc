@@ -67,6 +67,11 @@ namespace AlumnoEjemplos.SeaSharp
             foreach (TgcMesh Mesh in Scene.Meshes) Mesh.move(MovementVector);
         }
 
+        public static void MoveOrientedY(this TgcScene Scene, float movement)
+        {
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.moveOrientedY(movement);
+        }
+
         /* Reposiciona todos los meshes de una scene */
         public static void Position(this TgcScene Scene, Vector3 NewPosition)
         {
@@ -113,6 +118,11 @@ namespace AlumnoEjemplos.SeaSharp
         public static float RotationX(this TgcScene Scene)
         {
             return (Scene.Meshes[0].Rotation.X);
+        }
+
+        public static void SetRotation(this TgcScene Scene, Vector3 Rotation)
+        {
+            foreach (TgcMesh Mesh in Scene.Meshes) Mesh.Rotation = Rotation;
         }
 
         public static float RotationZ(this TgcScene Scene)

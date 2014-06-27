@@ -46,6 +46,18 @@ namespace AlumnoEjemplos.SeaSharp
             skyBox.updateValues();
         }
 
+        public static void SetFaceTexturesRayo()
+        {
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "arriba.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "abajo.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "centroRayo.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "der2Rayo.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "izq.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "der.jpg");
+
+            skyBox.updateValues();
+        }
+
 
         public static void CalculateMovement()
         {
