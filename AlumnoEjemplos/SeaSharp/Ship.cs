@@ -105,6 +105,7 @@ namespace AlumnoEjemplos.SeaSharp{
 
                 if (shipSphere != null && ConfigParam.Ship.getBoundingSpheres()) shipSphere.render();
                 if (enemySphere != null && ConfigParam.Ship.getBoundingSpheres()) enemySphere.render();
+
                 ship.renderAll();
 
                 if (GuiController.Instance.D3dInput.keyDown(Key.J))
