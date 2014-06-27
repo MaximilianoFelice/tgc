@@ -291,7 +291,7 @@ namespace AlumnoEjemplos.SeaSharp{
             float acc = 0;
 
 
-            targetMap.Position = new Vector2(-ship.Meshes[0].Position.X / 50 + Environment.MapShipsOffsetX, ship.Meshes[0].Position.Z / 50 + Environment.MapShipsOffsetY);
+            targetMap.Position = new Vector2(-ship.Meshes[0].Position.X / 100 + Environment.MapShipsOffsetX, ship.Meshes[0].Position.Z / 100 + Environment.MapShipsOffsetY);
             lifeBar.calculatePosition(this.Position, elapsedTime, d3dInput, life, nitro);
 
             // Hundimiento
@@ -607,7 +607,7 @@ namespace AlumnoEjemplos.SeaSharp{
             TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
 
             // Actualiza la Posicion y Rotacion de la Barra de Vida
-            targetMap.Position = new Vector2(-ship.Meshes[0].Position.X / 50 + Environment.MapShipsOffsetX, ship.Meshes[0].Position.Z / 50 + Environment.MapShipsOffsetY);
+            targetMap.Position = new Vector2(-ship.Meshes[0].Position.X / 100 + Environment.MapShipsOffsetX, ship.Meshes[0].Position.Z / 100 + Environment.MapShipsOffsetY);
             lifeBar.calculatePosition(this.Position, elapsedTime, d3dInput, life, nitro);
             
 

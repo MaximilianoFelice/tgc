@@ -47,7 +47,7 @@ namespace AlumnoEjemplos.SeaSharp
             //General
             GuiController.Instance.Modifiers.addFloat("tiempo", 1, 10, 3);
             GuiController.Instance.Modifiers.addFloat("tamanioMar", 2000, 8000, 8000);
-            GuiController.Instance.Modifiers.addFloat("tamanioTriangulos", 50, 200, 150);
+            GuiController.Instance.Modifiers.addFloat("tamanioTriangulos", 50, 200, 200);
 
 
             //Quad
