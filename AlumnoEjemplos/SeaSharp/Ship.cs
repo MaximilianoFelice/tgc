@@ -63,7 +63,7 @@ namespace AlumnoEjemplos.SeaSharp{
             targetMap.RotationCenter = new Vector2(targetMap.Texture.Width * targetMap.Scaling.X / 2, targetMap.Texture.Height * targetMap.Scaling.Y / 2);
 
             //BoundingSphere que va a usar el ship
-            shipSphere = new TgcBoundingSphere(ship.BoundingBox.calculateBoxCenter(), ship.BoundingBox.calculateBoxRadius() + 40f);
+            shipSphere = new TgcBoundingSphere(ship.BoundingBox.calculateBoxCenter(), ship.BoundingBox.calculateBoxRadius());
 
             // Acomoda al ship dependiendo una posicion específica de spawn
             ship.Position(this.Spawn());
@@ -103,8 +103,8 @@ namespace AlumnoEjemplos.SeaSharp{
                 lifeBar.Render(life);
                 if(ConfigParam.Ship.getNormal()) _Normal.render();
 
-                //if (shipSphere != null) shipSphere.render();
-                //if (enemySphere != null) enemySphere.render();
+                if (shipSphere != null) shipSphere.render();
+                if (enemySphere != null) enemySphere.render();
                 ship.renderAll();
 
                 if (GuiController.Instance.D3dInput.keyDown(Key.J))
@@ -534,6 +534,7 @@ namespace AlumnoEjemplos.SeaSharp{
                     this.Position = originalPos;
                     this.reCalculateHeight();
                     this.reCalculateNormal();
+                    shipSphere.setCenter(new Vector3(shipSphere.Position.X, this.Position.Y, shipSphere.Position.Z));
                 }
                 else
                 {
@@ -542,6 +543,7 @@ namespace AlumnoEjemplos.SeaSharp{
                     this.reCalculateNormal();
                     ship.Move(movementVector);
                     shipSphere.moveCenter(movementVector);
+                    shipSphere.setCenter(new Vector3(shipSphere.Position.X, this.Position.Y, shipSphere.Position.Z));
                 }
 
             }
@@ -579,7 +581,7 @@ namespace AlumnoEjemplos.SeaSharp{
             NewEnemy.Position = new Vector3(r.Next(1000) + 200, 0, r.Next(1000) + 200);
             NewEnemy.RotateShip(r.Next(360));
 
-            NewEnemy.enemySphere = new TgcBoundingSphere(NewEnemy.ship.BoundingBox.calculateBoxCenter() + NewEnemy.Position, NewEnemy.ship.BoundingBox.calculateBoxRadius() + 40f);
+            NewEnemy.enemySphere = new TgcBoundingSphere(NewEnemy.ship.BoundingBox.calculateBoxCenter() + NewEnemy.Position, NewEnemy.ship.BoundingBox.calculateBoxRadius());
             NewEnemy.shipSphere = null;
         }
 
@@ -730,6 +732,7 @@ namespace AlumnoEjemplos.SeaSharp{
                     ColisionFire(targetShip);
                     this.reCalculateHeight();
                     this.reCalculateNormal();
+                    enemySphere.setCenter(new Vector3(enemySphere.Position.X, this.Position.Y, enemySphere.Position.Z));
                     
                 }
                 else
@@ -738,6 +741,7 @@ namespace AlumnoEjemplos.SeaSharp{
                     this.reCalculateHeight();
                     this.reCalculateNormal();
                     enemySphere.moveCenter(movementVector);
+                    enemySphere.setCenter(new Vector3(enemySphere.Position.X, this.Position.Y, enemySphere.Position.Z));
                     ship.RotateY(Geometry.DegreeToRadian(SPEEDROTATION * elapsedTime * rotationY));
                 }
 

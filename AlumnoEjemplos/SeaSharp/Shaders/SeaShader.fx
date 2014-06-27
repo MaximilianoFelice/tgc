@@ -82,26 +82,6 @@ float fTexScale = 10;
 /* RenderScene */
 /**************************************************************************************/
 
-//Input del Vertex Shader
-struct VS_INPUT
-{
-	float4 Position : POSITION0;
-	float4 Color : COLOR0;
-	float3 Tex : TEXCOORD0;
-};
-
-//Output del Vertex Shader
-struct VS_OUTPUT
-{
-	float4 Position :        POSITION0;
-	float4 Color :			COLOR0;
-	float3 Tex: TEXCOORD0;
-	float3 Normal : TEXCOORD1;
-	float3 PosProp : TEXCOORD2;
-
-};
-
-
 float calculate_Position(float x, float z)
 {
 	float u = (x / 75 + 8000 / 75) / (2 * (8000 / 75) + 1);
@@ -113,27 +93,7 @@ float calculate_Position(float x, float z)
 	return ola2;
 }
 
-//float3 calculate_Normal(float3 posInit, float time){
-//
-//	// Calculate first vector
-//	float u = posInit.x + 0.1f;
-//	float y1 = calculate_Position(u, posInit.z, time);
-//
-//	float3 newVec1 = (u, y1, posInit.z) - posInit;
-//
-//	// Calculate second vector
-//	float i = posInit.z + 0.1f;
-//	float y2 = calculate_Position(posInit.x, i, time);
-//
-//	float3 newVec2 = (posInit.x, y2, i) - posInit;
-//
-//		return cross(newVec1, newVec2);
 
-//}
-
-
-// Ejemplo de un vertex shader que anima la posicion de los vertices 
-// ------------------------------------------------------------------
 void VSCubeMap2(float4 Pos : POSITION,
 	float3 Normal : NORMAL,
 	float2 Texcoord : TEXCOORD0,
@@ -146,11 +106,8 @@ void VSCubeMap2(float4 Pos : POSITION,
 	out float3 EnvTex3 : TEXCOORD5,
 	out float3 wPos : TEXCOORD6,
 	out float3 PosPix : TEXCOORD7
-	//out float  Fresnel : COLOR
 	)
 {
-	//VS_OUTPUT Output;
-
 	float3 normal;
 
 	// Actualizo el output
@@ -281,15 +238,15 @@ technique RenderCubeMap
 float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float dy, float3 vEyeR, float3 normal)
 {
 	// Color Basico
-	//float4 cBaseColor = tex2Dgrad(auxMap, texCoord, dx, dy);
 	float a = coeficiente;
 	float4 cBaseColor = colorAgua;
-		/*if (phong_lighting)
-		{*/
-		// Busco el vector normal en la textura Normal-Height Map  (esta en Tangent Space)
+
+		// Busco el vector normal en las texturas Normal-Height Map  (esta en Tangent Space)
 		float3 samp1 = normalize(tex2Dgrad(heightmap, texCoord, dx, dy) * 2 - 1);
 		float3 samp2 = normalize(tex2Dgrad(heightmap2, texCoord, dx, dy) * 2 - 1);
+		// Interpolo las dos texturas
 		float3 vNormalTS = normalize(lerp(samp1, samp2, coeficiente) + 0.5*normal);
+		// Calculo el reflejo de la normal tomando la normal nueva
 		float3 EnvTex = reflect(vEyeR, vNormalTS);
 
 
@@ -303,31 +260,18 @@ float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float d
 			float fRdotL = saturate(dot(vReflectionTS, vLightTSAdj));
 		cSpecular = saturate(pow(fRdotL, fSpecularPower))*k_ls*specularColor;
 
+		// Calculo en color en base al envMap y al color del agua
 		float k = 0.60;
 		cBaseColor = k*texCUBE(g_samCubeMap, EnvTex) +
 			(1 - k)*colorAgua;
-		//(1 - k)*tex2D(diffuseMap, text*20);
 
 		// suma luz diffusa, ambiente y especular
-		
 		cBaseColor = (k_la + cDiffuse)*cBaseColor + cSpecular;
 		float4 color_reflejado = cBaseColor;
-
-			/*float4 color_refractado = float4(
-			texCUBE(g_samCubeMap, Tex1).x,
-			texCUBE(g_samCubeMap, Tex2).y,
-			texCUBE(g_samCubeMap, Tex3).z,
-			1);*/
-		//float4 color_refractado = texCUBE( g_samCubeMap, Tex1);
 
 		float4 col = color_reflejado*kx;
 			col.a = 1;
 		return col;
-
-		// Retorno color difuso	+ luz especular
-		//}
-
-		//return float4(vNormalTS, 1);
 }
 
 
@@ -344,17 +288,18 @@ void RenderSceneVS(float4 Pos : POSITION,
 	out float3 Eye : TEXCOORD6
 	)
 {
+	// Actualizo posicion
 	oPos = Pos;
 	oPos.y = calculate_Position(Pos.x, Pos.z); //se lo aplicamos al eje y
+	// Proyecto posicion
 	float3 wPos = mul(oPos, matWorld);
-	float dr = 15;
 
-	//Proyectar posicion
+	// Calculo la normal
+	float dr = 15;
 	float heightx = calculate_Position(Pos.x + dr, Pos.z);
 	float heightz = calculate_Position(Pos.x, Pos.z + dr);
 	float3 dx = normalize(float3(dr, heightx - oPos.y, 0));
 		float3 dz = normalize(float3(0, heightz - oPos.y, dr));
-
 		normal = cross(dz, dx);
 
 	// Vector View = desde el ojo a la pos del vertice
@@ -362,19 +307,12 @@ void RenderSceneVS(float4 Pos : POSITION,
 		wsView = fvEyePosition.xyz - VertexPositionWS.xyz;
 
 
-	// calculo la tg y la binormal ?
+	// calculo la tg y la binormal
 	float3 up = float3(0, 0, 1);
 		if (abs(normal.z - 1) <= 0.0001)
 			up = float3(0, 1, 0);
 	float3 tangent = cross(normal, up);
 		float3 binormal = cross(normal, tangent);
-
-		/*
-		// o la dejo fija?
-		normal = float3(0,1,0);
-		float3 tangent = float3(1,0,0);
-		float3 binormal = float3(0,0,1);
-		*/
 
 		float3x3 tangentToWorldSpace;
 	tangentToWorldSpace[0] = mul(tangent, matWorld);
