@@ -244,9 +244,9 @@ namespace AlumnoEjemplos.SeaSharp{
             _Normal.PEnd = this.Position + rotatedNormal * 100;
             _Normal.updateValues();
 
-            FPSCounters.Status.Text = "X Rot: " + this.ship.RotationX().ToString();
-            FPSCounters.Status.Text = FPSCounters.Status.Text + " - Y Rot: " + this.ship.RotationY().ToString();
-            FPSCounters.Status.Text = FPSCounters.Status.Text + " - z Rot: " + this.ship.RotationZ().ToString();
+            //FPSCounters.Status.Text = "X Rot: " + this.ship.RotationX().ToString();
+            //FPSCounters.Status.Text = FPSCounters.Status.Text + " - Y Rot: " + this.ship.RotationY().ToString();
+            //FPSCounters.Status.Text = FPSCounters.Status.Text + " - z Rot: " + this.ship.RotationZ().ToString();
         }
 
     }
