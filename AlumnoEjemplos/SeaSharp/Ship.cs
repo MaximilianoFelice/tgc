@@ -775,6 +775,7 @@ namespace AlumnoEjemplos.SeaSharp{
                     this.reCalculateHeight();
                     this.reCalculateNormal();
                     enemySphere.moveCenter(movementVector);
+                    enemySphere.setCenter(new Vector3(enemySphere.Position.X, this.Position.Y, enemySphere.Position.Z));
                 }
 
                 //ship.Move(movementVector);
