@@ -90,7 +90,7 @@ namespace AlumnoEjemplos.SeaSharp{
 
             /* Life Bar Rendering */
             lifeBar.Render(life);
-            _Normal.render();
+            if(ConfigParam.Ship.getNormal()) _Normal.render();
 
             //if (shipSphere != null) shipSphere.render();
             //if (enemySphere != null) enemySphere.render();

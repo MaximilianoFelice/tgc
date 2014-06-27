@@ -89,7 +89,7 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("amplitud", ConfigParam.Sea.getAmplitud());
             water.Effect.SetValue("frecuencia", ConfigParam.Sea.getFrecuencia());
             water.Effect.SetValue("kx", ConfigParam.Sea.getReflexion());
-            water.Effect.SetValue("kc", ConfigParam.Sea.getRefraccion());
+            //water.Effect.SetValue("kc", ConfigParam.Sea.getRefraccion());
             water.Effect.SetValue("superficieAgua", texture);
             water.Effect.SetValue("texDiffuseMap", diffuseMap);
             water.Effect.SetValue("g_txCubeMap", surf);
@@ -98,6 +98,8 @@ namespace AlumnoEjemplos.SeaSharp
             water.Effect.SetValue("fHeightMapScale", ConfigParam.Sea.getHeightmapScale());
             water.Effect.SetValue("fTexScale", ConfigParam.Sea.getTexScale());
             water.Effect.SetValue("coeficiente", interpolador.Current);
+            water.Effect.SetValue("specularColor", ConfigParam.Sea.getSpecularColor().ToArgb());
+            water.Effect.SetValue("diffuseColor", ConfigParam.Sea.getDiffuseColor().ToArgb());
             device.RenderState.AlphaBlendEnable = true;
 
             water.Render(frustum);

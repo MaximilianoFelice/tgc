@@ -51,6 +51,8 @@ float k_la = 0.7;							// luz ambiente global
 float k_ld = 0.4;							// luz difusa
 float k_ls = 1.0;							// luz specular
 float fSpecularPower = 16.84;
+float4 specularColor;
+float4 diffuseColor;
 
 float kx = 1;							// coef. de reflexion
 float kc = 0;
@@ -450,13 +452,13 @@ float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float d
 
 			// Color difuso
 			float3 vLightTSAdj = float3(vLightTS.x, -vLightTS.y, vLightTS.z);
-			float cDiffuse = saturate(dot(vNormalTS, vLightTSAdj)) * k_ld;
+			float cDiffuse = saturate(dot(vNormalTS, vLightTSAdj)) * k_ld * diffuseColor;
 
 		// Color specular
 		float4 cSpecular = 0;
 			float3 vReflectionTS = normalize(2 * dot(vViewTS, vNormalTS) * vNormalTS - vViewTS);
 			float fRdotL = saturate(dot(vReflectionTS, vLightTSAdj));
-		cSpecular = saturate(pow(fRdotL, g_fSpecularExponent))*k_ls;
+		cSpecular = saturate(pow(fRdotL, g_fSpecularExponent))*k_ls*specularColor;
 
 		float k = 0.60;
 		cBaseColor = k*texCUBE(g_samCubeMap, EnvTex) +
