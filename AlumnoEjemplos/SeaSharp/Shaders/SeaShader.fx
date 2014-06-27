@@ -285,7 +285,7 @@ void RenderSceneVS(float4 Pos : POSITION,
 	out float3 wsNormal : TEXCOORD2,
 	out float3 wsView : TEXCOORD4,
 	out float3 EnvTex : TEXCOORD5,
-	out float3 Eye : TEXCOORD6
+	out float3 vEyeR : TEXCOORD6
 	)
 {
 	// Actualizo posicion
@@ -335,14 +335,11 @@ void RenderSceneVS(float4 Pos : POSITION,
 	wsNormal = normal;
 	// tambien devuelve el vector view en worldspace wsView
 	
-	float3 vEyeR = normalize(wPos - fvEyePosition);
-		// corrijo la normal (depende de la malla)
-		// ej. el tanque esta ok, la esfera esta invertida.
-		//Normal*= -1;
+	vEyeR = normalize(wPos - fvEyePosition);
+
 		float3 vN = mul(normal, (float3x3)matWorld);
 		vN = normalize(vN);
 	EnvTex = reflect(vEyeR, vN);
-	Eye = vEyeR;
 
 }
 
