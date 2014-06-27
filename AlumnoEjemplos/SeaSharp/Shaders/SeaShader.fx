@@ -435,7 +435,7 @@ technique RenderScene
 
 
 // calcula la iluminaciond dinamica
-float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float dy, float3 vEyeR)
+float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float dy, float3 vEyeR, float3 normal)
 {
 	// Color Basico
 	//float4 cBaseColor = tex2Dgrad(auxMap, texCoord, dx, dy);
@@ -446,7 +446,7 @@ float4 Phong(float2 texCoord, float3 vLightTS, float3 vViewTS, float dx, float d
 		// Busco el vector normal en la textura Normal-Height Map  (esta en Tangent Space)
 		float3 samp1 = normalize(tex2Dgrad(heightmap, texCoord, dx, dy) * 2 - 1);
 		float3 samp2 = normalize(tex2Dgrad(diffuseMap, texCoord, dx, dy) * 2 - 1);
-		float3 vNormalTS = lerp(samp1, samp2, coeficiente);
+		float3 vNormalTS = normalize(lerp(samp1, samp2, coeficiente) + 0.5*normal);
 		float3 EnvTex = reflect(vEyeR, vNormalTS);
 
 
@@ -647,7 +647,7 @@ float4 PSParallaxOcclusion(float2 Texcoord: TEXCOORD0,
 		}
 	}
 
-	return Phong(Texcoord + vCurrOffset, tsLight, -tsView, dx, dy, vEyeR);
+	return Phong(Texcoord + vCurrOffset, tsLight, -tsView, dx, dy, vEyeR, wsNormal);
 }
 
 // Parallax oclussion
