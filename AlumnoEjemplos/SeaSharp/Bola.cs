@@ -85,7 +85,7 @@ namespace AlumnoEjemplos.SeaSharp
 
             bola.Scale = new Vector3(0.3f, 0.3f, 0.3f);
 
-            _Velocity = new Vector3(-10 * FastMath.Sin(_Angle), 2, -10 * FastMath.Cos(_Angle));
+            _Velocity = new Vector3(-10 * FastMath.Sin(_Angle), 4, -10 * FastMath.Cos(_Angle));
 
             FiredBalls.Add(this);
         }
@@ -126,7 +126,7 @@ namespace AlumnoEjemplos.SeaSharp
         public void CalculatePath(float elapsedTime)
         {
             Vector3 _acceleration = new Vector3(0, _Gravity * elapsedTime, 0);
-            _Velocity = Microsoft.DirectX.Vector3.Add(_Velocity * 1.29f, _acceleration);
+            _Velocity = Microsoft.DirectX.Vector3.Add(_Velocity * 0.9999f, _acceleration);
             
             bola.move(_Velocity);   // TODO: Aclarar que es cada valor en esta linea. En lo posible pasarlos a constantes mas expresivas.   
 

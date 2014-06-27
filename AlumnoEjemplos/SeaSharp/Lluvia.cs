@@ -40,6 +40,8 @@ namespace AlumnoEjemplos.SeaSharp
         TgcSprite relampago1;
         TgcSprite relampago2;
 
+        bool firstSkyRender = false;
+
         public static int lluvia; //Indica que imagen de lluvia se muestra actualmente
         public static bool relampago;
         public void Load()
@@ -105,6 +107,7 @@ namespace AlumnoEjemplos.SeaSharp
                 sonidoRelampago.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\relampago.wav");
                 sonidoRelampago.play(false);
                 relampago = true;
+                SkyDome.SetFaceTexturesRayo();
             }
 
             if (relampago)
@@ -115,6 +118,7 @@ namespace AlumnoEjemplos.SeaSharp
                     TgcStaticSound sonidoRelampago = new TgcStaticSound();
                     sonidoRelampago.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\relampago.wav");
                     sonidoRelampago.play(false);
+                    SkyDome.SetFaceTexturesRayo();                    
                 }
                 else
                 {
@@ -123,7 +127,9 @@ namespace AlumnoEjemplos.SeaSharp
                     sonidoRelampago2.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\relampago2.wav");
                     sonidoRelampago2.play(false);
                     relampago = false;
+                    SkyDome.SetFaceTextures();
                 }
+                //firstSkyRender = true;
             }
             if (r.Next(150) == 5)
             {
@@ -131,6 +137,11 @@ namespace AlumnoEjemplos.SeaSharp
                 TgcStaticSound sonidoRelampago = new TgcStaticSound();
                 sonidoRelampago.loadSound(GuiController.Instance.AlumnoEjemplosMediaDir + "Sound\\relampago.wav");
                 sonidoRelampago.play(false);
+                //if (firstSkyRender)
+                //{
+                    //SkyDome.SetFaceTextures();
+                    //firstSkyRender = false;
+                //}
             }
 
             switch (lluvia)

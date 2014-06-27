@@ -120,8 +120,9 @@ namespace AlumnoEjemplos.SeaSharp
             MapBack = new TgcSprite();
             MapBack.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "Screen\\MapBack.png");
             MapBack.Position = new Vector2(screenSize.Width * 0.75f, screenSize.Height * 0.6f);
-            MapBack.Scaling = new Vector2(0.45f, 0.40f);
-
+//            MapBack.Scaling = new Vector2(0.45f, 0.40f);
+            MapBack.Scaling = new Vector2(screenSize.Width / MapBack.Texture.Width, screenSize.Height / MapBack.Texture.Height);
+            
             // Islas
             islands.Add(new Island(new Vector3(100, 0, 100)));
             islands.Add(new Island(new Vector3(-70, 0, -150)));
